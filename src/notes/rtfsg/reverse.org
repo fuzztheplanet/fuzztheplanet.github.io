@@ -1,0 +1,44 @@
+#+TITLE: Reverse Engineering
+#+INCLUDE: ../../../templates/rtfsg.org
+
+* NRO
+
+- [[https://github.com/dazjo/nxtool][nxtool]] to parse file headers and transform the NRO files into ELF.
+
+* WASM (Web Assembly)
+:PROPERTIES:
+:CUSTOM_ID: wasm
+:END:
+*** Docs and tools
+First the mandatory references and tools:
+
+- [[https://webassembly.github.io/spec/core/][WebAssembly Specification]].
+- [[https://github.com/WebAssembly/wabt][WebAssembly Binary Toolkit]] (wabt): Set of tools to interpret, decompile (to
+  C and wat) and more.
+- [[https://www.pnfsoftware.com/][JEB]] has a free demo of its [[https://www.pnfsoftware.com/jeb/#wasm][WASM decompiler]].
+
+*** Decompilation
+
+[[https://github.com/WebAssembly/wabt/tree/main/wasm2c][wasm2c]] can produce some decompiled C source, but it is pretty unreadable.
+Static analysis can be made much easier by retrieving the [[https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h][wasm-rt.h]] header
+file and simply compiling to an object file. Which can then be loaded into
+Ghidra for example for further analysis.
+
+#+begin_src shell
+wasm2c -o index.c index.wasm # C source is _very_ verbose!
+curl -OL https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h
+cc -c index.c index.o
+#+end_src
+
+*** Debugging
+
+If the application is running in the browser, you can use the JS console to
+access its internal variables. Look for: [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory][wasmMemory]] and [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table][wasmTable]].
+
+
+#+begin_src javascript
+// Read/Write internal memory as byte array or (u)int32 array
+var mem = new Uint8Array(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength);
+var mem = new Uint32Array(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength / 4);
+var mem = new Int32Array(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength / 4);
+#+end_src

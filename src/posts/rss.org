@@ -1,0 +1,8 @@
+#+TITLE: Skywhi's blog
+
+* Hello World from Org
+:properties:
+:rss_permalink: hello-world-from-org.html
+:pubdate: 2025-05-25 Sun
+:ID:       2d4f2d68-f42d-4c11-9a62-e3a597d543b2
+:END:

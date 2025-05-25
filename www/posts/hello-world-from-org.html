@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-05-25 Sun 16:42 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hello World from Org</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="/files/js/mathjax/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">Hello World from Org</h1>
+<p>
+<div class="post-date">
+<i>First published: 25 May 2025</i>
+</div>
+</p>
+
+
+<div class="preview" id="orgd23b10a">
+<p>
+I describe yet-another-simple-publishing-setup for a static website using
+Emacs's <a href="https://orgmode.org/">Org mode</a>.
+</p>
+
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">skywhi@dreamland:~/blog$ echo <span class="org-string">"Hello World Wild Web!"</span> &gt; posts/hello.org
+skywhi@dreamland:~/blog$ make update &amp;&amp; make publish
+skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span class="org-comment">make blogging great again!</span>
+</pre>
+</div>
+
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#rationale">Rationale</a></li>
+<li><a href="#project-layout">Project layout</a></li>
+<li><a href="#first-page">To the first page!</a>
+<ul>
+<li><a href="#source-files">Source files</a></li>
+<li><a href="#templates">Templates</a></li>
+<li><a href="#css">CSS styling</a></li>
+<li><a href="#publishing">Building and publishing</a>
+<ul>
+<li><a href="#publish-website">publish-website.el</a></li>
+<li><a href="#makefile">Makefile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#more">A few more functionalities</a>
+<ul>
+<li><a href="#mathjax">MathJax</a></li>
+<li><a href="#resources">RSS feed</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-rationale" class="outline-2">
+<h2 id="rationale">Rationale</h2>
+<div class="outline-text-2" id="text-rationale">
+<p>
+I figured it was finally the time to host some of my content online for sharing,
+fun, persistence, easy access and all the other usual suspects. Going into this
+adventure there were only a few requirements that I wanted my website to meet:
+</p>
+
+<ul class="org-ul">
+<li>Content should be written in my favorite <a href="https://www.gnu.org/software/emacs/">text editor</a> with <a href="https://orgmode.org/">Org mode</a>.</li>
+<li>No need for any back-end or front-end logic: serving a static website without
+any fancy HTML/CSS/JS shenanigans will be more than fine.</li>
+<li>The website should be standalone so that it can be viewed offline as well.</li>
+<li>Convenient hosting: hustling with administrating a web-server for such a small
+project would not make any sense to me.</li>
+</ul>
+
+<p>
+Let me explain. I have been using Emacs and Org mode for several years now. Its
+markup language really fits my needs and the files integrate well with the
+agenda and other nifty features Org mode has to offer. The ability to hack its
+behavior directly in elisp is also a great plus to me. This is why I searched
+for options that would allow me to use my Org content without too much trouble.
+</p>
+
+<p>
+When it comes to this website, I want to be able to turn what I am currently
+working on into publishable content without having to spend extra time on
+re-formatting my writing completely. It was thus pretty obvious that I would
+give a try to the built-in <a href="https://orgmode.org/manual/Publishing.html">org-publish</a> package for Emacs as it is exactly what I
+am looking for: automated and configurable exporting of Org projects to simple
+HTML files. There a few other projects which turn a collection of Org files into
+a website, such as <a href="https://github.com/bastibe/org-static-blog">org-static-blog</a>, but I figured I would like to have maximal
+control over the toolchain and keep external dependencies as low as possible.
+</p>
+
+<p>
+Using git versioning gives me the opportunity to track and manage changes over
+time. Since we are dealing with a static website with exclusively public data,
+<a href="https://github.io">github.io</a> will handle the hosting for me. Whenever I work on a new item, I can
+pull the remote github repository, create a local branch and start editing. When
+the content is ready for publishing, the branch is merged into main, pushed to
+the remote github repository and <i>voilà</i>!
+</p>
+</div>
+</div>
+<div id="outline-container-project-layout" class="outline-2">
+<h2 id="project-layout">Project layout</h2>
+<div class="outline-text-2" id="text-project-layout">
+<p>
+I ended up with something like the following directory structure for this
+project. The github repository containing all the source files can be found
+<a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
+</p>
+
+<pre class="example" id="org0c80d3a">
+- ~/org/blog/
+  - .cache/
+  - files/
+    - css/
+    - fonts/
+    - img/
+  - src/
+    - index.org
+    - about.org
+    - posts/
+      - hello.org
+      - super-dupa-post.org
+  - templates/
+    - header.html
+    - footer.html
+    - post.org
+    - readthedocs.org
+  - Makefile
+  - publish-website.el
+  - README.org
+</pre>
+
+<p>
+<b>src/</b> contains the standalone Org files that will be published to HTML. They
+are declaring as few exporting options as possible so that they can easily be
+used in other contexts or projects. Global exporting options will be defined in
+<b>publish-website.el</b> and page specific options provided via Org template files.
+The <b>files/</b> and <b>templates/</b> directories host assets such as stylesheets,
+fonts, images, etc. that are specific to the HTML export.
+</p>
+
+<p>
+The logic behind publishing is implemented in <b>publish-website.el</b> which is then
+called by a <b>Makefile</b> for convenience. It defines all the directories, files
+and exporting options to be fed into <i>org-publish</i>. I could have written
+<b>publish-website.el</b> in literate programming style and use it as source for this
+blog post, but that would have been a little bit too meta, even for me :)
+</p>
+
+<p>
+The <b>.cache/</b> directory is created by <i>org-publish</i>. It is kept in version
+control so that I can track when files were last updated and reflect it in the
+HTML. Finally, <b>README.org</b> is just a symbolic link to <b>src/about.org</b>, because
+I can.
+</p>
+</div>
+</div>
+<div id="outline-container-first-page" class="outline-2">
+<h2 id="first-page">To the first page!</h2>
+<div class="outline-text-2" id="text-first-page">
+</div>
+<div id="outline-container-source-files" class="outline-3">
+<h3 id="source-files">Source files</h3>
+<div class="outline-text-3" id="text-source-files">
+<p>
+Global exporting options are defined in <b>publish-website.el</b> which can be
+overridden by the definitions in the single Org files. When several Org files
+share the same defaults, it can make sense to define them in an Org template
+file and use the <code>#+SETUPFILE: ../templates/mytemplate.org</code> directive in the
+relevant source files. <code>#+INCLUDE: &lt;path/to/file.org&gt;</code> can also be used, its
+content will then plainly be inserted in the source file before processing.
+</p>
+
+<p>
+This is for example the beginning of this post. I set the title, the date, I
+include a template and insert a preview. More on all this a little bit later.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span class="org-org-document-info-keyword">#+TITLE:</span> <span class="org-org-document-title">Hello World from Org</span>
+<span class="org-org-document-info-keyword">#+DATE:</span> <span class="org-org-document-info">[2025-05-25 Sun]</span>
+<span class="org-org-meta-line">#+INCLUDE: ../../templates/post.org</span>
+
+<span class="org-org-block-begin-line">#+begin_preview</span>
+I describe yet-another-simple-publishing-setup for a static website using
+Emacs's <span class="org-org-link"><a href="https://orgmode.org/">Org mode</a></span>.
+<span class="org-org-block-end-line">#+end_preview</span>
+
+<span class="org-org-block-begin-line">#+begin_src sh</span>
+<span class="org-org-block">skywhi@dreamland:~/blog$ echo </span><span class="org-org-block"><span class="org-string">"Hello World Wild Web!"</span></span><span class="org-org-block"> &gt; posts/hello.org</span>
+<span class="org-org-block">skywhi@dreamland:~/blog$ make update &amp;&amp; make publish</span>
+<span class="org-org-block">skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!</span></span>
+<span class="org-org-block-end-line">#+end_src</span>
+
+<span class="org-org-meta-line">#+TOC: headlines 3</span>
+
+<span class="org-org-level-1">* Rationale</span>
+<span class="org-org-drawer">:PROPERTIES:</span>
+<span class="org-org-special-keyword">:CUSTOM_ID:</span> <span class="org-org-property-value">rationale</span>
+<span class="org-org-drawer">:END:</span>
+
+I figured it was finally the time to host some of my content online for sharing,
+fun, persistence, easy access and all the other usual suspects. Going into this
+adventure there were only a few requirements that I wanted my website to meet:
+[...]
+</pre>
+</div>
+
+<p>
+Appending a <code>CUSTOM_ID</code> property to headlines makes it possible to link to the
+specific headline in the table of contents and HTML.
+</p>
+</div>
+</div>
+<div id="outline-container-templates" class="outline-3">
+<h3 id="templates">Templates</h3>
+<div class="outline-text-3" id="text-templates">
+<p>
+For example, the template under <b>templates/post.org</b> looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span class="org-comment">@@</span><span class="org-org-tag">html:</span>&lt;div class="post-date"&gt;<span class="org-comment">@@</span>
+<span class="org-italic">/First published: </span><span class="org-org-macro"><span class="org-italic">{{{date(%d %b %Y)}}}</span></span><span class="org-italic">/</span>
+<span class="org-comment">@@</span><span class="org-org-tag">html:</span>&lt;/div&gt;<span class="org-comment">@@</span>
+</pre>
+</div>
+
+<p>
+The <i>date</i> tag of the post will be extracted and added to the HTML during
+publishing.
+</p>
+
+<p>
+Here is a template for the <a href="https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg">ReadTheOrg</a> theme by <a href="https://github.com/fniessen">Fabrice Niessen</a> that inserts HTML
+into any page published with it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/&gt;</span>
+<span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/&gt;</span>
+<span class="org-org-meta-line">#+HTML_HEAD_EXTRA:</span>
+<span class="org-org-meta-line">#+OPTIONS: html-preamble:nil</span>
+<span class="org-org-meta-line">#+OPTIONS: html-postamble:nil</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-css" class="outline-3">
+<h3 id="css">CSS styling</h3>
+<div class="outline-text-3" id="text-css">
+<p>
+The two files that are used are <b>files/css/style.css</b> and
+<b>files/css/htmlize.css</b>. In <b>style.css</b> are all the base styles for the pages
+defined. Since I am aiming for a small and flexible website I decided to write
+my own CSS manually (and I suck at it tbh). People who don't want to enjoy the
+same <del>painful</del> wonderful experience should try to look for pre-existing
+stylesheets and exporting options. <b>htmlize.css</b> is used to pretty source code
+blocks.
+</p>
+</div>
+</div>
+<div id="outline-container-publishing" class="outline-3">
+<h3 id="publishing">Building and publishing</h3>
+<div class="outline-text-3" id="text-publishing">
+</div>
+<div id="outline-container-publish-website" class="outline-4">
+<h4 id="publish-website">publish-website.el</h4>
+<div class="outline-text-4" id="text-publish-website">
+<p>
+It was hyped for long enough, here is the <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/publish-website.el">publish-website.el</a> file. This file
+defines common settings and build instructions for the project. We feed them
+into <i>org-publish</i> which will take care of producing the corresponding website.
+By default, <i>org-publish</i> uses a <b>.cache/</b> directory and won't rebuild files
+unless they have been modified.
+</p>
+
+<p>
+The file is pretty simple and self-explanatory. I mostly added the following
+functions to generate a "preview" for each post, which will be visible in the
+<a href="./index.html">list of all posts</a>, as well as include a formatted timestamp of when the post was
+first added. A custom macro is used to format the timestamp. The content of the
+"preview" is written in between the custom <code>#+begin_preview</code> and <code>#+end_preview</code>
+tags.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-preview</span> (file)
+  <span class="org-doc">"The comments (begin/end_preview) in FILE have to be on their own lines,</span>
+<span class="org-doc">   preferably before and after paragraphs."</span>
+  (<span class="org-keyword">with-temp-buffer</span>
+    (message file)
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (<span class="org-keyword">let</span> ((beg (+ 1 (re-search-forward <span class="org-string">"^#\\+begin_preview$"</span>)))
+          (end (<span class="org-keyword">progn</span> (re-search-forward <span class="org-string">"^#\\+end_preview$"</span>)
+                      (match-beginning 0))))
+      (replace-regexp-in-string <span class="org-string">"\n"</span> <span class="org-string">" "</span> (buffer-substring beg end)))))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post</span> (entry style project)
+  <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' in org-publish '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">' sitemap to include a timestamp."</span>
+  (<span class="org-keyword">let</span> ((entry-title (org-publish-find-title entry project)))
+    (<span class="org-keyword">if</span> (= (length entry-title) 0)
+        (format <span class="org-string">"*%s*"</span> entry)
+      (format <span class="org-string">"{{{timestamp(%s)}}}: [[file:%s][%s]]"</span>
+              (format-time-string <span class="org-string">"%Y-%m-%d"</span> (org-publish-find-date entry project))
+              entry
+              entry-title))))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post-with-description</span> (entry style project)
+  <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' in org-publish '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">' sitemap to include a timestamp</span>
+<span class="org-doc">   and description ('</span><span class="org-doc"><span class="org-constant">begin/end_preview</span></span><span class="org-doc">' tag)."</span>
+  (<span class="org-keyword">let</span> ((entry-title (org-publish-find-title entry project))
+        (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) <span class="org-string">"src/posts/"</span> entry)))) <span class="org-comment-delimiter">;; </span><span class="org-comment">dirty</span>
+    (<span class="org-keyword">if</span> (= (length entry-title) 0)
+        (format <span class="org-string">"*%s*"</span> entry)
+      (format <span class="org-string">"{{{timestamp(%s)}}}: [[file:%s][%s]]\n</span>
+<span class="org-string">%s"</span>
+              (format-time-string <span class="org-string">"%Y-%m-%d"</span> (org-publish-find-date entry project))
+              entry
+              entry-title
+              preview))))
+
+
+(<span class="org-keyword">setq</span> org-export-global-macros
+      '((<span class="org-string">"timestamp"</span> . <span class="org-string">"@@html:&lt;span class=\"timestamp\"&gt;$1&lt;/span&gt;@@"</span>)))
+</pre>
+</div>
+
+<p>
+The corresponding publishing rules then look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts</span>
+(<span class="org-string">"website-posts-index"</span>
+ <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
+ <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
+ <span class="org-builtin">:publishing-directory</span> ,(concat skw-blog/outdir <span class="org-string">"posts"</span>)
+ <span class="org-builtin">:exclude</span> <span class="org-string">"rss.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index-no-description.org"</span>
+
+ <span class="org-builtin">:auto-sitemap</span> t
+ <span class="org-builtin">:sitemap-title</span> <span class="org-string">"Posts"</span>
+ <span class="org-builtin">:sitemap-filename</span> <span class="org-string">"index-no-description.org"</span>
+ <span class="org-builtin">:sitemap-format-entry</span> skw-blog/org-format-blog-post
+ <span class="org-builtin">:sitemap-sort-files</span> anti-chronologically
+
+ <span class="org-builtin">:html-preamble</span> ,skw-blog/header
+ <span class="org-builtin">:html-postamble</span> ,skw-blog/footer
+ <span class="org-builtin">:html-head</span> ,(concat skw-blog/main-css skw-blog/favicon))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts with description</span>
+(<span class="org-string">"website-posts-index-description"</span>
+ <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
+ <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
+ <span class="org-builtin">:publishing-directory</span> ,(concat skw-blog/outdir <span class="org-string">"posts"</span>)
+ <span class="org-builtin">:exclude</span> <span class="org-string">"rss.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index-no-description.org"</span>
+
+ <span class="org-builtin">:auto-sitemap</span> t
+ <span class="org-builtin">:sitemap-title</span> <span class="org-string">"Posts"</span>
+ <span class="org-builtin">:sitemap-filename</span> <span class="org-string">"index.org"</span>
+ <span class="org-builtin">:sitemap-format-entry</span> skw-blog/org-format-blog-post-with-description
+ <span class="org-builtin">:sitemap-sort-files</span> anti-chronologically
+
+ <span class="org-builtin">:html-preamble</span> ,skw-blog/header
+ <span class="org-builtin">:html-postamble</span> ,skw-blog/footer
+ <span class="org-builtin">:html-head</span> ,(concat skw-blog/main-css skw-blog/favicon))
+</pre>
+</div>
+
+<p>
+The generated <code>src/posts/index-no-description.org</code> is alike to a sitemap and is
+inserted in the homepage with:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org"><span class="org-org-meta-line">#+INCLUDE: "./posts/index-no-description.org" :lines "3-6"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-makefile" class="outline-4">
+<h4 id="makefile">Makefile</h4>
+<div class="outline-text-4" id="text-makefile">
+<p>
+Let's use <b>make</b> to avoid to build and manage the website by hand. There is no
+real need to configure dependencies for the <i>make</i> rules, as <i>org-publish</i> will
+check the content of <b>.cache/</b> to see which files need to be updated. Here is
+what an example <b>Makefile</b> can look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span class="org-variable-name">OUT_DIR</span>=<span class="org-string">'www'</span>
+<span class="org-variable-name">PUBLISH_FILE</span>=<span class="org-string">'publish-website.el'</span>
+<span class="org-variable-name">PUBLISH_FUNC</span>=<span class="org-string">'(org-publish "website")'</span>
+<span class="org-variable-name">WS_CMD</span>=<span class="org-string">'python -m http.server 12345 --bind localhost --directory $(</span><span class="org-string"><span class="org-variable-name">OUT_DIR</span></span><span class="org-string">)'</span>
+
+<span class="org-makefile-targets">all</span>:
+    emacs -Q --batch --load $(<span class="org-variable-name">PUBLISH_FILE</span>) --eval $(<span class="org-variable-name">PUBLISH_FUNC</span>)
+
+<span class="org-makefile-targets">publish</span>:
+    git commit
+    git push -u origin main
+
+<span class="org-makefile-targets">update</span>:
+    make all
+    make mathjax
+    git add .
+    git status
+
+<span class="org-makefile-targets">run</span>:
+    $(<span class="org-variable-name">WS_CMD</span>)
+
+<span class="org-makefile-targets">.PHONY</span>: all publish update run
+</pre>
+</div>
+
+<p>
+Whenever I want to work on a new item, like adding a new file or editing an
+existing one, I switch to a new local branch. I then simply run <code>make</code>
+periodically while editing to visualize my changes. When I am done I merge the
+branch into my local main branch and run <code>make update</code> to verify what will be
+committed and then <code>make publish</code> to push the changes on the remote repository.
+Cherry on top, <code>make run</code> spawns a python web-server to view the website locally
+at <a href="http://localhost:12345">http://localhost:12345</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-more" class="outline-2">
+<h2 id="more">A few more functionalities</h2>
+<div class="outline-text-2" id="text-more">
+</div>
+<div id="outline-container-mathjax" class="outline-3">
+<h3 id="mathjax">MathJax</h3>
+<div class="outline-text-3" id="text-mathjax">
+<p>
+<a href="https://www.mathjax.org/">MathJax</a>' <a href="https://orgmode.org/manual/Math-formatting-in-HTML-export.html">Org mode support</a> lets me export math formulas written in Latex to HTML.
+Here are a couple of examples using inline code blocks and "proper" Latex syntax.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
+\[ a=-\sqrt{2} \]
+
+Look at this:
+
+\begin{equation}
+y = x^2+1
+\end{equation}
+</pre>
+</div>
+
+<p>
+Which will be rendered like this:
+</p>
+
+<p>
+If \(a^2=b\) and \( b=2 \), then the solution must be either \[ a=+\sqrt{2} \] or
+\[ a=-\sqrt{2} \]
+</p>
+
+<p>
+Look at this:
+</p>
+
+\begin{equation}
+y = x^2+1
+\end{equation}
+
+<p>
+I install and update regularly MathJax via the Makefile and then enable it in
+<b>publish-website.el</b> via the <code>org-html-mathjax-options</code> variable. Since I want
+to be able to view the website offline, I opted for a local install.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span class="org-makefile-targets">mathjax</span>:
+    rm -rf files/js/mathjax
+    <span class="org-makefile-targets">git clone https</span>://github.com/mathjax/MathJax.git files/js/mathjax
+    rm -rf files/js/mathjax/.git
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">setq</span> org-html-mathjax-options
+      '((path <span class="org-string">"/files/js/mathjax/es5/tex-mml-chtml.js"</span>)
+        (scale 1.0) (align <span class="org-string">"center"</span>) (font <span class="org-string">"mathjax-modern"</span>) (overflow <span class="org-string">"overflow"</span>)
+        (tags <span class="org-string">"ams"</span>) (indent <span class="org-string">"0em"</span>) (multlinewidth <span class="org-string">"85%"</span>) (tagindent <span class="org-string">".8em"</span>)
+        (tagside <span class="org-string">"right"</span>)))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-resources" class="outline-3">
+<h3 id="resources">RSS feed</h3>
+<div class="outline-text-3" id="text-resources">
+<p>
+Generating a RSS to track when new posts are published is actually not that
+complicated with <a href="https://github.com/emacsmirror/ox-rss">ox-rss</a>. Here are a couple of helper functions to generate a
+"sitemap" file named <b>rss.org</b> which will list all the entries under
+<b>src/posts/</b> excluding the previously generated indexes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/publish-posts-rss-feed</span> (plist filename dir)
+  <span class="org-doc">"Publish '</span><span class="org-doc"><span class="org-constant">plist</span></span><span class="org-doc">' when '</span><span class="org-doc"><span class="org-constant">filename</span></span><span class="org-doc">' corresponds to RSS feed Org-file to '</span><span class="org-doc"><span class="org-constant">dir</span></span><span class="org-doc">'."</span>
+  (<span class="org-keyword">if</span> (equal skw-blog/rss-filename (file-name-nondirectory filename))
+      (org-rss-publish-to-rss plist filename dir)))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/posts-rss-feed</span> (title list)
+  <span class="org-doc">"Generate a sitemap of posts that will be exported as a RSS feed. '</span><span class="org-doc"><span class="org-constant">title</span></span><span class="org-doc">' is</span>
+<span class="org-doc">title of the RSS feed and '</span><span class="org-doc"><span class="org-constant">list</span></span><span class="org-doc">' the files to be included."</span>
+  (concat <span class="org-string">"#+TITLE: "</span> title <span class="org-string">"\n\n"</span> (org-list-to-subtree list)))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/format-posts-rss-feed-entry</span> (entry style project)
+  <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' for the posts RSS feed in given '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">'."</span>
+  (<span class="org-keyword">let*</span> ((title (org-publish-find-title entry project))
+         (link (concat (file-name-sans-extension entry) <span class="org-string">".html"</span>))
+         (pubdate (format-time-string (car org-time-stamp-formats)
+                                      (org-publish-find-date entry project))))
+
+    (format <span class="org-string">"%s</span>
+<span class="org-string">:properties:</span>
+<span class="org-string">:rss_permalink: %s</span>
+<span class="org-string">:pubdate: %s</span>
+<span class="org-string">:end:"</span> title link pubdate)))
+</pre>
+</div>
+
+<p>
+These functions are then called inside a new publishing rule.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-string">"website-posts-rss"</span>
+ <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
+ <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
+ <span class="org-builtin">:publishing-directory</span> ,skw-blog/outdir
+ <span class="org-builtin">:exclude</span> <span class="org-string">"rss.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index.org</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">index-no-description.org"</span>
+ <span class="org-builtin">:publishing-function</span> skw-blog/publish-posts-rss-feed
+ <span class="org-builtin">:rss-extension</span> <span class="org-string">"xml"</span>
+
+ <span class="org-builtin">:rss-image-url</span> ,(concat skw-blog/upstream-url <span class="org-string">"/files/img/profile.jpg"</span>)
+ <span class="org-builtin">:html-link-home</span> ,(concat skw-blog/upstream-url <span class="org-string">"/posts/"</span>)
+ <span class="org-builtin">:html-link-use-abs-url</span> t
+ <span class="org-builtin">:html-link-org-files-as-html</span> t
+
+ <span class="org-builtin">:author</span> ,skw-blog/author
+ <span class="org-builtin">:with-author</span> t
+ <span class="org-builtin">:email</span> ,skw-blog/email
+ <span class="org-builtin">:description</span> ,skw-blog/rss-channel-description
+
+ <span class="org-builtin">:auto-sitemap</span> t
+ <span class="org-builtin">:sitemap-function</span> skw-blog/posts-rss-feed
+ <span class="org-builtin">:sitemap-title</span> ,skw-blog/rss-feedname
+ <span class="org-builtin">:sitemap-filename</span> ,skw-blog/rss-filename
+ <span class="org-builtin">:sitemap-style</span> list
+ <span class="org-builtin">:sitemap-sort-files</span> anti-chronologically
+ <span class="org-builtin">:sitemap-format-entry</span> skw-blog/format-posts-rss-feed-entry)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-resources" class="outline-2">
+<h2 id="resources">Resources</h2>
+<div class="outline-text-2" id="text-resources">
+<p>
+This publishing setup is quite rudimentary. I wrote this note mostly for self
+reference in case I have to implement a similar project in the future. However,
+I still hope it can help hesitating people to give a try to <i>org-publish</i> and
+see if it fits their needs. Maybe existing users could also get a tip or two out
+of this.
+</p>
+
+<p>
+I would encourage anyone fiddling with this to have the official documentation
+right at hand:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://orgmode.org/">Org</a></li>
+<li><a href="https://orgmode.org/manual/Publishing.html">Org-publish</a></li>
+<li><a href="https://orgmode.org/worg/">Worg</a></li>
+</ul>
+
+<p>
+Here are websites that inspired me for this adventure. I highly recommend that
+you check them out as well as their publishing workflow:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.taingram.org/blog/org-mode-blog.html">Building a Emacs Org-Mode Blog</a> by <a href="https://www.taingram.org/">Thomas Ingram</a> showcases a simple yet
+effective setup.</li>
+<li><a href="https://ogbe.net/blog/blogging_with_org.html">Blogging using org-mode (and nothing else)</a> by <a href="https://ogbe.net/">Dennis Ogbe</a> is a really neat
+explanations and setup with Org-file pre-processing before publishing.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    Last update: 25 May 2025 - <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

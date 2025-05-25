@@ -1,0 +1,20 @@
+#+TITLE: Welcome to my little patch of internet!
+
+This blog is intended to host my personal content. I write about topics that I
+enjoy or that I curse, which might or might not be related to information
+security, programming, /crêpes au sucre/ and UNIX-based systems. You get the
+idea... Oh and, disclaimer, I can also be pretty offensive.
+
+If I occasionally write something for a punctual, one-of topic, it will be
+published as a [[./posts/][blog post]]. The [[./notes/][notes]] section points toward more lengthy content
+where you will mostly find CTF write-ups for the moment. Resources that were
+particularly useful and interesting to me are kept in the [[./links.org][links]] section.
+
+With this out of the way, I wish you happy reading!
+
+* Latest posts
+
+#+INCLUDE: "./posts/index-no-description.org" :lines "3-6"
+
+A list of all blog posts is available [[file:./posts/index.org][here]]. The elderly are welcome to use the
+[[./rss.xml][RSS feed]].

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-05-25 Sun 16:42 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ArchLinux installation</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">ArchLinux installation</h1>
+<p>
+Below are some quickly-written notes on installing ArchLinux for a standard
+workstation (desktop, laptop or VM). The setup is quite simple: GRUB will boot a
+single system partition encrypted with LUKS which hosts LVM volumes for more
+flexibility.
+</p>
+
+<p>
+<b>Disclaimer</b>: This content is intended for my own personal documentation, I
+cannot guarantee that it is working out-of-the-box or will be maintained
+up-to-date. If you are curious about the installation process or looking for
+troubleshooting tips, I highly recommend that you start by visiting the
+excellent <a href="https://wiki.archlinux.org/">ArchWiki</a>, in particular the <a href="https://wiki.archlinux.org/title/Installation_guide">Installation guide</a> and <a href="https://wiki.archlinux.org/title/General_recommendations">General
+recommendations</a> pages. Everything here is taken from the amazing wiki anyway ;)
+</p>
+
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#media">Installation media</a></li>
+<li><a href="#comfy">Getting comfortable</a></li>
+<li><a href="#partition">Disk partition</a></li>
+<li><a href="#diving">Diving in!</a></li>
+<li><a href="#final">Final words</a></li>
+</ul>
+</div>
+<div id="outline-container-media" class="outline-2">
+<h2 id="media">Installation media</h2>
+<div class="outline-text-2" id="text-media">
+<p>
+I tend to simply write the latest installation image on a USB drive (here
+<code>/dev/sdb</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">curl -s -o - http://mir.archlinux.fr/iso/$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)/archlinux-$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)-x86_64.iso <span class="org-sh-escaped-newline">\</span>
+    | sudo dd <span class="org-variable-name">of</span>=/dev/sdb <span class="org-variable-name">bs</span>=4M <span class="org-variable-name">status</span>=progress
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-comfy" class="outline-2">
+<h2 id="comfy">Getting comfortable</h2>
+<div class="outline-text-2" id="text-comfy">
+<p>
+After booting onto the installation media, I ensure that the right keymap is
+set and that there is a proper network connection. For LAN it should work
+out-of-the-box and I use <a href="https://wiki.archlinux.org/title/Iwd">iwd</a> with <a href="https://wiki.archlinux.org/title/NetworkManager">NetworkManager</a> for WLAN connections lol.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Set keymap</span>
+loadkeys fr-latin9
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Configure network, here wireless with iwd</span>
+iwctl
+[iwd]
+[iwd] station wlan0 get-networks
+[iwd] station wlan0 connect &lt;ssid&gt;
+[iwd] exit
+ping -c3 archlinux.org
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Time over the network with ntp</span>
+timedatectl set-ntp true
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-partition" class="outline-2">
+<h2 id="partition">Disk partition</h2>
+<div class="outline-text-2" id="text-partition">
+<p>
+Now we are ready for disk partitioning. The scheme I use for a desktop or
+laptop is quite simple (replace the names of the disks when appropriate).
+Replace <code>/dev/sda</code> by your actual device (<code>/dev/nvme0n1</code> for example).
+</p>
+
+<ul class="org-ul">
+<li><b>sda1</b> (256M) is the un-encrypted <code>/boot</code> partition.</li>
+<li><p>
+<b>sda2</b> is passphrase-encrypted with LUKS. It will host 3 LVM logical
+volumes:
+</p>
+<ul class="org-ul">
+<li><code>/</code> (usually something like 30-50G, depending on usage) the filesystem's
+root for our installation.</li>
+<li><code>/home</code> (rest of disk space) on a separate volume in case things get south.</li>
+<li><code>swap</code> (a few Gigabytes) for swapping purposes (duh!).</li>
+</ul>
+
+<p>
+We will boot bare-metal installations over UEFI because we are modern people.
+I am perfectly fine with having <b>sda1</b> un-encrypted and the whole system data
+on <b>sda2</b> encrypted with a single passphrase. The use of LVM gives the
+flexibility to create or resize partitions / logical volumes later if needed.
+</p>
+
+<p>
+The wiki pages <a href="https://wiki.archlinux.org/title/EFI_system_partition">EFI system partition</a> and <a href="https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS">Encrypting an entire system</a> (section
+"LVM on LUKS") cover the required steps. The usual <b>warning message</b> applies:
+note that from here on data will be actually written to the given disks. Make
+sure to triple-check that everything is in order before executing a command or
+you might regret it!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Partition the disk</span>
+fdisk -l
+fdisk /dev/sda <span class="org-comment-delimiter"># </span><span class="org-comment">fdisk /dev/nvme0n1</span>
+<span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make EFI partition sda1: +256M - type "EFI System"</span>
+<span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make System partition sda2: type "Linux filesystem"</span>
+<span class="org-function-name">Command</span> (m for help): w <span class="org-comment-delimiter"># </span><span class="org-comment">Write changes to disk</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Format sda1 for EFI</span>
+mkfs.fat -F32 /dev/sda1
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">LuksFormat sda2</span>
+cryptsetup luksFormat /dev/sda2
+cryptsetup open /dev/sda2 cryptlvm
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setup LVM logical volumes</span>
+pvcreate /dev/mapper/cryptlvm
+vgcreate MyVolGroup /dev/mapper/cryptlvm
+lvcreate -L 8G MyVolGroup -n swap
+lvcreate -L 50G MyVolGroup -n root
+lvcreate -l 100%FREE MyVolGroup -n home
+
+mkfs.ext4 /dev/MyVolGroup/root
+mkfs.ext4 /dev/MyVolGroup/home
+mkswap /dev/MyVolGroup/swap
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Mount everything</span>
+mount /dev/MyVolGroup/root /mnt
+mkdir /mnt/{home,boot}
+mount /dev/MyVolGroup/home /mnt/home
+mount /dev/sda1 /mnt/boot
+swapon /dev/MyVolGroup/swap
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-diving" class="outline-2">
+<h2 id="diving">Diving in!</h2>
+<div class="outline-text-2" id="text-diving">
+<p>
+Let's install the packages that will be needed for a minimal functional base
+installation. We include the necessary networking (here networkmanager with
+wpa_supplicant backend) and boot management packages as well as additional
+drivers and throw in a convenient text editor for good measure. The rest can
+always be installed later on if needed (note to self: thanks to networking
+packages, do not forget!).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages</span>
+pacstrap /mnt base linux linux-firmware <span class="org-sh-escaped-newline">\</span>
+         sudo nano lvm2 <span class="org-sh-escaped-newline">\</span>
+         networkmanager wpa_supplicant dhcpcd <span class="org-sh-escaped-newline">\</span>
+         grub efibootmgr intel-ucode
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Update the new fstab</span>
+genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
+</pre>
+</div>
+
+<p>
+We can finally <code>chroot</code> into the new installation and start configuring it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Switch to the new installation</span>
+arch-chroot /mnt
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Set time info</span>
+ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+hwclock --systohc
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Edit locale, vconsole and hostname</span>
+sed -i <span class="org-string">'s/#en_US.UTF-8/en_US.UTF-8/g'</span> /etc/locale.gen &amp;&amp; locale-gen
+<span class="org-builtin">echo</span> <span class="org-string">'LANG=en_US.UTF-8'</span> &gt; /etc/locale.conf
+<span class="org-builtin">echo</span> <span class="org-string">'KEYMAP=fr-latin9'</span> &gt; /etc/vconsole.conf
+<span class="org-builtin">echo</span> <span class="org-string">'foobaz'</span> &gt; /etc/hostname
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Change root password</span>
+passwd
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Add hooks for system encryption and lvm (keymap encrypt lvm2)</span>
+nano /etc/mkinitcpio.conf
+mkinitcpio -P
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setup the GRUB bootloader</span>
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+lsblk -f <span class="org-comment-delimiter"># </span><span class="org-comment">take note of sda2's UUID</span>
+nano /boot/grub/grub.cfg <span class="org-comment-delimiter"># </span><span class="org-comment">add sda2's cryptdevice=UUID=&lt;UUID&gt;:cryptlvm</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Exit and reboot</span>
+<span class="org-keyword">exit</span>
+umount -R /mnt
+reboot
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-final" class="outline-2">
+<h2 id="final">Final words</h2>
+<div class="outline-text-2" id="text-final">
+<p>
+The first thing I do after rebooting is setting up an un-priviledge user
+account that will be used for administrative tasks. It will be added to the
+<b>wheel</b> user group which will be able to execute command as <b>root</b> via <code>sudo</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">useradd -m -G wheel skywhi
+passwd skywhi
+visudo
+<span class="org-comment-delimiter"># </span><span class="org-comment">uncomment line 82 for example: wheel users can run any command with password</span>
+</pre>
+</div>
+
+<p>
+Installing <a href="https://github.com/Jguer/yay">yay</a> is never a bad idea if you wish to install package from <a href="https://aur.archlinux.org/">AUR</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">sudo pacman -Syu base-devel
+<span class="org-builtin">cd</span> ~ &amp;&amp; git clone https://aur.archlinux.org/yay.git &amp;&amp; <span class="org-builtin">cd</span> yay
+makepkg -sirc
+<span class="org-builtin">cd</span> ~ &amp;&amp; rm -rf yay
+</pre>
+</div>
+
+<p>
+Here we are! We now enjoy a fully functional ArchLinux workstation with full
+disk encryption and basic networking capabilities. From here on we should
+check the <a href="https://wiki.archlinux.org/title/General_recommendations">General recommendations</a> to complete the setup of users, services,
+system management and so forth.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    Last update: 25 May 2025 - <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

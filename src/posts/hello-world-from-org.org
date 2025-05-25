@@ -1,0 +1,496 @@
+#+TITLE: Hello World from Org
+#+DATE: [2025-05-25 Sun]
+#+INCLUDE: ../../templates/post.org
+
+
+#+begin_preview
+I describe yet-another-simple-publishing-setup for a static website using
+Emacs's [[https://orgmode.org/][Org mode]].
+#+end_preview
+
+#+begin_src sh
+skywhi@dreamland:~/blog$ echo "Hello World Wild Web!" > posts/hello.org
+skywhi@dreamland:~/blog$ make update && make publish
+skywhi@dreamland:~/blog$ # make blogging great again!
+#+end_src
+
+#+TOC: headlines 3
+
+* Rationale
+:PROPERTIES:
+:CUSTOM_ID: rationale
+:END:
+
+I figured it was finally the time to host some of my content online for sharing,
+fun, persistence, easy access and all the other usual suspects. Going into this
+adventure there were only a few requirements that I wanted my website to meet:
+
+- Content should be written in my favorite [[https://www.gnu.org/software/emacs/][text editor]] with [[https://orgmode.org/][Org mode]].
+- No need for any back-end or front-end logic: serving a static website without
+  any fancy HTML/CSS/JS shenanigans will be more than fine.
+- The website should be standalone so that it can be viewed offline as well.
+- Convenient hosting: hustling with administrating a web-server for such a small
+  project would not make any sense to me.
+
+Let me explain. I have been using Emacs and Org mode for several years now. Its
+markup language really fits my needs and the files integrate well with the
+agenda and other nifty features Org mode has to offer. The ability to hack its
+behavior directly in elisp is also a great plus to me. This is why I searched
+for options that would allow me to use my Org content without too much trouble.
+
+When it comes to this website, I want to be able to turn what I am currently
+working on into publishable content without having to spend extra time on
+re-formatting my writing completely. It was thus pretty obvious that I would
+give a try to the built-in [[https://orgmode.org/manual/Publishing.html][org-publish]] package for Emacs as it is exactly what I
+am looking for: automated and configurable exporting of Org projects to simple
+HTML files. There a few other projects which turn a collection of Org files into
+a website, such as [[https://github.com/bastibe/org-static-blog][org-static-blog]], but I figured I would like to have maximal
+control over the toolchain and keep external dependencies as low as possible.
+
+Using git versioning gives me the opportunity to track and manage changes over
+time. Since we are dealing with a static website with exclusively public data,
+[[https://github.io][github.io]] will handle the hosting for me. Whenever I work on a new item, I can
+pull the remote github repository, create a local branch and start editing. When
+the content is ready for publishing, the branch is merged into main, pushed to
+the remote github repository and /voilà/!
+
+* Project layout
+:PROPERTIES:
+:CUSTOM_ID: project-layout
+:END:
+
+I ended up with something like the following directory structure for this
+project. The github repository containing all the source files can be found
+[[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
+
+#+begin_example
+- ~/org/blog/
+  - .cache/
+  - files/
+    - css/
+    - fonts/
+    - img/
+  - src/
+    - index.org
+    - about.org
+    - posts/
+      - hello.org
+      - super-dupa-post.org
+  - templates/
+    - header.html
+    - footer.html
+    - post.org
+    - readthedocs.org
+  - Makefile
+  - publish-website.el
+  - README.org
+#+end_example
+
+*src/* contains the standalone Org files that will be published to HTML. They
+are declaring as few exporting options as possible so that they can easily be
+used in other contexts or projects. Global exporting options will be defined in
+*publish-website.el* and page specific options provided via Org template files.
+The *files/* and *templates/* directories host assets such as stylesheets,
+fonts, images, etc. that are specific to the HTML export.
+
+The logic behind publishing is implemented in *publish-website.el* which is then
+called by a *Makefile* for convenience. It defines all the directories, files
+and exporting options to be fed into /org-publish/. I could have written
+*publish-website.el* in literate programming style and use it as source for this
+blog post, but that would have been a little bit too meta, even for me :)
+
+The *.cache/* directory is created by /org-publish/. It is kept in version
+control so that I can track when files were last updated and reflect it in the
+HTML. Finally, *README.org* is just a symbolic link to *src/about.org*, because
+I can.
+
+* To the first page!
+:PROPERTIES:
+:CUSTOM_ID: first-page
+:END:
+*** Source files
+:PROPERTIES:
+:CUSTOM_ID: source-files
+:END:
+
+Global exporting options are defined in *publish-website.el* which can be
+overridden by the definitions in the single Org files. When several Org files
+share the same defaults, it can make sense to define them in an Org template
+file and use the =#+SETUPFILE: ../templates/mytemplate.org= directive in the
+relevant source files. =#+INCLUDE: <path/to/file.org>= can also be used, its
+content will then plainly be inserted in the source file before processing.
+
+This is for example the beginning of this post. I set the title, the date, I
+include a template and insert a preview. More on all this a little bit later.
+
+#+begin_src org
+,#+TITLE: Hello World from Org
+,#+DATE: [2025-05-25 Sun]
+,#+INCLUDE: ../../templates/post.org
+
+,#+begin_preview
+I describe yet-another-simple-publishing-setup for a static website using
+Emacs's [[https://orgmode.org/][Org mode]].
+,#+end_preview
+
+,#+begin_src sh
+skywhi@dreamland:~/blog$ echo "Hello World Wild Web!" > posts/hello.org
+skywhi@dreamland:~/blog$ make update && make publish
+skywhi@dreamland:~/blog$ # make blogging great again!
+,#+end_src
+
+,#+TOC: headlines 3
+
+,* Rationale
+:PROPERTIES:
+:CUSTOM_ID: rationale
+:END:
+
+I figured it was finally the time to host some of my content online for sharing,
+fun, persistence, easy access and all the other usual suspects. Going into this
+adventure there were only a few requirements that I wanted my website to meet:
+[...]
+#+end_src
+
+Appending a =CUSTOM_ID= property to headlines makes it possible to link to the
+specific headline in the table of contents and HTML.
+
+*** Templates
+:PROPERTIES:
+:CUSTOM_ID: templates
+:END:
+
+For example, the template under *templates/post.org* looks like this:
+
+#+begin_src org
+@@html:<div class="post-date">@@
+/First published: {{{date(%d %b %Y)}}}/
+@@html:</div>@@
+#+end_src
+
+The /date/ tag of the post will be extracted and added to the HTML during
+publishing.
+
+Here is a template for the [[https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg][ReadTheOrg]] theme by [[https://github.com/fniessen][Fabrice Niessen]] that inserts HTML
+into any page published with it:
+
+#+begin_src org
+,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/>
+,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/>
+,#+HTML_HEAD_EXTRA:
+,#+OPTIONS: html-preamble:nil
+,#+OPTIONS: html-postamble:nil
+#+end_src
+
+*** CSS styling
+:PROPERTIES:
+:CUSTOM_ID: css
+:END:
+
+The two files that are used are *files/css/style.css* and
+*files/css/htmlize.css*. In *style.css* are all the base styles for the pages
+defined. Since I am aiming for a small and flexible website I decided to write
+my own CSS manually (and I suck at it tbh). People who don't want to enjoy the
+same +painful+ wonderful experience should try to look for pre-existing
+stylesheets and exporting options. *htmlize.css* is used to pretty source code
+blocks.
+
+*** Building and publishing
+:PROPERTIES:
+:CUSTOM_ID: publishing
+:END:
+***** publish-website.el
+:PROPERTIES:
+:CUSTOM_ID: publish-website
+:END:
+
+It was hyped for long enough, here is the [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/publish-website.el][publish-website.el]] file. This file
+defines common settings and build instructions for the project. We feed them
+into /org-publish/ which will take care of producing the corresponding website.
+By default, /org-publish/ uses a *.cache/* directory and won't rebuild files
+unless they have been modified.
+
+The file is pretty simple and self-explanatory. I mostly added the following
+functions to generate a "preview" for each post, which will be visible in the
+[[./index.org][list of all posts]], as well as include a formatted timestamp of when the post was
+first added. A custom macro is used to format the timestamp. The content of the
+"preview" is written in between the custom =#+begin_preview= and =#+end_preview=
+tags.
+
+#+begin_src elisp
+(defun skw-blog/get-preview (file)
+  "The comments (begin/end_preview) in FILE have to be on their own lines,
+   preferably before and after paragraphs."
+  (with-temp-buffer
+    (message file)
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (let ((beg (+ 1 (re-search-forward "^#\\+begin_preview$")))
+          (end (progn (re-search-forward "^#\\+end_preview$")
+                      (match-beginning 0))))
+      (replace-regexp-in-string "\n" " " (buffer-substring beg end)))))
+
+
+(defun skw-blog/org-format-blog-post (entry style project)
+  "Format 'entry' in org-publish 'project' sitemap to include a timestamp."
+  (let ((entry-title (org-publish-find-title entry project)))
+    (if (= (length entry-title) 0)
+        (format "*%s*" entry)
+      (format "{{{timestamp(%s)}}}: [[file:%s][%s]]"
+              (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
+              entry
+              entry-title))))
+
+
+(defun skw-blog/org-format-blog-post-with-description (entry style project)
+  "Format 'entry' in org-publish 'project' sitemap to include a timestamp
+   and description ('begin/end_preview' tag)."
+  (let ((entry-title (org-publish-find-title entry project))
+        (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry)))) ;; dirty
+    (if (= (length entry-title) 0)
+        (format "*%s*" entry)
+      (format "{{{timestamp(%s)}}}: [[file:%s][%s]]\n
+%s"
+              (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
+              entry
+              entry-title
+              preview))))
+
+
+(setq org-export-global-macros
+      '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")))
+#+end_src
+
+The corresponding publishing rules then look like this:
+
+#+begin_src elisp
+;; Index of all blog posts
+("website-posts-index"
+ :base-directory ,(concat skw-blog/srcdir "posts")
+ :base-extension "org"
+ :publishing-directory ,(concat skw-blog/outdir "posts")
+ :exclude "rss.org\\|index.org\\|index-no-description.org"
+
+ :auto-sitemap t
+ :sitemap-title "Posts"
+ :sitemap-filename "index-no-description.org"
+ :sitemap-format-entry skw-blog/org-format-blog-post
+ :sitemap-sort-files anti-chronologically
+
+ :html-preamble ,skw-blog/header
+ :html-postamble ,skw-blog/footer
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+
+;; Index of all blog posts with description
+("website-posts-index-description"
+ :base-directory ,(concat skw-blog/srcdir "posts")
+ :base-extension "org"
+ :publishing-directory ,(concat skw-blog/outdir "posts")
+ :exclude "rss.org\\|index.org\\|index-no-description.org"
+
+ :auto-sitemap t
+ :sitemap-title "Posts"
+ :sitemap-filename "index.org"
+ :sitemap-format-entry skw-blog/org-format-blog-post-with-description
+ :sitemap-sort-files anti-chronologically
+
+ :html-preamble ,skw-blog/header
+ :html-postamble ,skw-blog/footer
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+#+end_src
+
+The generated =src/posts/index-no-description.org= is alike to a sitemap and is
+inserted in the homepage with:
+
+#+begin_src org
+,#+INCLUDE: "./posts/index-no-description.org" :lines "3-6"
+#+end_src
+
+***** Makefile
+:PROPERTIES:
+:CUSTOM_ID: makefile
+:END:
+
+Let's use *make* to avoid to build and manage the website by hand. There is no
+real need to configure dependencies for the /make/ rules, as /org-publish/ will
+check the content of *.cache/* to see which files need to be updated. Here is
+what an example *Makefile* can look like:
+
+#+begin_src makefile
+OUT_DIR='www'
+PUBLISH_FILE='publish-website.el'
+PUBLISH_FUNC='(org-publish "website")'
+WS_CMD='python -m http.server 12345 --bind localhost --directory $(OUT_DIR)'
+
+all:
+    emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
+
+publish:
+    git commit
+    git push -u origin main
+
+update:
+    make all
+    make mathjax
+    git add .
+    git status
+
+run:
+    $(WS_CMD)
+
+.PHONY: all publish update run
+#+end_src
+
+Whenever I want to work on a new item, like adding a new file or editing an
+existing one, I switch to a new local branch. I then simply run =make=
+periodically while editing to visualize my changes. When I am done I merge the
+branch into my local main branch and run =make update= to verify what will be
+committed and then =make publish= to push the changes on the remote repository.
+Cherry on top, =make run= spawns a python web-server to view the website locally
+at http://localhost:12345.
+
+* A few more functionalities
+:PROPERTIES:
+:CUSTOM_ID: more
+:END:
+*** MathJax
+:PROPERTIES:
+:CUSTOM_ID: mathjax
+:END:
+
+[[https://www.mathjax.org/][MathJax]]' [[https://orgmode.org/manual/Math-formatting-in-HTML-export.html][Org mode support]] lets me export math formulas written in Latex to HTML.
+Here are a couple of examples using inline code blocks and "proper" Latex syntax.
+
+#+begin_src org
+If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
+\[ a=-\sqrt{2} \]
+
+Look at this:
+
+\begin{equation}
+y = x^2+1
+\end{equation}
+#+end_src
+
+Which will be rendered like this:
+
+If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
+\[ a=-\sqrt{2} \]
+
+Look at this:
+
+\begin{equation}
+y = x^2+1
+\end{equation}
+
+I install and update regularly MathJax via the Makefile and then enable it in
+*publish-website.el* via the =org-html-mathjax-options= variable. Since I want
+to be able to view the website offline, I opted for a local install.
+
+#+begin_src makefile
+mathjax:
+    rm -rf files/js/mathjax
+    git clone https://github.com/mathjax/MathJax.git files/js/mathjax
+    rm -rf files/js/mathjax/.git
+#+end_src
+
+#+begin_src elisp
+(setq org-html-mathjax-options
+      '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
+        (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
+        (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
+        (tagside "right")))
+#+end_src
+
+*** RSS feed
+:PROPERTIES:
+:CUSTOM_ID: resources
+:END:
+
+Generating a RSS to track when new posts are published is actually not that
+complicated with [[https://github.com/emacsmirror/ox-rss][ox-rss]]. Here are a couple of helper functions to generate a
+"sitemap" file named *rss.org* which will list all the entries under
+*src/posts/* excluding the previously generated indexes.
+
+#+begin_src elisp
+(defun skw-blog/publish-posts-rss-feed (plist filename dir)
+  "Publish 'plist' when 'filename' corresponds to RSS feed Org-file to 'dir'."
+  (if (equal skw-blog/rss-filename (file-name-nondirectory filename))
+      (org-rss-publish-to-rss plist filename dir)))
+
+
+(defun skw-blog/posts-rss-feed (title list)
+  "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
+title of the RSS feed and 'list' the files to be included."
+  (concat "#+TITLE: " title "\n\n" (org-list-to-subtree list)))
+
+
+(defun skw-blog/format-posts-rss-feed-entry (entry style project)
+  "Format 'entry' for the posts RSS feed in given 'project'."
+  (let* ((title (org-publish-find-title entry project))
+         (link (concat (file-name-sans-extension entry) ".html"))
+         (pubdate (format-time-string (car org-time-stamp-formats)
+                                      (org-publish-find-date entry project))))
+
+    (format "%s
+:properties:
+:rss_permalink: %s
+:pubdate: %s
+:end:" title link pubdate)))
+#+end_src
+
+These functions are then called inside a new publishing rule.
+
+#+begin_src elisp
+("website-posts-rss"
+ :base-directory ,(concat skw-blog/srcdir "posts")
+ :base-extension "org"
+ :publishing-directory ,skw-blog/outdir
+ :exclude "rss.org\\|index.org\\|index-no-description.org"
+ :publishing-function skw-blog/publish-posts-rss-feed
+ :rss-extension "xml"
+
+ :rss-image-url ,(concat skw-blog/upstream-url "/files/img/profile.jpg")
+ :html-link-home ,(concat skw-blog/upstream-url "/posts/")
+ :html-link-use-abs-url t
+ :html-link-org-files-as-html t
+
+ :author ,skw-blog/author
+ :with-author t
+ :email ,skw-blog/email
+ :description ,skw-blog/rss-channel-description
+
+ :auto-sitemap t
+ :sitemap-function skw-blog/posts-rss-feed
+ :sitemap-title ,skw-blog/rss-feedname
+ :sitemap-filename ,skw-blog/rss-filename
+ :sitemap-style list
+ :sitemap-sort-files anti-chronologically
+ :sitemap-format-entry skw-blog/format-posts-rss-feed-entry)
+#+end_src
+
+* Resources
+:PROPERTIES:
+:CUSTOM_ID: resources
+:END:
+
+This publishing setup is quite rudimentary. I wrote this note mostly for self
+reference in case I have to implement a similar project in the future. However,
+I still hope it can help hesitating people to give a try to /org-publish/ and
+see if it fits their needs. Maybe existing users could also get a tip or two out
+of this.
+
+I would encourage anyone fiddling with this to have the official documentation
+right at hand:
+
+- [[https://orgmode.org/][Org]]
+- [[https://orgmode.org/manual/Publishing.html][Org-publish]]
+- [[https://orgmode.org/worg/][Worg]]
+
+Here are websites that inspired me for this adventure. I highly recommend that
+you check them out as well as their publishing workflow:
+
+- [[https://www.taingram.org/blog/org-mode-blog.html][Building a Emacs Org-Mode Blog]] by [[https://www.taingram.org/][Thomas Ingram]] showcases a simple yet
+  effective setup.
+- [[https://ogbe.net/blog/blogging_with_org.html][Blogging using org-mode (and nothing else)]] by [[https://ogbe.net/][Dennis Ogbe]] is a really neat
+  explanations and setup with Org-file pre-processing before publishing.

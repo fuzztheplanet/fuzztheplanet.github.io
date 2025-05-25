@@ -1,0 +1,18 @@
+#+TITLE: Binary Exploitation
+#+INCLUDE: ../../../templates/rtfsg.org
+
+* Tools
+
+  - Ghidra
+  - GDB
+    - GDB-GEF
+    - GDB-PEDA
+    - PWNGDB
+
+* Resources
+*** General resources
+*** Practice
+
+    - root-me
+    - hackthebox
+    - pwnable.kr

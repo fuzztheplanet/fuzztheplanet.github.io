@@ -1,0 +1,5 @@
+#+TITLE: Posts
+
+- {{{timestamp(2025-05-25)}}}: [[file:hello-world-from-org.org][Hello World from Org]]
+  
+  I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 

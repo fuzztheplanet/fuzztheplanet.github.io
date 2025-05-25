@@ -1,0 +1,49 @@
+#+TITLE: Windows Pentesting Tools
+
+Below are some tools that I like to have on a Windows machine for offensive
+security purposes. I try to do most of the tasks from a GNU/Linux host, but
+sometimes using Windows is just unavoidable. This serves as a personal checklist
+for whenever I need to setup a new Windows environment.
+
+#+TOC: headlines 2 local
+
+
+* Active Directory
+:PROPERTIES:
+:CUSTOM_ID: ad
+:END:
+
+- [[https://github.com/GhostPack/Rubeus][Rubeus]]
+- [[https://github.com/BloodHoundAD/SharpHound][SharpHound]]
+
+* Networking
+:PROPERTIES:
+:CUSTOM_ID: network
+:END:
+
+- [[https://www.wireshark.org/][Wireshark]]
+- [[https://nmap.org/zenmap/][Zenmap]]
+
+* PE / DLL
+:PROPERTIES:
+:CUSTOM_ID: pe
+:END:
+
+- [[https://github.com/dnSpy/dnSpy][dnSpy]]
+- [[https://www.jetbrains.com/decompiler/][dotPeek]]
+- [[http://www.pe-explorer.com/][PE Explorer]]
+
+* Microsoft
+:PROPERTIES:
+:CUSTOM_ID: microsoft
+:END:
+
+- [[https://learn.microsoft.com/en-us/sysinternals/][Sysinternals]] ([[https://learn.microsoft.com/en-us/sysinternals/downloads/][downloads]])
+
+* Misc
+:PROPERTIES:
+:CUSTOM_ID: misc
+:END:
+
+- [[https://www.mozilla.org/en-US/firefox/new/][Firefox]]
+- [[https://notepad-plus-plus.org/][Notepad++]]

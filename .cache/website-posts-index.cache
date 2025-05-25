@@ -1,0 +1,7 @@
+(setq org-publish-cache (make-hash-table :test 'equal :weakness nil :size 100))
+(puthash ":project:" "website-posts-index" org-publish-cache)
+(puthash ":cache-file:" "/home/mvi/org/blog/.cache/website-posts-index.cache" org-publish-cache)
+(puthash "/home/mvi/org/blog/src/posts/hello-world-from-org.org" '(:crossrefs nil) org-publish-cache)
+(puthash "X3800a70c7a3a592c907bea3b729c95635e5460d0" '(26675 9936 447000 70000) org-publish-cache)
+(puthash "/home/mvi/org/blog/src/posts/index-no-description.org" '(:crossrefs nil) org-publish-cache)
+(puthash "Xac2360c9a298e2b63db3b585c39613a0887366b9" '(26675 11392 3353 416000) org-publish-cache)
