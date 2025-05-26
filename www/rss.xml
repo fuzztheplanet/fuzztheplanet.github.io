@@ -9,20 +9,32 @@
      xmlns:georss="http://www.georss.org/georss"
      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
      xmlns:media="http://search.yahoo.com/mrss/"><channel>
-  <title>Skywhi's blog</title>
+  <title>Skywhi's Blog</title>
   <atom:link href="https://www.skywhi.net/posts/rss.xml" rel="self" type="application/rss+xml" />
   <link>https://www.skywhi.net/posts/</link>
-  <description><![CDATA[Fuzz all the things]]></description>
+  <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Sun, 25 May 2025 16:43:14 +0200</pubDate>
-  <lastBuildDate>Sun, 25 May 2025 16:43:14 +0200</lastBuildDate>
+  <pubDate>Mon, 26 May 2025 22:16:14 +0200</pubDate>
+  <lastBuildDate>Mon, 26 May 2025 22:16:14 +0200</lastBuildDate>
   <generator>Emacs 30.1 Org-mode 9.7.11</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
     <url>https://www.skywhi.net/files/img/profile.jpg</url>
-    <title>Skywhi's blog</title>
+    <title>Skywhi's Blog</title>
     <link>https://www.skywhi.net/posts/</link>
   </image>
 
+  <item>
+    <title>Hello World from Org</title>
+    <link>https://www.skywhi.net/posts/hello-world-from-org.html</link>
+    <author>skywhi@skywhi.net (Skywhi)</author>
+    <guid isPermaLink="false">https://www.skywhi.net/posts/hello-world-from-org.html</guid>
+    <pubDate>Sun, 25 May 2025 00:00:00 +0200</pubDate>
+
+    <description><![CDATA[<p>
+    I describe yet-another-simple-publishing-setup for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. 
+    </p>
+    ]]></description>
+  </item>
 </channel>
 </rss>

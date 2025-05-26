@@ -214,9 +214,8 @@ Tools:
 :PROPERTIES:
 :CUSTOM_ID: sys-emacs
 :END:
-***** Org-mode
 
-- [[http://ehneilsen.net/notebook/orgExamples/org-examples.html][Org-mode examples and cookbook]] by [[http://ehneilsen.net/][Eric Neilsen]].
+- [[https://www.masteringemacs.org/][Mastering Emacs]] and in particular its [[https://www.masteringemacs.org/reading-guide][Reading Guide]].
 
 *** Git
 :PROPERTIES:

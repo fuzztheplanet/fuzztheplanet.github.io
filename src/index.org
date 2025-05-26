@@ -7,14 +7,15 @@ idea... Oh and, disclaimer, I can also be pretty offensive.
 
 If I occasionally write something for a punctual, one-of topic, it will be
 published as a [[./posts/][blog post]]. The [[./notes/][notes]] section points toward more lengthy content
-where you will mostly find CTF write-ups for the moment. Resources that were
-particularly useful and interesting to me are kept in the [[./links.org][links]] section.
+that might get updated over time. Resources that were particularly useful and
+interesting to me are kept in the [[./links.org][links]] section. Information about this website
+and my contact details can be found in the [[./about.org][about]] page.
 
 With this out of the way, I wish you happy reading!
 
 * Latest posts
 
-#+INCLUDE: "./posts/index-no-description.org" :lines "3-6"
+#+INCLUDE: "./posts/index-no-preview.org" :lines "3-7"
 
 A list of all blog posts is available [[file:./posts/index.org][here]]. The elderly are welcome to use the
 [[./rss.xml][RSS feed]].

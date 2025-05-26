@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-05-25 Sun 16:43 -->
+<!-- 2025-05-26 Mon 22:16 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Reverse Engineering</title>
@@ -15,9 +15,9 @@
 <a href="/"><img src="/files/img/profile.jpg"/></a>
 <h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
 <nav>
-    <span class="nav-item">[<a href="/" title="Home">Home</a>]</span>
-    <span class="nav-item">[<a href="/posts" title="Posts">Posts</a>]</span>
-    <span class="nav-item">[<a href="/notes" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/index.html" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts/index.html" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes/index.html" title="Notes">Notes</a>]</span>
     <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
     <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
 </nav>
@@ -30,19 +30,19 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf6e2822">NRO</a></li>
+<li><a href="#org5665748">NRO</a></li>
 <li><a href="#wasm">WASM (Web Assembly)</a>
 <ul>
-<li><a href="#org11ef682">Docs and tools</a></li>
-<li><a href="#org7a9038d">Decompilation</a></li>
-<li><a href="#org8b267b9">Debugging</a></li>
+<li><a href="#org1b4241f">Docs and tools</a></li>
+<li><a href="#orgad66c03">Decompilation</a></li>
+<li><a href="#orgffb20ad">Debugging</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-orgf6e2822" class="outline-2">
-<h2 id="orgf6e2822">NRO</h2>
-<div class="outline-text-2" id="text-orgf6e2822">
+<div id="outline-container-org5665748" class="outline-2">
+<h2 id="org5665748">NRO</h2>
+<div class="outline-text-2" id="text-org5665748">
 <ul class="org-ul">
 <li><a href="https://github.com/dazjo/nxtool">nxtool</a> to parse file headers and transform the NRO files into ELF.</li>
 </ul>
@@ -52,9 +52,9 @@
 <h2 id="wasm">WASM (Web Assembly)</h2>
 <div class="outline-text-2" id="text-wasm">
 </div>
-<div id="outline-container-org11ef682" class="outline-3">
-<h3 id="org11ef682">Docs and tools</h3>
-<div class="outline-text-3" id="text-org11ef682">
+<div id="outline-container-org1b4241f" class="outline-3">
+<h3 id="org1b4241f">Docs and tools</h3>
+<div class="outline-text-3" id="text-org1b4241f">
 <p>
 First the mandatory references and tools:
 </p>
@@ -67,9 +67,9 @@ C and wat) and more.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7a9038d" class="outline-3">
-<h3 id="org7a9038d">Decompilation</h3>
-<div class="outline-text-3" id="text-org7a9038d">
+<div id="outline-container-orgad66c03" class="outline-3">
+<h3 id="orgad66c03">Decompilation</h3>
+<div class="outline-text-3" id="text-orgad66c03">
 <p>
 <a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> can produce some decompiled C source, but it is pretty unreadable.
 Static analysis can be made much easier by retrieving the <a href="https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h">wasm-rt.h</a> header
@@ -85,9 +85,9 @@ cc -c index.c index.o
 </div>
 </div>
 </div>
-<div id="outline-container-org8b267b9" class="outline-3">
-<h3 id="org8b267b9">Debugging</h3>
-<div class="outline-text-3" id="text-org8b267b9">
+<div id="outline-container-orgffb20ad" class="outline-3">
+<h3 id="orgffb20ad">Debugging</h3>
+<div class="outline-text-3" id="text-orgffb20ad">
 <p>
 If the application is running in the browser, you can use the JS console to
 access its internal variables. Look for: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory">wasmMemory</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table">wasmTable</a>.
@@ -107,7 +107,7 @@ access its internal variables. Look for: <a href="https://developer.mozilla.org/
 </div>
 <div id="postamble" class="status">
 <p>
-    Last update: 25 May 2025 - <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
 </p>
 </div>
 </body>

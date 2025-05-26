@@ -16,9 +16,12 @@ skywhi@dreamland:~/blog$ # make blogging great again!
 
 #+TOC: headlines 3
 
+
 * Rationale
 :PROPERTIES:
 :CUSTOM_ID: rationale
+:ID:       0923b17f-b133-4d7a-bafc-1af8d229c6e4
+:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
 I figured it was finally the time to host some of my content online for sharing,
@@ -57,6 +60,8 @@ the remote github repository and /voilà/!
 * Project layout
 :PROPERTIES:
 :CUSTOM_ID: project-layout
+:ID:       c16786f2-dc4f-467e-8b95-7798b2e988cb
+:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
 I ended up with something like the following directory structure for this
@@ -65,7 +70,6 @@ project. The github repository containing all the source files can be found
 
 #+begin_example
 - ~/org/blog/
-  - .cache/
   - files/
     - css/
     - fonts/
@@ -89,28 +93,30 @@ project. The github repository containing all the source files can be found
 *src/* contains the standalone Org files that will be published to HTML. They
 are declaring as few exporting options as possible so that they can easily be
 used in other contexts or projects. Global exporting options will be defined in
-*publish-website.el* and page specific options provided via Org template files.
-The *files/* and *templates/* directories host assets such as stylesheets,
-fonts, images, etc. that are specific to the HTML export.
+*publish-website.el* and page specific options provided via templates or
+directly in the files themselves. The *files/* and *templates/* directories host
+assets such as stylesheets, fonts, images, etc. that are specific to the HTML
+export.
 
-The logic behind publishing is implemented in *publish-website.el* which is then
-called by a *Makefile* for convenience. It defines all the directories, files
-and exporting options to be fed into /org-publish/. I could have written
+The logic behind publishing is implemented in *publish-website.el* which is
+then called by a *Makefile* for convenience. It defines all the directories,
+files and exporting options to be fed into /org-publish/. I could have written
 *publish-website.el* in literate programming style and use it as source for this
 blog post, but that would have been a little bit too meta, even for me :)
 
-The *.cache/* directory is created by /org-publish/. It is kept in version
-control so that I can track when files were last updated and reflect it in the
-HTML. Finally, *README.org* is just a symbolic link to *src/about.org*, because
-I can.
+Finally, *README.org* is just a symbolic link to *src/about.org*. Why? Because I
+can.
 
 * To the first page!
 :PROPERTIES:
 :CUSTOM_ID: first-page
+:ID:       fde32b21-b1df-40a1-a3a5-ae43fd5fd349
+:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 *** Source files
 :PROPERTIES:
 :CUSTOM_ID: source-files
+:ID:       92914880-048f-42c7-aa02-21c2998e11a4
 :END:
 
 Global exporting options are defined in *publish-website.el* which can be
@@ -158,9 +164,12 @@ specific headline in the table of contents and HTML.
 *** Templates
 :PROPERTIES:
 :CUSTOM_ID: templates
+:ID:       54813495-a911-47c7-ab28-fdaaba4504af
 :END:
 
-For example, the template under *templates/post.org* looks like this:
+Template are used to group seveal Org rendering and exporting that are common to
+several files. For example, the template under *templates/post.org* looks like
+this:
 
 #+begin_src org
 @@html:<div class="post-date">@@
@@ -185,6 +194,7 @@ into any page published with it:
 *** CSS styling
 :PROPERTIES:
 :CUSTOM_ID: css
+:ID:       30c5e646-114c-470d-b141-abaeead4546b
 :END:
 
 The two files that are used are *files/css/style.css* and
@@ -198,28 +208,29 @@ blocks.
 *** Building and publishing
 :PROPERTIES:
 :CUSTOM_ID: publishing
+:ID:       3f538dde-d268-40f2-8661-0897b4de6187
 :END:
 ***** publish-website.el
 :PROPERTIES:
 :CUSTOM_ID: publish-website
+:ID:       a3c0fb43-91d7-422e-93a5-0279d0d0e440
 :END:
 
 It was hyped for long enough, here is the [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/publish-website.el][publish-website.el]] file. This file
 defines common settings and build instructions for the project. We feed them
 into /org-publish/ which will take care of producing the corresponding website.
-By default, /org-publish/ uses a *.cache/* directory and won't rebuild files
-unless they have been modified.
 
 The file is pretty simple and self-explanatory. I mostly added the following
-functions to generate a "preview" for each post, which will be visible in the
+functions to generate a "preview" of each post, which will be visible in the
 [[./index.org][list of all posts]], as well as include a formatted timestamp of when the post was
 first added. A custom macro is used to format the timestamp. The content of the
 "preview" is written in between the custom =#+begin_preview= and =#+end_preview=
 tags.
 
-#+begin_src elisp
+#+begin_src emacs-lisp
+;; Extract content between #+begin_preview and #+end_preview
 (defun skw-blog/get-preview (file)
-  "The comments (begin/end_preview) in FILE have to be on their own lines,
+  "The comments (begin/end_preview) in'file' have to be on their own lines,
    preferably before and after paragraphs."
   (with-temp-buffer
     (message file)
@@ -231,6 +242,7 @@ tags.
       (replace-regexp-in-string "\n" " " (buffer-substring beg end)))))
 
 
+;; Format list of blog post for the sitemap / index
 (defun skw-blog/org-format-blog-post (entry style project)
   "Format 'entry' in org-publish 'project' sitemap to include a timestamp."
   (let ((entry-title (org-publish-find-title entry project)))
@@ -242,9 +254,10 @@ tags.
               entry-title))))
 
 
-(defun skw-blog/org-format-blog-post-with-description (entry style project)
+;; Same but add the content between the "preview" tags
+(defun skw-blog/org-format-blog-post-with-preview (entry style project)
   "Format 'entry' in org-publish 'project' sitemap to include a timestamp
-   and description ('begin/end_preview' tag)."
+   and preview ('begin/end_preview' tag)."
   (let ((entry-title (org-publish-find-title entry project))
         (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry)))) ;; dirty
     (if (= (length entry-title) 0)
@@ -257,73 +270,95 @@ tags.
               preview))))
 
 
+;; Exporting macros
 (setq org-export-global-macros
       '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")))
 #+end_src
 
 The corresponding publishing rules then look like this:
 
-#+begin_src elisp
+#+begin_src emacs-lisp
+("website-src"
+ :base-directory ,skw-blog/srcdir
+ :base-extension "org"
+ :exclude ,(regexp-opt '("rss.org"))
+
+ :recursive t
+ :publishing-directory ,skw-blog/outdir
+ :publishing-function org-html-publish-to-html
+
+ :auto-sitemap t
+ :sitemap-title ,skw-blog/main-sitemap-title
+
+ :html-preamble ,skw-blog/header
+ :html-postamble ,skw-blog/footer
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+
 ;; Index of all blog posts
 ("website-posts-index"
  :base-directory ,(concat skw-blog/srcdir "posts")
  :base-extension "org"
+ :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
  :publishing-directory ,(concat skw-blog/outdir "posts")
- :exclude "rss.org\\|index.org\\|index-no-description.org"
-
- :auto-sitemap t
- :sitemap-title "Posts"
- :sitemap-filename "index-no-description.org"
- :sitemap-format-entry skw-blog/org-format-blog-post
- :sitemap-sort-files anti-chronologically
 
  :html-preamble ,skw-blog/header
  :html-postamble ,skw-blog/footer
- :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon)
 
-;; Index of all blog posts with description
-("website-posts-index-description"
+ :auto-sitemap t
+ :sitemap-title "Posts (without preview)"
+ :sitemap-filename "index-no-preview.org"
+ :sitemap-format-entry skw-blog/org-format-blog-post
+ :sitemap-sort-files anti-chronologically)
+
+;; Index of all blog posts with preview
+("website-posts-index-preview"
  :base-directory ,(concat skw-blog/srcdir "posts")
  :base-extension "org"
+ :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
  :publishing-directory ,(concat skw-blog/outdir "posts")
- :exclude "rss.org\\|index.org\\|index-no-description.org"
+
+ :html-preamble ,skw-blog/header
+ :html-postamble ,skw-blog/footer
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon)
 
  :auto-sitemap t
  :sitemap-title "Posts"
  :sitemap-filename "index.org"
- :sitemap-format-entry skw-blog/org-format-blog-post-with-description
- :sitemap-sort-files anti-chronologically
-
- :html-preamble ,skw-blog/header
- :html-postamble ,skw-blog/footer
- :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+ :sitemap-format-entry skw-blog/org-format-blog-post-with-preview
+ :sitemap-sort-files anti-chronologically)
 #+end_src
 
-The generated =src/posts/index-no-description.org= is alike to a sitemap and is
-inserted in the homepage with:
+The generated *./src/posts/index-no-description.org* is inserted into the
+homepage with:
 
 #+begin_src org
-,#+INCLUDE: "./posts/index-no-description.org" :lines "3-6"
+,#+INCLUDE: "./posts/index-no-description.org" :lines "3-7"
 #+end_src
 
 ***** Makefile
 :PROPERTIES:
 :CUSTOM_ID: makefile
+:ID:       dfdfec47-534b-4c51-8eac-84af63d128eb
 :END:
 
-Let's use *make* to avoid to build and manage the website by hand. There is no
-real need to configure dependencies for the /make/ rules, as /org-publish/ will
-check the content of *.cache/* to see which files need to be updated. Here is
-what an example *Makefile* can look like:
+Let's use *make* to avoid building and managing the website by hand.
 
 #+begin_src makefile
 OUT_DIR='www'
 PUBLISH_FILE='publish-website.el'
 PUBLISH_FUNC='(org-publish "website")'
-WS_CMD='python -m http.server 12345 --bind localhost --directory $(OUT_DIR)'
+WS_CMD=python -m http.server 12345 --bind localhost --directory $(OUT_DIR)
 
 all:
+    rm -rf .cache www
     emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
+    rm -rf .cache
+
+mathjax:
+    rm -rf files/js/mathjax
+    git clone https://github.com/mathjax/MathJax.git files/js/mathjax
+    rm -rf files/js/mathjax/.git
 
 publish:
     git commit
@@ -338,7 +373,7 @@ update:
 run:
     $(WS_CMD)
 
-.PHONY: all publish update run
+.PHONY: all mathjax publish update run
 #+end_src
 
 Whenever I want to work on a new item, like adding a new file or editing an
@@ -352,20 +387,24 @@ at http://localhost:12345.
 * A few more functionalities
 :PROPERTIES:
 :CUSTOM_ID: more
+:ID:       4921e40a-4f0e-4477-bd0b-f483988617e1
+:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 *** MathJax
 :PROPERTIES:
 :CUSTOM_ID: mathjax
+:ID:       1f7ef906-fcbb-45da-a0f1-637c72b26d52
 :END:
 
-[[https://www.mathjax.org/][MathJax]]' [[https://orgmode.org/manual/Math-formatting-in-HTML-export.html][Org mode support]] lets me export math formulas written in Latex to HTML.
-Here are a couple of examples using inline code blocks and "proper" Latex syntax.
+[[https://www.mathjax.org/][MathJax]]' [[https://orgmode.org/manual/Math-formatting-in-HTML-export.html][Org mode support]] lets me export to HTML math formulas written in LaTeX.
+Here are a couple of examples using inline code blocks and "proper" LaTeX
+syntax.
 
 #+begin_src org
 If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
 \[ a=-\sqrt{2} \]
 
-Look at this:
+Look at this lonely equation I found:
 
 \begin{equation}
 y = x^2+1
@@ -377,15 +416,15 @@ Which will be rendered like this:
 If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
 \[ a=-\sqrt{2} \]
 
-Look at this:
+Look at this lonely equation I found:
 
 \begin{equation}
 y = x^2+1
 \end{equation}
 
-I install and update regularly MathJax via the Makefile and then enable it in
-*publish-website.el* via the =org-html-mathjax-options= variable. Since I want
-to be able to view the website offline, I opted for a local install.
+I install and update regularly /MathJax/ via the *Makefile* and then enable it
+in *publish-website.el* via the =org-html-mathjax-options= variable. Since I
+want to be able to view the website offline, I opted for a local install.
 
 #+begin_src makefile
 mathjax:
@@ -394,7 +433,7 @@ mathjax:
     rm -rf files/js/mathjax/.git
 #+end_src
 
-#+begin_src elisp
+#+begin_src emacs-lisp
 (setq org-html-mathjax-options
       '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
         (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
@@ -405,80 +444,85 @@ mathjax:
 *** RSS feed
 :PROPERTIES:
 :CUSTOM_ID: resources
+:ID:       1c0d497e-7409-43a9-bb7a-b9e74dc8b6d7
 :END:
 
 Generating a RSS to track when new posts are published is actually not that
 complicated with [[https://github.com/emacsmirror/ox-rss][ox-rss]]. Here are a couple of helper functions to generate a
 "sitemap" file named *rss.org* which will list all the entries under
-*src/posts/* excluding the previously generated indexes.
+*src/posts/* excluding the previously generated indexes. This file is then
+converted to XML. The description field of each item is the content of the
+=preview= tags used earlier.
 
-#+begin_src elisp
-(defun skw-blog/publish-posts-rss-feed (plist filename dir)
+#+begin_src emacs-lisp
+;; RSS feed generation
+(defun skw-blog/publish-to-rss (plist filename dir)
   "Publish 'plist' when 'filename' corresponds to RSS feed Org-file to 'dir'."
   (if (equal skw-blog/rss-filename (file-name-nondirectory filename))
       (org-rss-publish-to-rss plist filename dir)))
 
-
-(defun skw-blog/posts-rss-feed (title list)
+(defun skw-blog/format-rss-feed (title list)
   "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
 title of the RSS feed and 'list' the files to be included."
   (concat "#+TITLE: " title "\n\n" (org-list-to-subtree list)))
 
-
-(defun skw-blog/format-posts-rss-feed-entry (entry style project)
+(defun skw-blog/format-rss-feed-entry (entry style project)
   "Format 'entry' for the posts RSS feed in given 'project'."
   (let* ((title (org-publish-find-title entry project))
          (link (concat (file-name-sans-extension entry) ".html"))
          (pubdate (format-time-string (car org-time-stamp-formats)
-                                      (org-publish-find-date entry project))))
+                                      (org-publish-find-date entry project)))
+         (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry))))
 
     (format "%s
 :properties:
 :rss_permalink: %s
 :pubdate: %s
-:end:" title link pubdate)))
+:end:
+%s" title link pubdate preview)))
 #+end_src
 
 These functions are then called inside a new publishing rule.
 
-#+begin_src elisp
-("website-posts-rss"
+#+begin_src emacs-lisp
+("website-rss"
  :base-directory ,(concat skw-blog/srcdir "posts")
  :base-extension "org"
+ :recursive nil
+ :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
  :publishing-directory ,skw-blog/outdir
- :exclude "rss.org\\|index.org\\|index-no-description.org"
- :publishing-function skw-blog/publish-posts-rss-feed
- :rss-extension "xml"
+ :publishing-function skw-blog/publish-to-rss
 
+ :with-author t
+ :author ,skw-blog/author
+ :email ,skw-blog/email
+
+ :rss-extension "xml"
  :rss-image-url ,(concat skw-blog/upstream-url "/files/img/profile.jpg")
  :html-link-home ,(concat skw-blog/upstream-url "/posts/")
  :html-link-use-abs-url t
  :html-link-org-files-as-html t
 
- :author ,skw-blog/author
- :with-author t
- :email ,skw-blog/email
- :description ,skw-blog/rss-channel-description
-
  :auto-sitemap t
- :sitemap-function skw-blog/posts-rss-feed
- :sitemap-title ,skw-blog/rss-feedname
  :sitemap-filename ,skw-blog/rss-filename
- :sitemap-style list
+ :sitemap-title ,skw-blog/rss-feedname
  :sitemap-sort-files anti-chronologically
- :sitemap-format-entry skw-blog/format-posts-rss-feed-entry)
+ :sitemap-function skw-blog/format-rss-feed
+ :sitemap-format-entry skw-blog/format-rss-feed-entry)
 #+end_src
 
 * Resources
 :PROPERTIES:
 :CUSTOM_ID: resources
+:ID:       a78da189-9dfa-404c-b706-beae710d7524
+:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
 This publishing setup is quite rudimentary. I wrote this note mostly for self
 reference in case I have to implement a similar project in the future. However,
 I still hope it can help hesitating people to give a try to /org-publish/ and
 see if it fits their needs. Maybe existing users could also get a tip or two out
-of this.
+of this. The full code is available on my [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][github]].
 
 I would encourage anyone fiddling with this to have the official documentation
 right at hand:
@@ -494,3 +538,4 @@ you check them out as well as their publishing workflow:
   effective setup.
 - [[https://ogbe.net/blog/blogging_with_org.html][Blogging using org-mode (and nothing else)]] by [[https://ogbe.net/][Dennis Ogbe]] is a really neat
   explanations and setup with Org-file pre-processing before publishing.
+- [[https://ryuslash.org/literate-build.html][A literate programming example]] by [[https://ryuslash.org/][ryuslash]].

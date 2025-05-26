@@ -13,14 +13,17 @@
       (expand-file-name default-directory)
     (file-name-directory load-file-name)))
 
+
 (defun skw-blog/get-file-content (file)
   "Return the content of 'file' as a string"
   (with-temp-buffer
     (insert-file-contents file)
     (buffer-string)))
 
+
+;; Extract content between #+begin_preview and #+end_preview
 (defun skw-blog/get-preview (file)
-  "The comments (begin/end_preview) in FILE have to be on their own lines,
+  "The comments (begin/end_preview) in'file' have to be on their own lines,
    preferably before and after paragraphs."
   (with-temp-buffer
     (message file)
@@ -46,20 +49,18 @@
  skw-blog/header-file  (concat skw-blog/rootdir "templates/header.html")
  skw-blog/footer-file  (concat skw-blog/rootdir "templates/footer.html")
 
- ;; RSS Feed
- skw-blog/rss-feedname "Skywhi's blog"
+ ;; RSS feed
+ skw-blog/rss-feedname "Skywhi's Blog"
  skw-blog/rss-filename "rss.org"
- skw-blog/rss-channel-description "Fuzz all the things"
 
  ;; Main sitemap
  skw-blog/main-sitemap-title "\"Not all those who wander are lost.\" - J. R. R. Tolkien"
 
- ;; Stylesheets to include by default
+ ;; Stylesheets included by default
  skw-blog/main-css
  "<link rel=\"stylesheet\" type=\"text/css\" href=\"/files/css/style.css\"/>
 <link rel=\"stylesheet\" type=\"text/css\" href=\"/files/css/htmlize.css\"/>
 "
-
  ;; Favicon
  skw-blog/favicon
  "<link rel=\"icon\" href=\"/files/img/favicon.ico\" type=\"image/x-icon\">
@@ -93,19 +94,18 @@
  org-html-htmlize-output-type 'css
 
  org-html-mathjax-options '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
-                           (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
-                           (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
-                           (tagside "right")))
+                            (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
+                            (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
+                            (tagside "right")))
 
 
 ;; Import header and footer from HTML templates
 (defvar skw-blog/header
   (skw-blog/get-file-content skw-blog/header-file))
 
-
 (defvar skw-blog/footer
-  (format (skw-blog/get-file-content skw-blog/footer-file)
-          (format-time-string "%d %b %Y")))
+  (skw-blog/get-file-content skw-blog/footer-file))
+
 
 ;; Format list of blog post for the sitemap / index
 (defun skw-blog/org-format-blog-post (entry style project)
@@ -118,9 +118,11 @@
               entry
               entry-title))))
 
-(defun skw-blog/org-format-blog-post-with-description (entry style project)
+
+;; Same but add the content between the "preview" tags
+(defun skw-blog/org-format-blog-post-with-preview (entry style project)
   "Format 'entry' in org-publish 'project' sitemap to include a timestamp
-   and description ('begin/end_preview' tag)."
+   and preview ('begin/end_preview' tag)."
   (let ((entry-title (org-publish-find-title entry project))
         (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry)))) ;; dirty
     (if (= (length entry-title) 0)
@@ -139,43 +141,40 @@
 
 
 ;; RSS feed generation
-(defun skw-blog/publish-posts-rss-feed (plist filename dir)
+(defun skw-blog/publish-to-rss (plist filename dir)
   "Publish 'plist' when 'filename' corresponds to RSS feed Org-file to 'dir'."
   (if (equal skw-blog/rss-filename (file-name-nondirectory filename))
       (org-rss-publish-to-rss plist filename dir)))
 
-
-(defun skw-blog/posts-rss-feed (title list)
+(defun skw-blog/format-rss-feed (title list)
   "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
 title of the RSS feed and 'list' the files to be included."
   (concat "#+TITLE: " title "\n\n" (org-list-to-subtree list)))
 
-
-(defun skw-blog/format-posts-rss-feed-entry (entry style project)
+(defun skw-blog/format-rss-feed-entry (entry style project)
   "Format 'entry' for the posts RSS feed in given 'project'."
   (let* ((title (org-publish-find-title entry project))
          (link (concat (file-name-sans-extension entry) ".html"))
          (pubdate (format-time-string (car org-time-stamp-formats)
-                                      (org-publish-find-date entry project))))
+                                      (org-publish-find-date entry project)))
+         (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry))))
 
     (format "%s
 :properties:
 :rss_permalink: %s
 :pubdate: %s
-:end:" title link pubdate)))
+:end:
+%s" title link pubdate preview)))
 
 
 ;; Publishing rules
 (setq org-publish-project-alist
       `(
-        ("website" :components
-         ("website-posts-index" "website-posts-index-description" "website-posts-rss" "website-files" "website-src"))
-
         ;; Main Org-mode sources
         ("website-src"
          :base-directory ,skw-blog/srcdir
          :base-extension "org"
-         :exclude ,(regexp-opt (list "posts/" "rss.org"))
+         :exclude ,(regexp-opt '("rss.org"))
 
          :recursive t
          :publishing-directory ,skw-blog/outdir
@@ -192,62 +191,61 @@ title of the RSS feed and 'list' the files to be included."
         ("website-posts-index"
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
+         :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
          :publishing-directory ,(concat skw-blog/outdir "posts")
-         :exclude "rss.org\\|index.org\\|index-no-description.org"
-
-         :auto-sitemap t
-         :sitemap-title "Posts"
-         :sitemap-filename "index-no-description.org"
-         :sitemap-format-entry skw-blog/org-format-blog-post
-         :sitemap-sort-files anti-chronologically
 
          :html-preamble ,skw-blog/header
          :html-postamble ,skw-blog/footer
-         :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+         :html-head ,(concat skw-blog/main-css skw-blog/favicon)
 
-        ;; Index of all blog posts with description
-        ("website-posts-index-description"
+         :auto-sitemap t
+         :sitemap-title "Posts (without preview)"
+         :sitemap-filename "index-no-preview.org"
+         :sitemap-format-entry skw-blog/org-format-blog-post
+         :sitemap-sort-files anti-chronologically)
+
+        ;; Index of all blog posts with preview
+        ("website-posts-index-preview"
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
+         :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
          :publishing-directory ,(concat skw-blog/outdir "posts")
-         :exclude "rss.org\\|index.org\\|index-no-description.org"
+
+         :html-preamble ,skw-blog/header
+         :html-postamble ,skw-blog/footer
+         :html-head ,(concat skw-blog/main-css skw-blog/favicon)
 
          :auto-sitemap t
          :sitemap-title "Posts"
          :sitemap-filename "index.org"
-         :sitemap-format-entry skw-blog/org-format-blog-post-with-description
-         :sitemap-sort-files anti-chronologically
-
-         :html-preamble ,skw-blog/header
-         :html-postamble ,skw-blog/footer
-         :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+         :sitemap-format-entry skw-blog/org-format-blog-post-with-preview
+         :sitemap-sort-files anti-chronologically)
 
         ;; RSS feed
-        ("website-posts-rss"
+        ("website-rss"
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
+         :recursive nil
+         :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
          :publishing-directory ,skw-blog/outdir
-         :exclude "rss.org\\|index.org\\|index-no-description.org"
-         :publishing-function skw-blog/publish-posts-rss-feed
-         :rss-extension "xml"
+         :publishing-function skw-blog/publish-to-rss
 
+         :with-author t
+         :author ,skw-blog/author
+         :email ,skw-blog/email
+
+         :rss-extension "xml"
          :rss-image-url ,(concat skw-blog/upstream-url "/files/img/profile.jpg")
          :html-link-home ,(concat skw-blog/upstream-url "/posts/")
          :html-link-use-abs-url t
          :html-link-org-files-as-html t
 
-         :author ,skw-blog/author
-         :with-author t
-         :email ,skw-blog/email
-         :description ,skw-blog/rss-channel-description
-
          :auto-sitemap t
-         :sitemap-function skw-blog/posts-rss-feed
-         :sitemap-title ,skw-blog/rss-feedname
          :sitemap-filename ,skw-blog/rss-filename
-         :sitemap-style list
+         :sitemap-title ,skw-blog/rss-feedname
          :sitemap-sort-files anti-chronologically
-         :sitemap-format-entry skw-blog/format-posts-rss-feed-entry)
+         :sitemap-function skw-blog/format-rss-feed
+         :sitemap-format-entry skw-blog/format-rss-feed-entry)
 
         ;; Attachment files
         ("website-files"
@@ -255,7 +253,10 @@ title of the RSS feed and 'list' the files to be included."
          :base-extension ".*"
          :recursive t
          :publishing-directory ,(concat skw-blog/outdir "files")
-         :publishing-function org-publish-attachment)))
+         :publishing-function org-publish-attachment)
+
+        ("website" :components
+         ("website-posts-index" "website-posts-index-preview" "website-rss" "website-src" "website-files"))))
 
 
 (provide 'publish-website)

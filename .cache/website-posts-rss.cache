@@ -1,6 +1,0 @@
-(setq org-publish-cache (make-hash-table :test 'equal :weakness nil :size 100))
-(puthash ":project:" "website-posts-rss" org-publish-cache)
-(puthash ":cache-file:" "/home/mvi/org/blog/.cache/website-posts-rss.cache" org-publish-cache)
-(puthash "X400d694273ea546a2621d725a20652672950e0b6" '(26675 9936 447000 70000) org-publish-cache)
-(puthash "/home/mvi/org/blog/src/posts/rss.org" '(:crossrefs nil) org-publish-cache)
-(puthash "X57ff79176b9075e15ccba4486dd32cfa5d8d2242" '(26675 11394 192342 229000) org-publish-cache)

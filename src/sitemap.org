@@ -19,3 +19,7 @@
     - [[file:notes/rtfsg/reverse.org][Reverse Engineering]]
     - [[file:notes/rtfsg/unix.org][Unix security]]
     - [[file:notes/rtfsg/web.org][Web stuff]]
+- posts
+  - [[file:posts/hello-world-from-org.org][Hello World from Org]]
+  - [[file:posts/index.org][Posts]]
+  - [[file:posts/index-no-preview.org][Posts (without preview)]]

@@ -1,8 +1,9 @@
-#+TITLE: Skywhi's blog
+#+TITLE: Skywhi's Blog
 
 * Hello World from Org
 :properties:
 :rss_permalink: hello-world-from-org.html
 :pubdate: 2025-05-25 Sun
-:ID:       2d4f2d68-f42d-4c11-9a62-e3a597d543b2
+:ID:       4141cdba-3019-4a68-b54b-b4b4ebf86b36
 :END:
+I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 
