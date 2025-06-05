@@ -9,7 +9,8 @@ If I occasionally write something for a punctual, one-of topic, it will be
 published as a [[./posts/][blog post]]. The [[./notes/][notes]] section points toward more lengthy content
 that might get updated over time. Resources that were particularly useful and
 interesting to me are kept in the [[./links.org][links]] section. Information about this website
-and my contact details can be found in the [[./about.org][about]] page.
+and my contact details can be found in the [[./about.org][about]] page. What is currently on my
+mind is on my [[./now.org][now]] page.
 
 With this out of the way, I wish you happy reading!
 

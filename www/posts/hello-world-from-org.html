@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-05-26 Mon 22:16 -->
+<!-- 2025-06-06 Fri 00:01 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
@@ -64,7 +64,7 @@
 </p>
 
 
-<div class="preview" id="orga14d3d6">
+<div class="preview" id="orgde2f442">
 <p>
 I describe yet-another-simple-publishing-setup for a static website using
 Emacs's <a href="https://orgmode.org/">Org mode</a>.
@@ -164,7 +164,7 @@ project. The github repository containing all the source files can be found
 <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
 </p>
 
-<pre class="example" id="orgf4449ae">
+<pre class="example" id="org9470480">
 - ~/org/blog/
   - files/
     - css/
@@ -473,11 +473,6 @@ Let's use <b>make</b> to avoid building and managing the website by hand.
     rm -rf .cache www
     emacs -Q --batch --load $(<span class="org-variable-name">PUBLISH_FILE</span>) --eval $(<span class="org-variable-name">PUBLISH_FUNC</span>)
     rm -rf .cache
-
-<span class="org-makefile-targets">mathjax</span>:
-    rm -rf files/js/mathjax
-    <span class="org-makefile-targets">git clone https</span>://github.com/mathjax/MathJax.git files/js/mathjax
-    rm -rf files/js/mathjax/.git
 
 <span class="org-makefile-targets">publish</span>:
     git commit

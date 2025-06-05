@@ -2,6 +2,7 @@
 
 - [[file:about.org][About this place]]
 - [[file:links.org][Bookmarks]]
+- [[file:now.org][Now]]
 - [[file:index.org][Welcome to my little patch of internet!]]
 - notes
   - [[file:notes/archlinux-install.org][ArchLinux installation]]

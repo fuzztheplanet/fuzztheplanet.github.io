@@ -355,11 +355,6 @@ all:
     emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
     rm -rf .cache
 
-mathjax:
-    rm -rf files/js/mathjax
-    git clone https://github.com/mathjax/MathJax.git files/js/mathjax
-    rm -rf files/js/mathjax/.git
-
 publish:
     git commit
     git push -u origin main

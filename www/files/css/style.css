@@ -1,18 +1,3 @@
-/* Quicksand typefaces */
-@font-face {
-    font-display: swap;
-    font-family: Quicksand;
-    src: url(../fonts/Quicksand-Regular.ttf);
-    font-weight: normal;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Quicksand;
-    src: url(../fonts/Quicksand-Bold.ttf);
-    font-weight: bold;
-}
-
 /* Inconsolata typefaces */
 @font-face {
     font-display: swap;
@@ -28,75 +13,8 @@
     font-weight: bold;
 }
 
-/* Nunito typefaces */
-@font-face {
-    font-display: swap;
-    font-family: Nunito;
-    src: url(../fonts/Nunito-Regular.ttf);
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Nunito;
-    src: url(../fonts/Nunito-Bold.ttf);
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Nunito;
-    src: url(../fonts/Nunito-Italic.ttf);
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Nunito;
-    src: url(../fonts/Nunito-BoldItalic.ttf);
-    font-weight: bold;
-    font-style: italic;
-}
-
-/* Roboto Mono typefaces */
-@font-face {
-    font-display: swap;
-    font-family: Roboto Mono;
-    src: url(../fonts/RobotoMono-Regular.ttf);
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Roboto Mono;
-    src: url(../fonts/RobotoMono-Bold.ttf);
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Roboto Mono;
-    src: url(../fonts/RobotoMono-Italic.ttf);
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: Roboto Mono;
-    src: url(../fonts/RobotoMono-BoldItalic.ttf);
-    font-weight: bold;
-    font-style: italic;
-}
-
 
 html {
-    font-family: 'Nunito', sans-serif;
     font-size: 1.1rem;
     background-color: #fffff0;
     color: #2f2f2f;
@@ -126,11 +44,12 @@ body {
 #preamble h1 {
     display: inline-block;
     text-align: left;
-    font-size: 2.5rem;
+    font-size: 2.80em;
     color: #2020f0;
     margin-left: 1em;
     margin-bottom: 0em;
 }
+
 
 #preamble nav {
     display: block;
@@ -146,6 +65,7 @@ body {
 #content {
     width: 55%;
     margin: auto;
+    text-align: justify;
 }
 
 #content #table-of-contents h2 {
@@ -153,8 +73,9 @@ body {
 }
 
 #content h1, h2, h3, h4, h5, h6 {
-    font-family: 'Quicksand', sans-serif;
-    font-weight: normal;
+    /* font-family: 'Quicksand', sans-serif; */
+    /* font-weight: normal; */
+    font-weight: bold;
     color: #662222;
     margin-top:    1em;
     margin-bottom: 0.5em;
@@ -179,7 +100,8 @@ body {
 
 #content .title {
     text-align: center;
-    font-size: 2em;
+    font-size: 2.25em;
+    font-weight: bold;
     padding-top: 0;
 }
 
@@ -222,7 +144,8 @@ body {
 #content .post-date {
     width: 100%;
     text-align: right;
-    padding-bottom: 1.3em;
+    /* padding-bottom: 1.3em; */
+    /* padding-bottom: 0.5em; */
 }
 
 /* Postamble (footer) */
@@ -270,4 +193,8 @@ body {
 /* Timestamp (Org macro) */
 .timestamp {
     font-weight: bold;
+}
+
+h2 span.timestamp {
+    font-weight: normal;
 }
