@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-06-06 Fri 00:01 -->
+<!-- 2025-06-09 Mon 23:58 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Reverse Engineering</title>
@@ -30,19 +30,19 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgabd7b73">NRO</a></li>
+<li><a href="#orgaf4d16a">NRO</a></li>
 <li><a href="#wasm">WASM (Web Assembly)</a>
 <ul>
-<li><a href="#org040f133">Docs and tools</a></li>
-<li><a href="#orgf25ca7b">Decompilation</a></li>
-<li><a href="#org0aaf88f">Debugging</a></li>
+<li><a href="#org06f53bd">Docs and tools</a></li>
+<li><a href="#org35f9801">Decompilation</a></li>
+<li><a href="#orgb60cafb">Debugging</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-orgabd7b73" class="outline-2">
-<h2 id="orgabd7b73">NRO</h2>
-<div class="outline-text-2" id="text-orgabd7b73">
+<div id="outline-container-orgaf4d16a" class="outline-2">
+<h2 id="orgaf4d16a">NRO</h2>
+<div class="outline-text-2" id="text-orgaf4d16a">
 <ul class="org-ul">
 <li><a href="https://github.com/dazjo/nxtool">nxtool</a> to parse file headers and transform the NRO files into ELF.</li>
 </ul>
@@ -52,9 +52,9 @@
 <h2 id="wasm">WASM (Web Assembly)</h2>
 <div class="outline-text-2" id="text-wasm">
 </div>
-<div id="outline-container-org040f133" class="outline-3">
-<h3 id="org040f133">Docs and tools</h3>
-<div class="outline-text-3" id="text-org040f133">
+<div id="outline-container-org06f53bd" class="outline-3">
+<h3 id="org06f53bd">Docs and tools</h3>
+<div class="outline-text-3" id="text-org06f53bd">
 <p>
 First the mandatory references and tools:
 </p>
@@ -67,9 +67,9 @@ C and wat) and more.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf25ca7b" class="outline-3">
-<h3 id="orgf25ca7b">Decompilation</h3>
-<div class="outline-text-3" id="text-orgf25ca7b">
+<div id="outline-container-org35f9801" class="outline-3">
+<h3 id="org35f9801">Decompilation</h3>
+<div class="outline-text-3" id="text-org35f9801">
 <p>
 <a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> can produce some decompiled C source, but it is pretty unreadable.
 Static analysis can be made much easier by retrieving the <a href="https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h">wasm-rt.h</a> header
@@ -85,9 +85,9 @@ cc -c index.c index.o
 </div>
 </div>
 </div>
-<div id="outline-container-org0aaf88f" class="outline-3">
-<h3 id="org0aaf88f">Debugging</h3>
-<div class="outline-text-3" id="text-org0aaf88f">
+<div id="outline-container-orgb60cafb" class="outline-3">
+<h3 id="orgb60cafb">Debugging</h3>
+<div class="outline-text-3" id="text-orgb60cafb">
 <p>
 If the application is running in the browser, you can use the JS console to
 access its internal variables. Look for: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory">wasmMemory</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table">wasmTable</a>.

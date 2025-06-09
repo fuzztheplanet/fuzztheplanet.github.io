@@ -1,11 +1,78 @@
 #+TITLE: Bookmarks
 
-This page lists the resources that I found to be particularly useful to me.
-Topics covered include programming, offensive and defensive security, system
+This page lists the resources that were particularly useful to me. Covered
+topics include programming, offensive and defensive information security, system
 administration and more. May you find something useful to you as well!
 
 #+TOC: headlines 2 local
 
+* Blogs
+:PROPERTIES:
+:CUSTOM_ID: blog
+:END:
+
+- [[https://breakpoint.purrfect.fr/][Breakpoint]]
+- [[https://thinkloveshare.com/][Laluka]]
+- [[https://loup-vaillant.fr/][Loup's]]
+- [[https://www.timdbg.com/][TimDbg]]
+- [[https://plowsec.github.io/][Volodya]]
+- [[https://vozec.fr/][Vozec]]
+
+* Online Tools
+:PROPERTIES:
+:CUSTOM_ID: online
+:END:
+
+*Table of content*
+#+TOC: headlines 6 local
+
+*** Calculators
+:PROPERTIES:
+:CUSTOM_ID: online-calc
+:END:
+
+- [[https://nosgestesclimat.fr/en][Carbon Footprint Calculator]].
+
+*** Cryptography
+:PROPERTIES:
+:CUSTOM_ID: online-crypto
+:END:
+
+- [[https://samuelj.li/elliptic-curve-explorer/][Elliptic Curve Explorer]].
+
+*** Misc
+:PROPERTIES:
+:CUSTOM_ID: online-misc
+:END:
+
+- [[https://catgpt.wvd.io/][CatGPT]]: What if ChatGPT were a cat?
+
+*** Programming
+:PROPERTIES:
+:CUSTOM_ID: online-prog
+:END:
+
+- [[https://www.cleancss.com/][CleanCSS]]: large collection of online tools to beautify, minify, encode and
+  format files. Includes tools to validate regular expressions, timestamps and
+  much more!
+- [[https://defuse.ca/online-x86-assembler.htm][Online assembler and disassembler]]: x86 and x64.
+- [[https://yjdoc2.github.io/8086-emulator-web/compile][8086 Emulator]]: compiler with register views and memory inspection.
+- [[http://www.javadecompilers.com/][Online Java decompiler]]: decompile Java bytecode with modern decompilers such
+  as Procyon, CFR, JDCore, Jadx and more.
+
+*** Reverse Shells
+:PROPERTIES:
+:CUSTOM_ID: online-reverse-shells
+:END:
+
+- [[https://www.revshells.com/][https://www.revshells.com/]].
+
+*** DNS
+:PROPERTIES:
+:CUSTOM_ID: online-dns
+:END:
+
+- [[https://nip.io/][nip.io]]: dead simple wildcard DNS for any IP address
 * Programming
 :PROPERTIES:
 :CUSTOM_ID: prog
@@ -39,10 +106,22 @@ administration and more. May you find something useful to you as well!
 
 - [[https://www.azeria-labs.com][Azeria Labs]]: Detailed ARM assembly tutorials and ref card.
 
-***** x86 and x86_64
+*** Bash / Shell
+:PROPERTIES:
+:CUSTOM_ID: prog-bash
+:END:
 
-- [[https://defuse.ca/online-x86-assembler.htm][Online assembler and
-  disassembler]]: x86 and x64.
+- [[https://www.shellcheck.net/wiki/][Shellcheck's wiki]] (see also the software on [[https://github.com/koalaman/shellcheck][github]]).
+- [[https://mywiki.wooledge.org/BashGuide][BashGuide]] by [[https://mywiki.wooledge.org/][Greg]]. Also check out: [[https://mywiki.wooledge.org/BashFAQ][BashFAQ]], [[https://mywiki.wooledge.org/BashPitfalls][BashPitfalls]], [[https://mywiki.wooledge.org/BashSheet][BashSheet]], [[https://mywiki.wooledge.org/BashProgramming][BashProgramming]].
+- [[https://devhints.io/bash][Bash Cheatsheet]].
+- [[https://sharats.me/posts/shell-script-best-practices/][Shell Script Best Practices]].
+
+*** C
+:PROPERTIES:
+:CUSTOM_ID: prog-c
+:END:
+
+- [[https://inria.hal.science/hal-02383654v2/file/modernC.pdf][Modern C]] (pdf).
 
 *** CSS
 :PROPERTIES:
@@ -51,11 +130,12 @@ administration and more. May you find something useful to you as well!
 
 - [[https://medium.com/actualize-network/modern-css-explained-for-dinosaurs-5226febe3525][Modern CSS Explained for Dinosaurs]]: Introduction to writing modern CSS.
 
-*** Java
+*** Javascript
+:PROPERTIES:
+:CUSTOM_ID: prog-js
+:END:
 
-- [[http://www.javadecompilers.com/][Online Java decompiler]]: [[http://www.javadecompilers.com][www.javadecompilers.com]] allows to decompile Java
-  bytecode with modern decompilers such as Procyon, CFR, JDCore, Jadx and
-  more.
+- [[https://jsisweird.com/][JS Is Weird]]
 
 * Security
 :PROPERTIES:
@@ -65,16 +145,21 @@ administration and more. May you find something useful to you as well!
 *Table of Content*
 #+TOC: headlines 6 local
 *** General resources
+:PROPERTIES:
+:CUSTOM_ID: sec-general
+:END:
 ***** Multi-topic resources
 
-- [[https://book.hacktricks.wiki/en/index.html][Hacktricks]]
-- [[https://www.thehacker.recipes/][The Hacker Recipes]]
+- [[https://book.hacktricks.wiki/en/index.html][Hacktricks]].
+- [[https://www.thehacker.recipes/][The Hacker Recipes]].
 - From the amazing [[https://swisskyrepo.github.io/][Swissky]]:
-  - [[https://swisskyrepo.github.io/PayloadsAllTheThings/][PayloadsAllTheThings]] ([[https://github.com/swisskyrepo/PayloadsAllTheThings][Github]]): General, cross-domain info
-  - [[https://swisskyrepo.github.io/InternalAllTheThings/][InternalAllTheThings]] ([[https://github.com/swisskyrepo/InternalAllTheThings][Github]]): Active Directory and internal pentest
-  - [[https://swisskyrepo.github.io/HardwareAllTheThings][HardwareAllTheThings]] ([[https://github.com/swisskyrepo/HardwareAllTheThings][Github]]): Hardware / IoT / Embedded things
-- [[https://www.ired.team/][Red Team Notes]]
-- [[https://pentestbook.six2dez.com][Pentest Book]] by [[https://twitter.com/Six2dez1][Six2dez]]
+  - [[https://swisskyrepo.github.io/PayloadsAllTheThings/][PayloadsAllTheThings]] ([[https://github.com/swisskyrepo/PayloadsAllTheThings][Github]]): general, cross-domain info.
+  - [[https://swisskyrepo.github.io/InternalAllTheThings/][InternalAllTheThings]] ([[https://github.com/swisskyrepo/InternalAllTheThings][Github]]): Active Directory and internal pentest.
+  - [[https://swisskyrepo.github.io/HardwareAllTheThings][HardwareAllTheThings]] ([[https://github.com/swisskyrepo/HardwareAllTheThings][Github]]): hardware / IoT / embedded things.
+- [[https://www.ired.team/][Red Team Notes]].
+- [[https://pentestbook.six2dez.com][Pentest Book]] by [[https://twitter.com/Six2dez1][Six2dez]].
+- [[https://offsec.tools/][Offsec Tools]]: large collection of, well, offsec tools.
+- [[https://talkback.sh/][Talkback.sh]]: AI-powered infosec resource aggregator.
 
 ***** CTF & learning platforms
 
@@ -83,20 +168,33 @@ administration and more. May you find something useful to you as well!
   categories and difficulty levels.
 - [[https://cryptohack.org/][CryptoHack]]: Tons of fun and educational challenges.
 
-*** Blue team
-
-- [[https://d3fend.mitre.org][MITRE's D3FEND matrix]].
-- [[https://vulners.com/audit][Vulner's online OS+packages auditing tool]].
-
 *** Application security & source code review
 :PROPERTIES:
 :CUSTOM_ID: sec-appsec
 :END:
+***** PHP
+
+- [[https://phpsecurity.readthedocs.io/en/latest/index.html][Survive The Deep End: PHP Security]]:
 ***** Tools
 
 - [[http://frama-c.com][Frama-C]]: Static analysis and formal proof for C programs.
 - [[http://krakatoa.lri.fr][Krakatoa and Jessie]]: Front-ends to the [[http://why.lri.fr][Why]] platform for deductive program
   verification.
+
+*** Blue team
+:PROPERTIES:
+:CUSTOM_ID: sec-blue
+:END:
+
+- [[https://d3fend.mitre.org][MITRE's D3FEND matrix]].
+- [[https://vulners.com/audit][Vulner's online OS+packages auditing tool]].
+
+*** Docker
+:PROPERTIES:
+:CUSTOM_ID: sec-docker
+:END:
+
+- [[https://tbhaxor.com/docker-containers-security/][Docker Security Series]]: Series of posts for both red and blue teams.
 
 *** Linux
 :PROPERTIES:
@@ -153,6 +251,15 @@ administration and more. May you find something useful to you as well!
 - [[https://www.exploit-db.com/google-hacking-database][Google Hacking Database]]: Collection useful Google dorks from exploit-db.
 - [[https://www.sans.org/security-resources/GoogleCheatSheet.pdf][SANS Google Dork Cheatsheet]] (PDF).
 
+***** Nmap
+
+- [[https://github.com/vdjagilev/nmap-formatter][nmap-formatter]]: convert nmap's output to HTML, CSV, JSON, Markdown, Dot,
+  SQLite, Excel, D2.
+- [[https://github.com/honze-net/nmap-bootstrap-xsl][nmap-bootstrap-xsl]]: apply a stylesheet to nmap's XML output and optionally
+  convert it to HTML.
+- [[https://github.com/leonjza/awesome-nmap-grep][awesome-nmap-grep]]: several /grep/ (and friends) patterns to parse nmap's
+  output.
+
 ***** Subdomain enumeration
 
 Guides:
@@ -183,7 +290,7 @@ Tools:
 - [[https://portswigger.net/web-security/cross-site-scripting/cheat-sheet][XSS Cheatsheet]] by [[https://portswigger.net][portswigger.net]].
 - [[https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting][XSS tips and tricks]] by [[https://book.hacktricks.xyz/][Hacktricks]].
 
-*** Windows
+*** Windows & Active Directory
 :PROPERTIES:
 :CUSTOM_ID: sec-windows
 :END:
@@ -196,8 +303,13 @@ Tools:
 - [[https://github.com/Ignitetechnologies/Credential-Dumping][Credentials Dumping Cheatsheets]]: Links to various detailed posts about
   credentials dumping on Windows.
 - [[https://lolbas-project.github.io][LOLBAS]]: Common exploitable Windows binaries.
+- [[https://casvancooten.com/posts/2020/11/windows-active-directory-exploitation-cheat-sheet-and-command-reference/][AD exploitation cheatsheet]] by [[https://casvancooten.com/][Cas van Cooten]]: from 2021 but still quite relevant.
+- [[https://aadinternals.com/][AADInternals.com]]: The ultimate Entra ID (Azure AD) / Microsoft 365 hacking and admin toolkit.
 
 *** Wordlists
+:PROPERTIES:
+:CUSTOM_ID: sec-wordlists
+:END:
 
 - [[https://wordlists.assetnote.io][Assetnote Wordlists]].
 - [[https://github.com/danielmiessler/SecLists][SecLists]] by [[https://danielmiessler.com/][Daniel Miessler]].

@@ -1,3 +1,18 @@
+/* Color palette */
+:root {
+    --azure:       #00ffff;
+    --black:       #373737;
+    --blue-dark:   #729fcf;
+    --blue-light:  #a0ffff;
+    --green-dark:  #00cf12;
+    --green-light: #b8ff60;
+    --grey:        #b3b3b3;
+    --orange:      #ff9900;
+    --red:         #ff4040;
+    --white:       #ffffff;
+    --yellow:      #ffff50;
+}
+
 /* Inconsolata typefaces */
 @font-face {
     font-display: swap;

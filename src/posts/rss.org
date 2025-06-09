@@ -4,6 +4,6 @@
 :properties:
 :rss_permalink: hello-world-from-org.html
 :pubdate: 2025-05-25 Sun
-:ID:       e88628b3-880f-4b5a-ab66-fa3681e52128
+:ID:       00ff0431-d73d-4730-a8bd-b18d929d0955
 :END:
 I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 
