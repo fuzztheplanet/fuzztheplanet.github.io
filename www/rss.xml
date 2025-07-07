@@ -14,8 +14,8 @@
   <link>https://www.skywhi.net/posts/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Mon, 09 Jun 2025 23:58:15 +0200</pubDate>
-  <lastBuildDate>Mon, 09 Jun 2025 23:58:15 +0200</lastBuildDate>
+  <pubDate>Mon, 07 Jul 2025 23:15:57 +0200</pubDate>
+  <lastBuildDate>Mon, 07 Jul 2025 23:15:57 +0200</lastBuildDate>
   <generator>Emacs 30.1 Org-mode 9.7.11</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
@@ -24,6 +24,18 @@
     <link>https://www.skywhi.net/posts/</link>
   </image>
 
+  <item>
+    <title>Using git while on-the-run</title>
+    <link>https://www.skywhi.net/posts/git-while-on-the-run.html</link>
+    <author>skywhi@skywhi.net (Skywhi)</author>
+    <guid isPermaLink="false">https://www.skywhi.net/posts/git-while-on-the-run.html</guid>
+    <pubDate>Mon, 07 Jul 2025 00:00:00 +0200</pubDate>
+
+    <description><![CDATA[<p>
+    This post describes how to use a custom <i>git</i> configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct <i>git</i> to use different configs and keys. 
+    </p>
+    ]]></description>
+  </item>
   <item>
     <title>Hello World from Org</title>
     <link>https://www.skywhi.net/posts/hello-world-from-org.html</link>

@@ -24,3 +24,4 @@
   - [[file:posts/hello-world-from-org.org][Hello World from Org]]
   - [[file:posts/index.org][Posts]]
   - [[file:posts/index-no-preview.org][Posts (without preview)]]
+  - [[file:posts/git-while-on-the-run.org][Using git while on-the-run]]

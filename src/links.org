@@ -14,6 +14,8 @@ administration and more. May you find something useful to you as well!
 - [[https://breakpoint.purrfect.fr/][Breakpoint]]
 - [[https://thinkloveshare.com/][Laluka]]
 - [[https://loup-vaillant.fr/][Loup's]]
+- [[https://spaceraccoon.dev/][SpaceRaccoon]]
+- [[https://dataswamp.org/~solene/][Solene]]
 - [[https://www.timdbg.com/][TimDbg]]
 - [[https://plowsec.github.io/][Volodya]]
 - [[https://vozec.fr/][Vozec]]
@@ -46,6 +48,7 @@ administration and more. May you find something useful to you as well!
 :END:
 
 - [[https://catgpt.wvd.io/][CatGPT]]: What if ChatGPT were a cat?
+- [[https://symbl.cc][Symbl.cc]]: Search for Unicode symbols and text generator.
 
 *** Programming
 :PROPERTIES:
@@ -59,6 +62,9 @@ administration and more. May you find something useful to you as well!
 - [[https://yjdoc2.github.io/8086-emulator-web/compile][8086 Emulator]]: compiler with register views and memory inspection.
 - [[http://www.javadecompilers.com/][Online Java decompiler]]: decompile Java bytecode with modern decompilers such
   as Procyon, CFR, JDCore, Jadx and more.
+- [[https://grep.app/][Grep.app]]: grep through repositories on Github.
+- [[https://www.deepgraph.co][DeepGraph]]: transform a repository on Github into a graph view and analyze it
+  with AI.
 
 *** Reverse Shells
 :PROPERTIES:
@@ -274,13 +280,6 @@ Tools:
   - [[https://github.com/jhaddix][Jason Haddix]]'s [[https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056][all.txt]] DNS wordlist
 
 *** Web
-:PROPERTIES:
-:CUSTOM_ID: sec-web
-:END:
-***** Blogs
-
-- [[https://spaceraccoon.dev/][SpaceRaccoon]]: Quality web-oriented security write-ups.
-
 ***** JavaScript and browser security
 
 - [[https://zon8.re/posts/javascript-engine-fuzzing-and-exploitation-reading-list/][JavaScript Engine Fuzzing and Exploitation Reading List]] by [[https://zon8.re/][Zon8 Research]].
@@ -328,6 +327,16 @@ Tools:
 :END:
 
 - [[https://www.masteringemacs.org/][Mastering Emacs]] and in particular its [[https://www.masteringemacs.org/reading-guide][Reading Guide]].
+
+*** Org-mode
+:PROPERTIES:
+:CUSTOM_ID: sys-org
+:END:
+
+- From [[https://github.com/james-stoup][James Stoup]]:
+  - [[https://github.com/james-stoup/emacs-org-mode-tutorial][Org-mode tutorial]]
+  - [[https://github.com/james-stoup/org-mode-table-tutorial][Org-mode table tutorial]]
+  - [[https://github.com/james-stoup/org-mode-better-defaults][Org-mode better defaults]]
 
 *** Git
 :PROPERTIES:

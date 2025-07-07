@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-07-07 Mon 23:15 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Using git while on-the-run</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/index.html" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts/index.html" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes/index.html" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">Using git while on-the-run</h1>
+<p>
+<div class="post-date">
+<i>First published: 07 Jul 2025</i>
+</div>
+</p>
+
+<div class="preview" id="org34e97e2">
+<p>
+This post describes how to use a custom <i>git</i> configuration, including SSH and
+GPG keys, on devices where there are already keys present and the user does not
+want to store their keys and configuration files persistently on the devices.
+This is achieved by storing the keys on a external drive, like a USB stick for
+example and leveraging environment variables to instruct <i>git</i> to use different
+configs and keys.
+</p>
+
+</div>
+
+<p>
+The reason for this setup is that sometimes I find myself in situations where I
+would like to work on my personal <i>git</i> repositories, yet I don't want to store
+my <i>git</i> configuration, my SSH key for authentication or my GPG key for commit
+signing on the device that I'm currently working on. This is for example often
+the case at work where I use a company laptop, virtual machines and servers
+where I am not the sole administrator and would like my key material to remain
+somewhat separated.
+</p>
+
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#gen-keys">Generating and storing the secret keys</a></li>
+<li><a href="#new-device">Working on a new device</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-gen-keys" class="outline-2">
+<h2 id="gen-keys">Generating and storing the secret keys</h2>
+<div class="outline-text-2" id="text-gen-keys">
+<p>
+If you haven't got working pairs of SSH and GPG keys already, I recommend having
+a look at the following resources to generate them according to best practices:
+</p>
+
+<ul class="org-ul">
+<li>GPG: <a href="https://help.riseup.net/en/security/message-security/openpgp/best-practices">Riseup</a>, <a href="https://blog.holtzweb.com/posts/gpg-key-creation-encryption-storage/">Marcus Holtz</a> and <a href="https://mikeross.xyz/create-gpg-key-pair-with-subkeys/">Mike Ross</a></li>
+<li>SSH: <a href="https://www.brandonchecketts.com/archives/ssh-ed25519-key-best-practices-for-2025">Brandon Checketts</a></li>
+</ul>
+
+<p>
+I store my <i>git</i> configuration, SSH key, GPG key and configuration on USB
+sticks. All the devices are encrypted with <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a>. Here is how I structured the
+files on them:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">/mnt/usb/
+&#9500;&#9472;&#9472; alias.sh
+&#9500;&#9472;&#9472; git/
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; config*
+&#9500;&#9472;&#9472; keys/
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; gpg/
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; public.asc
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; public.gpg
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; revocation.asc
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; subkey.asc
+&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; subkey.gpg
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; ssh/
+&#9474;&#160;&#160;     &#9500;&#9472;&#9472; skywhi_ed25519
+&#9474;&#160;&#160;     &#9492;&#9472;&#9472; skywhi_ed25519.pub
+&#9492;&#9472;&#9472; signing_keyring/
+    &#9500;&#9472;&#9472; gpg.conf*
+    &#9492;&#9472;&#9472; pubring.kbx
+</pre>
+</div>
+
+<p>
+I also have another set of devices where my master GPG key is present as well
+under <i>master_keyring/</i>.
+</p>
+</div>
+</div>
+<div id="outline-container-new-device" class="outline-2">
+<h2 id="new-device">Working on a new device</h2>
+<div class="outline-text-2" id="text-new-device">
+<p>
+The <b>alias.sh</b> file contains the following 2 functions:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-function-name">setupgit</span>() {
+
+    <span class="org-variable-name">KEY_DIR</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec"> cd "$( dirname "${BASH_SOURCE[0]}" </span><span class="org-string">)" &amp;&amp; pwd )"</span>;
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">If the variable is already defined, make a backup before updating it and export both</span>
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>=$<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>
+    <span class="org-builtin">export</span> <span class="org-variable-name">GIT_CONFIG_GLOBAL</span>=<span class="org-string">"${KEY_DIR}/git/config"</span>
+
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GIT_SSH_COMMAND</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GIT_SSH_COMMAND</span>=$<span class="org-variable-name">GIT_SSH_COMMAND</span>
+    <span class="org-builtin">export</span> <span class="org-variable-name">GIT_SSH_COMMAND</span>=<span class="org-string">"ssh -i ${KEY_DIR}/keys/ssh/skywhi_ed25519"</span>
+
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GNUPGHOME</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GNUPGHOME</span>=$<span class="org-variable-name">GNUPGHOME</span>
+    <span class="org-builtin">export</span> <span class="org-variable-name">GNUPGHOME</span>=<span class="org-string">"${KEY_DIR}/signing_keyring"</span>
+}
+
+
+<span class="org-function-name">unsetupgit</span>() {
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">If there is a backup, then restore the old value and export it</span>
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>+x} ]] <span class="org-sh-escaped-newline">\</span>
+        &amp;&amp; { <span class="org-builtin">export</span> <span class="org-variable-name">GIT_CONFIG_GLOBAL</span>=${<span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>} ; <span class="org-builtin">export</span> -n BAK_GIT_CONFIG_GLOBAL ; } <span class="org-sh-escaped-newline">\</span>
+        || <span class="org-builtin">export</span> -n GIT_CONFIG_GLOBAL
+
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">BAK_GIT_SSH_COMMAND</span>+x} ]] <span class="org-sh-escaped-newline">\</span>
+        &amp;&amp; { <span class="org-builtin">export</span> <span class="org-variable-name">GIT_SSH_COMMAND</span>=${<span class="org-variable-name">BAK_GIT_SSH_COMMAND</span>} ; <span class="org-builtin">export</span> -n BAK_GIT_SSH_COMMAND ; } <span class="org-sh-escaped-newline">\</span>
+        || <span class="org-builtin">export</span> -n GIT_SSH_COMMAND
+
+    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">BAK_GNUPGHOME</span>+x} ]] <span class="org-sh-escaped-newline">\</span>
+        &amp;&amp; { <span class="org-builtin">export</span> <span class="org-variable-name">GNUPGHOME</span>=${<span class="org-variable-name">BAK_GNUPGHOME</span>} ; <span class="org-builtin">export</span> -n BAK_GNUPGHOME ; } <span class="org-sh-escaped-newline">\</span>
+        || <span class="org-builtin">export</span> -n GNUPGHOME
+}
+</pre>
+</div>
+
+<p>
+The usage of environment variables, as opposed to aliases, allows the settings
+to be propagated in subshells and other programs. This is handy when using
+<i>Makefiles</i> or other scripts for example. The interesting variables that we will
+leverage are <code>GIT_CONFIG_GLOBAL</code> and <code>GIT_SSH_COMMAND</code> and <code>GNUPGHOME</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ man git | grep -A1 <span class="org-string">'GIT_CONFIG_GLOBAL'</span>
+       GIT_CONFIG_GLOBAL, GIT_CONFIG_SYSTEM
+           Take the configuration from the given files instead from global or
+           system-level configuration files. If GIT_CONFIG_SYSTEM is set, the system
+           config file defined at build time (usually /etc/gitconfig) will not be
+           read. Likewise, if GIT_CONFIG_GLOBAL is set, neither $<span class="org-variable-name">HOME</span>/.gitconfig nor
+           $<span class="org-variable-name">XDG_CONFIG_HOME</span>/git/config will be read. Can be set to /dev/null to skip
+           reading configuration files of the respective level.
+
+
+$ man git | grep <span class="org-string">'GIT_SSH_COMMAND'</span>
+       GIT_SSH, GIT_SSH_COMMAND
+           If either of these environment variables is set then git fetch and git push
+           will use the specified command instead of ssh when they need to connect to
+           a remote. The command-line parameters passed to the configured command are
+           determined by the ssh variant. See ssh.variant option<span class="org-keyword"> in</span> git-config(1) <span class="org-keyword">for</span>
+           details.
+
+           $<span class="org-variable-name">GIT_SSH_COMMAND</span> takes precedence over $<span class="org-variable-name">GIT_SSH</span>, and is interpreted by the
+           shell, which allows additional arguments to be included.  $<span class="org-variable-name">GIT_SSH</span> on the
+           other hand must be just the path to a program (which can be a wrapper shell
+           script, if additional arguments are needed)<span class="org-builtin">.</span>
+
+           Usually it is easier to configure any desired options through your personal
+           .ssh/config file. Please consult your ssh documentation for further details.
+
+
+$ man gpg | grep -A1 <span class="org-string">'GNUPGHOME$'</span>
+       GNUPGHOME
+              If set directory used instead of <span class="org-string">"~/.gnupg"</span>.
+</pre>
+</div>
+
+<p>
+<code>GIT_CONFIG_GLOBAL</code> allows us to provide a custom <i>git</i> configuration file,
+<code>GIT_SSH_COMMAND</code> the SSH command used by <i>git</i> and <code>GNUPGHOME</code> our <b>gpg.conf</b>
+and signing key. <code>KEY_DIR</code> stores the directory of the USB stick, where the
+<b>alias.sh</b> file is located.
+</p>
+
+<p>
+So when I need to do some <i>git</i> operations, I use the following commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Open and mount the LUKS-encrypted device /dev/sdb</span>
+$ sudo cryptsetup open /dev/sdb cool-pendrive
+$ sudo mount /dev/mapper/cool-pendrive /mnt/usb
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Load the environment variables</span>
+$ . /mnt/usb/alias.sh
+$ setupgit
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Do some git things...</span>
+$ git commit -m <span class="org-string">'My commit'</span>
+$ git push
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Restore the environment and unmount the usb stick</span>
+$ unsetupgit
+$ sudo umount /mnt/usb
+$ sudo cryptsetup close cool-pendrive
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

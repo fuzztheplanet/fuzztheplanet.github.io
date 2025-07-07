@@ -23,7 +23,7 @@
 
 ;; Extract content between #+begin_preview and #+end_preview
 (defun skw-blog/get-preview (file)
-  "The comments (begin/end_preview) in'file' have to be on their own lines,
+  "The blocks begin_ and end_preview in 'file' have to be on their own lines,
    preferably before and after paragraphs."
   (with-temp-buffer
     (message file)
@@ -92,6 +92,8 @@
  org-html-head-include-scripts nil
  org-html-html5-fancy nil
  org-html-htmlize-output-type 'css
+
+ org-html-table-use-header-tags-for-first-column nil
 
  org-html-mathjax-options '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
                             (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
@@ -165,6 +167,7 @@ title of the RSS feed and 'list' the files to be included."
 :pubdate: %s
 :end:
 %s" title link pubdate preview)))
+
 
 
 ;; Publishing rules

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-06-09 Mon 23:58 -->
+<!-- 2025-07-07 Mon 23:15 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pentesting Active Directory forests of BSOD boxes</title>
@@ -30,56 +30,56 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org520cf02">General Resources</a>
+<li><a href="#orge33c37a">General Resources</a>
 <ul>
-<li><a href="#orgfaaaf45">Active Directory</a></li>
+<li><a href="#org902591c">Active Directory</a></li>
 </ul>
 </li>
-<li><a href="#org265f745">Initial discovery and enumeration</a>
+<li><a href="#org82c792a">Initial discovery and enumeration</a>
 <ul>
-<li><a href="#orgaf80d7e">NetBios scan</a></li>
-<li><a href="#orgf23ab95">Find domain controllers</a></li>
-<li><a href="#orgb127e88">Active Directory enumeration</a></li>
-<li><a href="#org1d16796">Local enumeration</a></li>
-<li><a href="#orga454126">Powershell</a></li>
-<li><a href="#org6f58ee2">Services</a></li>
-<li><a href="#orgc617c36">Sysinternals</a></li>
-<li><a href="#org4debdcc">Responder</a></li>
+<li><a href="#org3437944">NetBios scan</a></li>
+<li><a href="#orge67b15f">Find domain controllers</a></li>
+<li><a href="#orga56f06c">Active Directory enumeration</a></li>
+<li><a href="#org80a7d15">Local enumeration</a></li>
+<li><a href="#org859a9b5">Powershell</a></li>
+<li><a href="#org2d0f5b3">Services</a></li>
+<li><a href="#org9d936c8">Sysinternals</a></li>
+<li><a href="#orgdfb4efa">Responder</a></li>
 </ul>
 </li>
-<li><a href="#org6419431">Privilege escalation</a>
+<li><a href="#orgf363ff9">Privilege escalation</a>
 <ul>
-<li><a href="#orgfd53a7e">Enumeration</a></li>
-<li><a href="#org19b6f8a">NTDS.dit extraction</a></li>
-<li><a href="#org8cec8d6">Kerberoasting</a></li>
-<li><a href="#orgb9f3117">SMB shares</a></li>
-<li><a href="#orgc822eef">Abuse GenericAll and GeneralWrite</a></li>
-<li><a href="#orgf1ca933">Pass-the-hash</a></li>
-<li><a href="#org4031703">MS17-010 - EternalBlue</a></li>
-<li><a href="#org1dff0eb">JuicyPotato</a></li>
+<li><a href="#org9cdc93b">Enumeration</a></li>
+<li><a href="#orgedd1dae">NTDS.dit extraction</a></li>
+<li><a href="#orgcd953ac">Kerberoasting</a></li>
+<li><a href="#org83cdb06">SMB shares</a></li>
+<li><a href="#org3859951">Abuse GenericAll and GeneralWrite</a></li>
+<li><a href="#org9ee95ad">Pass-the-hash</a></li>
+<li><a href="#org169e1fd">MS17-010 - EternalBlue</a></li>
+<li><a href="#orgecb320a">JuicyPotato</a></li>
 </ul>
 </li>
-<li><a href="#orga8e376c">AMSI</a></li>
-<li><a href="#org550ef45">Windows Defender</a>
+<li><a href="#org04341a0">AMSI</a></li>
+<li><a href="#orgc0a3477">Windows Defender</a>
 <ul>
-<li><a href="#org541ae46">List excluded paths</a></li>
+<li><a href="#org1b666d8">List excluded paths</a></li>
 </ul>
 </li>
-<li><a href="#orga783eb0">Misc</a>
+<li><a href="#org52b9361">Misc</a>
 <ul>
-<li><a href="#orge7a722a">Remove password from Excel spreadsheet</a></li>
-<li><a href="#org1612a38">VBS snippets</a></li>
+<li><a href="#org65856c2">Remove password from Excel spreadsheet</a></li>
+<li><a href="#org16c7479">VBS snippets</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-org520cf02" class="outline-2">
-<h2 id="org520cf02">General Resources</h2>
-<div class="outline-text-2" id="text-org520cf02">
+<div id="outline-container-orge33c37a" class="outline-2">
+<h2 id="orge33c37a">General Resources</h2>
+<div class="outline-text-2" id="text-orge33c37a">
 </div>
-<div id="outline-container-orgfaaaf45" class="outline-3">
-<h3 id="orgfaaaf45">Active Directory</h3>
-<div class="outline-text-3" id="text-orgfaaaf45">
+<div id="outline-container-org902591c" class="outline-3">
+<h3 id="org902591c">Active Directory</h3>
+<div class="outline-text-3" id="text-org902591c">
 <ul class="org-ul">
 <li><a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology">Active Directory Methodology</a> by <a href="https://book.hacktricks.xyz/welcome/readme">Hacktricks</a></li>
 <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings">PayloadsAllTheThings</a> with <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md">Active Directory Attacks</a></li>
@@ -93,22 +93,22 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org265f745" class="outline-2">
-<h2 id="org265f745">Initial discovery and enumeration</h2>
-<div class="outline-text-2" id="text-org265f745">
+<div id="outline-container-org82c792a" class="outline-2">
+<h2 id="org82c792a">Initial discovery and enumeration</h2>
+<div class="outline-text-2" id="text-org82c792a">
 </div>
-<div id="outline-container-orgaf80d7e" class="outline-3">
-<h3 id="orgaf80d7e">NetBios scan</h3>
-<div class="outline-text-3" id="text-orgaf80d7e">
+<div id="outline-container-org3437944" class="outline-3">
+<h3 id="org3437944">NetBios scan</h3>
+<div class="outline-text-3" id="text-org3437944">
 <div class="org-src-container">
 <pre class="src src-sh">sudo nbtscan -v -s : -r 10.10.10.0/24
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf23ab95" class="outline-3">
-<h3 id="orgf23ab95">Find domain controllers</h3>
-<div class="outline-text-3" id="text-orgf23ab95">
+<div id="outline-container-orge67b15f" class="outline-3">
+<h3 id="orge67b15f">Find domain controllers</h3>
+<div class="outline-text-3" id="text-orge67b15f">
 <p>
 Get the hostnames and ip addresses of DCs (Domain Controllers).
 </p>
@@ -124,13 +124,13 @@ C:&gt; nslookup
 </div>
 </div>
 </div>
-<div id="outline-container-orgb127e88" class="outline-3">
-<h3 id="orgb127e88">Active Directory enumeration</h3>
-<div class="outline-text-3" id="text-orgb127e88">
+<div id="outline-container-orga56f06c" class="outline-3">
+<h3 id="orga56f06c">Active Directory enumeration</h3>
+<div class="outline-text-3" id="text-orga56f06c">
 </div>
-<div id="outline-container-org1f8ed61" class="outline-4">
-<h4 id="org1f8ed61">Bloodhound</h4>
-<div class="outline-text-4" id="text-org1f8ed61">
+<div id="outline-container-orgbf6670e" class="outline-4">
+<h4 id="orgbf6670e">Bloodhound</h4>
+<div class="outline-text-4" id="text-orgbf6670e">
 <p>
 <a href="https://github.com/BloodHoundAD/BloodHound">BloodHound</a> (<a href="https://bloodhound.readthedocs.io/en/latest/index.html">docs</a>) allows to find and visualize paths in the Active Directory
 structure. First use an ingestor such as <a href="https://github.com/BloodHoundAD/BloodHound/tree/master/Ingestors">SharpHound</a> (.exe or .ps1) or
@@ -146,19 +146,19 @@ bloodhound
 </div>
 </div>
 </div>
-<div id="outline-container-org3b77288" class="outline-4">
-<h4 id="org3b77288">Bloodhound queries</h4>
-<div class="outline-text-4" id="text-org3b77288">
-<pre class="example" id="org7f5c40f">
+<div id="outline-container-org5513e30" class="outline-4">
+<h4 id="org5513e30">Bloodhound queries</h4>
+<div class="outline-text-4" id="text-org5513e30">
+<pre class="example" id="orgad97283">
 # Accounts able to perform RBCD
 # Source: https://twitter.com/KenjiEndo15/status/1578811281498599425
 Match p=(g)-[:AddAllowedToAct|WriteAccountRestrictions]-&gt;(c:Computer) RETURN p
 </pre>
 </div>
 </div>
-<div id="outline-container-org282776b" class="outline-4">
-<h4 id="org282776b">PingCastle</h4>
-<div class="outline-text-4" id="text-org282776b">
+<div id="outline-container-org1637c46" class="outline-4">
+<h4 id="org1637c46">PingCastle</h4>
+<div class="outline-text-4" id="text-org1637c46">
 <p>
 <a href="https://www.pingcastle.com/">PingCastle</a> by <a href="https://twitter.com/mysmartlogon">Vincent Le Toux</a> is a Windows executable that will assess the
 most important security mis-configurations related to the Active Directory
@@ -167,18 +167,18 @@ visualisation and clear HTML reports.
 </p>
 </div>
 </div>
-<div id="outline-container-orgf52804a" class="outline-4">
-<h4 id="orgf52804a">Manual queries</h4>
-<div class="outline-text-4" id="text-orgf52804a">
+<div id="outline-container-org4a69ea9" class="outline-4">
+<h4 id="org4a69ea9">Manual queries</h4>
+<div class="outline-text-4" id="text-org4a69ea9">
 <p>
 <a href="https://posts.specterops.io/an-introduction-to-manual-active-directory-querying-with-dsquery-and-ldapsearch-84943c13d7eb?gi=597cb251d175">Manually quering with dsquery and ldapsearch</a>.
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org1d16796" class="outline-3">
-<h3 id="org1d16796">Local enumeration</h3>
-<div class="outline-text-3" id="text-org1d16796">
+<div id="outline-container-org80a7d15" class="outline-3">
+<h3 id="org80a7d15">Local enumeration</h3>
+<div class="outline-text-3" id="text-org80a7d15">
 <p>
 General system info and config.
 </p>
@@ -224,9 +224,9 @@ C:<span class="org-string">\&gt;</span> sc qc &lt;service&gt; <span class="org-c
 </div>
 </div>
 </div>
-<div id="outline-container-orga454126" class="outline-3">
-<h3 id="orga454126">Powershell</h3>
-<div class="outline-text-3" id="text-orga454126">
+<div id="outline-container-org859a9b5" class="outline-3">
+<h3 id="org859a9b5">Powershell</h3>
+<div class="outline-text-3" id="text-org859a9b5">
 <div class="org-src-container">
 <pre class="src src-shell">PS C:<span class="org-string">\&gt;</span> Get-ExecutionPolicy -List
 PS C:<span class="org-string">\&gt;</span> Set-ExecutionPolicy Bypass -Scope Process
@@ -234,27 +234,27 @@ PS C:<span class="org-string">\&gt;</span> Set-ExecutionPolicy Bypass -Scope Pro
 </div>
 </div>
 </div>
-<div id="outline-container-org6f58ee2" class="outline-3">
-<h3 id="org6f58ee2">Services</h3>
-<div class="outline-text-3" id="text-org6f58ee2">
+<div id="outline-container-org2d0f5b3" class="outline-3">
+<h3 id="org2d0f5b3">Services</h3>
+<div class="outline-text-3" id="text-org2d0f5b3">
 <div class="org-src-container">
 <pre class="src src-powershell">PS C:\&gt; <span class="org-function-name">Get-ACL</span> <span class="org-constant">-Path</span> HKLM:\System\CurrentControlSet\Services\wuauserv | <span class="org-function-name">Format-List</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgc617c36" class="outline-3">
-<h3 id="orgc617c36">Sysinternals</h3>
-<div class="outline-text-3" id="text-orgc617c36">
+<div id="outline-container-org9d936c8" class="outline-3">
+<h3 id="org9d936c8">Sysinternals</h3>
+<div class="outline-text-3" id="text-org9d936c8">
 <div class="org-src-container">
 <pre class="src src-shell">C:<span class="org-string">\&gt;</span> <span class="org-string">\\</span>live.sysinternals.com\tools\procdump.exe -accepteula
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org4debdcc" class="outline-3">
-<h3 id="org4debdcc">Responder</h3>
-<div class="outline-text-3" id="text-org4debdcc">
+<div id="outline-container-orgdfb4efa" class="outline-3">
+<h3 id="orgdfb4efa">Responder</h3>
+<div class="outline-text-3" id="text-orgdfb4efa">
 <p>
 When working on a Windows/AD environment, it is never a bad idea to have
 <a href="https://github.com/lgandx/Responder">Responder</a> running in the background. It is a wonderful and extremely
@@ -263,13 +263,13 @@ featureful tool, I highly recommend that you check out its documentation.
 </div>
 </div>
 </div>
-<div id="outline-container-org6419431" class="outline-2">
-<h2 id="org6419431">Privilege escalation</h2>
-<div class="outline-text-2" id="text-org6419431">
+<div id="outline-container-orgf363ff9" class="outline-2">
+<h2 id="orgf363ff9">Privilege escalation</h2>
+<div class="outline-text-2" id="text-orgf363ff9">
 </div>
-<div id="outline-container-orgfd53a7e" class="outline-3">
-<h3 id="orgfd53a7e">Enumeration</h3>
-<div class="outline-text-3" id="text-orgfd53a7e">
+<div id="outline-container-org9cdc93b" class="outline-3">
+<h3 id="org9cdc93b">Enumeration</h3>
+<div class="outline-text-3" id="text-org9cdc93b">
 <p>
 Resources:
 </p>
@@ -287,9 +287,9 @@ Tools:
 </ul>
 </div>
 </div>
-<div id="outline-container-org19b6f8a" class="outline-3">
-<h3 id="org19b6f8a">NTDS.dit extraction</h3>
-<div class="outline-text-3" id="text-org19b6f8a">
+<div id="outline-container-orgedd1dae" class="outline-3">
+<h3 id="orgedd1dae">NTDS.dit extraction</h3>
+<div class="outline-text-3" id="text-orgedd1dae">
 <p>
 The NTDS.dit file is located on Domain Controllers and contains the password
 hashes of Active Directory users. There are various ways to extract them:
@@ -316,9 +316,9 @@ plaintext user passwords.
 </ul>
 </div>
 </div>
-<div id="outline-container-org8cec8d6" class="outline-3">
-<h3 id="org8cec8d6">Kerberoasting</h3>
-<div class="outline-text-3" id="text-org8cec8d6">
+<div id="outline-container-orgcd953ac" class="outline-3">
+<h3 id="orgcd953ac">Kerberoasting</h3>
+<div class="outline-text-3" id="text-orgcd953ac">
 <p>
 Look for roastable accounts:
 </p>
@@ -329,27 +329,27 @@ Look for roastable accounts:
 </div>
 </div>
 </div>
-<div id="outline-container-orgb9f3117" class="outline-3">
-<h3 id="orgb9f3117">SMB shares</h3>
-<div class="outline-text-3" id="text-orgb9f3117">
+<div id="outline-container-org83cdb06" class="outline-3">
+<h3 id="org83cdb06">SMB shares</h3>
+<div class="outline-text-3" id="text-org83cdb06">
 <div class="org-src-container">
 <pre class="src src-sh">cme smb &lt;domain&gt; -u &lt;user&gt; -p &lt;passwd&gt; --shares
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgc822eef" class="outline-3">
-<h3 id="orgc822eef">Abuse GenericAll and GeneralWrite</h3>
-<div class="outline-text-3" id="text-orgc822eef">
+<div id="outline-container-org3859951" class="outline-3">
+<h3 id="org3859951">Abuse GenericAll and GeneralWrite</h3>
+<div class="outline-text-3" id="text-org3859951">
 <ul class="org-ul">
 <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericall">https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericall</a></li>
 <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericwrite">https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericwrite</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf1ca933" class="outline-3">
-<h3 id="orgf1ca933">Pass-the-hash</h3>
-<div class="outline-text-3" id="text-orgf1ca933">
+<div id="outline-container-org9ee95ad" class="outline-3">
+<h3 id="org9ee95ad">Pass-the-hash</h3>
+<div class="outline-text-3" id="text-org9ee95ad">
 <p>
 By using <a href="https://github.com/SecureAuthCorp/impacket">Impacket</a>'s <b>psexec</b>:
 </p>
@@ -360,9 +360,9 @@ By using <a href="https://github.com/SecureAuthCorp/impacket">Impacket</a>'s <b>
 </div>
 </div>
 </div>
-<div id="outline-container-org4031703" class="outline-3">
-<h3 id="org4031703">MS17-010 - EternalBlue</h3>
-<div class="outline-text-3" id="text-org4031703">
+<div id="outline-container-org169e1fd" class="outline-3">
+<h3 id="org169e1fd">MS17-010 - EternalBlue</h3>
+<div class="outline-text-3" id="text-org169e1fd">
 <p>
 Metasploit or external scripts, for example from <a href="https://github.com/helviojunior/MS17-010">helviojunior</a>.
 </p>
@@ -376,9 +376,9 @@ python2 send_and_execute.py &lt;target&gt; eternalblue.exe
 </div>
 </div>
 </div>
-<div id="outline-container-org1dff0eb" class="outline-3">
-<h3 id="org1dff0eb">JuicyPotato</h3>
-<div class="outline-text-3" id="text-org1dff0eb">
+<div id="outline-container-orgecb320a" class="outline-3">
+<h3 id="orgecb320a">JuicyPotato</h3>
+<div class="outline-text-3" id="text-orgecb320a">
 <p>
 <a href="https://book.hacktricks.xyz/windows/windows-local-privilege-escalation/juicypotato">Hacktricks on JuicyPotato</a>. Check this <a href="https://ohpe.it/juicy-potato/CLSID/">Windows CLSID list</a> if needed, use <a href="https://ohpe.it/juicy-potato/CLSID/GetCLSID.ps1">this
 script</a> to extract all CLSIDs.
@@ -395,22 +395,22 @@ Here we spawn a netcat reverse shell with administrator privileges.
 </div>
 </div>
 </div>
-<div id="outline-container-orga8e376c" class="outline-2">
-<h2 id="orga8e376c">AMSI</h2>
-<div class="outline-text-2" id="text-orga8e376c">
+<div id="outline-container-org04341a0" class="outline-2">
+<h2 id="org04341a0">AMSI</h2>
+<div class="outline-text-2" id="text-org04341a0">
 <ul class="org-ul">
 <li><a href="https://amsi.fail/">AMSI.fail</a>: Generate Powershell snippets to disable AMSI for the current
 process.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org550ef45" class="outline-2">
-<h2 id="org550ef45">Windows Defender</h2>
-<div class="outline-text-2" id="text-org550ef45">
+<div id="outline-container-orgc0a3477" class="outline-2">
+<h2 id="orgc0a3477">Windows Defender</h2>
+<div class="outline-text-2" id="text-orgc0a3477">
 </div>
-<div id="outline-container-org541ae46" class="outline-3">
-<h3 id="org541ae46">List excluded paths</h3>
-<div class="outline-text-3" id="text-org541ae46">
+<div id="outline-container-org1b666d8" class="outline-3">
+<h3 id="org1b666d8">List excluded paths</h3>
+<div class="outline-text-3" id="text-org1b666d8">
 <div class="org-src-container">
 <pre class="src src-shell">reg query <span class="org-string">"HKLM\Software\Microsoft\Windows Defender\Exclusions\Paths"</span>
 </pre>
@@ -418,13 +418,13 @@ process.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-orga783eb0" class="outline-2">
-<h2 id="orga783eb0">Misc</h2>
-<div class="outline-text-2" id="text-orga783eb0">
+<div id="outline-container-org52b9361" class="outline-2">
+<h2 id="org52b9361">Misc</h2>
+<div class="outline-text-2" id="text-org52b9361">
 </div>
-<div id="outline-container-orge7a722a" class="outline-3">
-<h3 id="orge7a722a">Remove password from Excel spreadsheet</h3>
-<div class="outline-text-3" id="text-orge7a722a">
+<div id="outline-container-org65856c2" class="outline-3">
+<h3 id="org65856c2">Remove password from Excel spreadsheet</h3>
+<div class="outline-text-3" id="text-org65856c2">
 <p>
 A simple way to remove the password from protected cells is to unzip the
 spreadsheet, locate and remove the hash of the password and rezip.
@@ -439,13 +439,13 @@ libreoffice Unprotected.xlsx
 </div>
 </div>
 </div>
-<div id="outline-container-org1612a38" class="outline-3">
-<h3 id="org1612a38">VBS snippets</h3>
-<div class="outline-text-3" id="text-org1612a38">
+<div id="outline-container-org16c7479" class="outline-3">
+<h3 id="org16c7479">VBS snippets</h3>
+<div class="outline-text-3" id="text-org16c7479">
 </div>
-<div id="outline-container-orge145986" class="outline-4">
-<h4 id="orge145986">File download</h4>
-<div class="outline-text-4" id="text-orge145986">
+<div id="outline-container-orgaafa3e6" class="outline-4">
+<h4 id="orgaafa3e6">File download</h4>
+<div class="outline-text-4" id="text-orgaafa3e6">
 <p>
 Uses <i>Microsoft.XMLHTTP</i> to download and save a file locally.
 </p>
