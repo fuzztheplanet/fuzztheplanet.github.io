@@ -4,13 +4,13 @@
 :properties:
 :rss_permalink: git-while-on-the-run.html
 :pubdate: 2025-07-07 Mon
-:ID:       b8e5e0d3-1d94-4455-ac1f-e0dd85d47ff6
+:ID:       83ae6b7c-068d-422c-9d78-23a7762fa154
 :END:
 This post describes how to use a custom /git/ configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct /git/ to use different configs and keys. 
 * Hello World from Org
 :properties:
 :rss_permalink: hello-world-from-org.html
 :pubdate: 2025-05-25 Sun
-:ID:       fe4cbe5d-2198-44e0-92f9-0e0239af8364
+:ID:       0819055e-e689-4a6d-8148-a366e9aae224
 :END:
 I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 

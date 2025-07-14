@@ -180,6 +180,7 @@ body {
 
 #content code {
     color: var(--red);
+    background-color: var(--white);
     font-size: 0.9rem;
     white-space: nowrap;
 }

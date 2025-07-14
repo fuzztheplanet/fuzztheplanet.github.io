@@ -42,6 +42,13 @@ administration and more. May you find something useful to you as well!
 
 - [[https://samuelj.li/elliptic-curve-explorer/][Elliptic Curve Explorer]].
 
+*** DNS
+:PROPERTIES:
+:CUSTOM_ID: online-dns
+:END:
+
+- [[https://nip.io/][nip.io]]: dead simple wildcard DNS for any IP address
+
 *** Misc
 :PROPERTIES:
 :CUSTOM_ID: online-misc
@@ -73,12 +80,13 @@ administration and more. May you find something useful to you as well!
 
 - [[https://www.revshells.com/][https://www.revshells.com/]].
 
-*** DNS
+*** Web
 :PROPERTIES:
-:CUSTOM_ID: online-dns
+:CUSTOM_ID: online-web
 :END:
 
-- [[https://nip.io/][nip.io]]: dead simple wildcard DNS for any IP address
+- [[https://cspbypass.com/][CSPBypass.com]]: find gadgets to bypass CSPs.
+
 * Programming
 :PROPERTIES:
 :CUSTOM_ID: prog
@@ -320,6 +328,13 @@ Tools:
 
 *Table of content*
 #+TOC: headlines 6 local
+
+*** Docker
+:PROPERTIES:
+:CUSTOM_ID: sys-docker
+:END:
+
+- [[https://github.com/bcicen/ctop][ctop]]: Top-like interface for container metrics.
 
 *** Emacs
 :PROPERTIES:

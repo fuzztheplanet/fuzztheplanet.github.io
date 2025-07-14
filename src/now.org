@@ -6,6 +6,9 @@ and points of focus as well as some random, unsorted and unfiltered thoughts.
 
 
 * [2025-06-06 Fri]
+:PROPERTIES:
+:CUSTOM_ID: 2025-06-06
+:END:
 
 I am trying to push myself to *document* my on-going things and *publish* what
 could potentially be relevant to others. This could be my [[https://github.com/fuzztheplanet/dotfiles][own dotfiles]], some

@@ -19,7 +19,6 @@ publish:
 
 update:
 	make all
-	make mathjax
 	git add .
 	git status
 
