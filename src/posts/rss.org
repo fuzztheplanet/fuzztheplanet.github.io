@@ -1,16 +1,23 @@
 #+TITLE: Skywhi's Blog
 
+* Getting Things Done with Org
+:properties:
+:rss_permalink: gtd-with-org.html
+:pubdate: 2025-12-03 Wed
+:ID:       b71b02a7-41e5-466b-b330-01266ba70cdc
+:END:
+/Yet-another-GTD-post/ featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows. 
 * Using git while on-the-run
 :properties:
 :rss_permalink: git-while-on-the-run.html
 :pubdate: 2025-07-07 Mon
-:ID:       83ae6b7c-068d-422c-9d78-23a7762fa154
+:ID:       d5efd649-5a1e-48a9-94e8-73db1eb3eb61
 :END:
 This post describes how to use a custom /git/ configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct /git/ to use different configs and keys. 
 * Hello World from Org
 :properties:
 :rss_permalink: hello-world-from-org.html
 :pubdate: 2025-05-25 Sun
-:ID:       0819055e-e689-4a6d-8148-a366e9aae224
+:ID:       71beb326-6deb-4f89-bb23-d2be8182a4cd
 :END:
 I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 

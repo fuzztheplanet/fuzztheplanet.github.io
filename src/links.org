@@ -56,6 +56,7 @@ administration and more. May you find something useful to you as well!
 
 - [[https://catgpt.wvd.io/][CatGPT]]: What if ChatGPT were a cat?
 - [[https://symbl.cc][Symbl.cc]]: Search for Unicode symbols and text generator.
+- [[https://webaim.org/resources/contrastchecker/][Color contrast checker]].
 
 *** Programming
 :PROPERTIES:

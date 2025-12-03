@@ -48,6 +48,10 @@ body {
     display: block;
     width: 90%;
     margin: auto;
+
+    font-size: 18px;
+    line-height: 1.5;
+
 }
 
 /* Preamble (header) */
@@ -85,9 +89,10 @@ body {
 
 /* Main content */
 #content {
-    width: 55%;
-    margin: auto;
     text-align: justify;
+    max-width: 900px;
+    margin: auto;
+    margin-bottom: 40px;
 }
 
 #content #table-of-contents h2 {
@@ -95,8 +100,6 @@ body {
 }
 
 #content h1, h2, h3, h4, h5, h6 {
-    /* font-family: 'Quicksand', sans-serif; */
-    /* font-weight: normal; */
     font-weight: bold;
     color: var(--red-dark);
     margin-top:    1em;
@@ -105,7 +108,7 @@ body {
 
 #content h1 {
     font-size: 2.0em;
-    padding-bottom: 1em;
+    padding-bottom: 0.5em;
 }
 
 #content h2 {
@@ -188,8 +191,20 @@ body {
 #content .post-date {
     width: 100%;
     text-align: right;
-    /* padding-bottom: 1.3em; */
-    /* padding-bottom: 0.5em; */
+    padding-bottom: 0.5em;
+}
+
+
+#content blockquote {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #FFF8DC;
+    border-left: 2px solid #ffe466;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
 }
 
 /* Postamble (footer) */
@@ -229,10 +244,14 @@ body {
 }
 
 /* Images */
-#content .figure {
-    text-align: center;
+.figure img {
+    max-height:100% !important;
+    max-width:100% !important;
 }
 
+.figure p {
+    text-align: center;
+}
 
 /* Timestamp (Org macro) */
 .timestamp {

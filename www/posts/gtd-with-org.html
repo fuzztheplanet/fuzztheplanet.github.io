@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2025-12-03 Wed 23:31 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Getting Things Done with Org</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
+<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="preamble" class="status">
+<a href="/"><img src="/files/img/profile.jpg"/></a>
+<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+<nav>
+    <span class="nav-item">[<a href="/index.html" title="Home">Home</a>]</span>
+    <span class="nav-item">[<a href="/posts/index.html" title="Posts">Posts</a>]</span>
+    <span class="nav-item">[<a href="/notes/index.html" title="Notes">Notes</a>]</span>
+    <span class="nav-item">[<a href="/links.html" title="Links">Links</a>]</span>
+    <span class="nav-item">[<a href="/about.html" title="About">About</a>]</span>
+</nav>
+<hr>
+</div>
+<div id="content" class="content">
+<h1 class="title">Getting Things Done with Org</h1>
+<p>
+<div class="post-date">
+<i>First published: 03 Dec 2025</i>
+</div>
+</p>
+
+<div class="preview" id="org0a2ce85">
+<p>
+<i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal
+setup. It is rather minimalist and can be easily extended to fit different
+workflows.
+</p>
+
+</div>
+
+<p>
+I wrote this mostly for my own documentation, but I would be happy if the reader
+can get a tip or two out of it. Links to more advanced setups are provided at
+the <a href="./gtd-with-org.html#resources">end</a> of this post.
+</p>
+
+<p>
+<b>Table of Contents:</b>
+</p>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#rationale">Rationale</a></li>
+<li><a href="#workflow">Workflow Overview</a></li>
+<li><a href="#list-of-files">List of Org Files</a>
+<ul>
+<li><a href="#directories-and-files">Directories and Files</a></li>
+<li><a href="#quick-access">Quick Access</a></li>
+</ul>
+</li>
+<li><a href="#tasks">Defining Tasks</a>
+<ul>
+<li><a href="#tasks-states">States</a></li>
+<li><a href="#tasks-tags">Tags</a></li>
+<li><a href="#tasks-priority">Priority and Effort</a></li>
+<li><a href="#tasks-habits">Habits</a></li>
+</ul>
+</li>
+<li><a href="#agenda">Viewing Tasks</a>
+<ul>
+<li><a href="#agenda-files">Agenda Files</a></li>
+<li><a href="#skipping-tags-and-habits">Skipping Tags and Habits</a></li>
+<li><a href="#custom-agenda-views">Custom Agenda Views</a></li>
+<li><a href="#org27d631a">Special Calender Entries</a></li>
+</ul>
+</li>
+<li><a href="#refiling">Working with Tasks</a>
+<ul>
+<li><a href="#capture">Capture</a></li>
+<li><a href="#org25a86c0">Refiling</a></li>
+<li><a href="#archiving">Archiving</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+</div>
+<div id="outline-container-rationale" class="outline-2">
+<h2 id="rationale">Rationale</h2>
+<div class="outline-text-2" id="text-rationale">
+<p>
+I won't talk too much about the added values of "Getting Things Done" (GTD) and
+other organization/productivity enforcement strategies as there already exists
+plenty of literature about such topics. Everyone has their own personal needs,
+ways to organize themselves, yaddi yaddi yadda, you know the drill. So I will
+just highlight the benefits that I <i>personally</i> draw out of using a GTD
+"system":
+</p>
+
+<ul class="org-ul">
+<li><b>Increased efficiency</b>: Tasks are clearly defined, prioritized and
+categorized. They contain enough information to get started immediately
+without losing too much time and risking getting distracted in the process.
+While planning ahead, it is easy to determine which actions have to be taken
+and avoid the unnecessary idle time spent ordering all the items mentally to
+figure out what to do next.</li>
+
+<li><b>Clear mind</b>: Important tasks are written down and saved on a device which
+saves the mental charge of having to remember them. This helps reducing the,
+sometimes unconscious, stress and anxiety. Clearing the back of my mind from
+non-important noise allows me to be more committed and focused on the current
+matter.</li>
+
+<li><b>Tracking</b>: There is a record of the most important things that happened. This
+record can be searched through in order to look up something specific or just
+to see how some things evolved over longer periods of time.</li>
+</ul>
+
+<p>
+By GTD "system" I mean any device, digital or physical, that is used to track
+down the progress of one's tasks, goals, projects, notes and so on. I chose to
+implement mine with Emacs' <a href="https://orgmode.org/">Org-Mode</a>. Not only does it integrate well with my
+existing setup as I use it already for its markup language, the "system" also
+only consists of good old plain text files. This ensures me that I will still be
+able to work with it in 37 years, somehow, even after the second zombie
+apocalypse nearly killed us all. It can also pretty easily be
+version-controlled, backed-up and encrypted (for which I use <a href="https://git-scm.com/">git</a>, <a href="http://duplicity.nongnu.org/">duplicity</a> and
+<a href="https://gnupg.org/">GnuPG</a> respectively).
+</p>
+
+<p>
+The rest of this post will describe how these functionalities can be implemented
+with Org. The Elisp code shown is complete and can easily be reused and
+personalized. It also reflects the overall approach that I had: just roll-out a
+simple functional system and then organically adapt it to fit the desired
+requirements and workflows. Most of it is directly taken from the sources
+mentioned <a href="#resources">below</a> or from the <a href="https://orgmode.org/manual/">Org manual</a>. I highly recommend you check them out!
+</p>
+</div>
+</div>
+<div id="outline-container-workflow" class="outline-2">
+<h2 id="workflow">Workflow Overview</h2>
+<div class="outline-text-2" id="text-workflow">
+<p>
+The most central piece is certainly my custom <i>agenda view</i>. At the top is a
+calender displaying scheduled tasks and upcoming deadlines for the next 14 days.
+Underneath is a list of on-going and pending tasks, sorted by status, priority
+and effort estimate. I keep this view constantly open and update the tasks from
+there as I work on them.
+</p>
+
+<p>
+Each task can be given a TODO status, several tags, a priority and an effort
+estimate. The agenda view makes it very convenient to filter the tasks according
+to these properties. Thus I can easily switch from an exhaustive listing of all
+tasks to a more focused view of what currently matters to me. From the agenda
+view it is also quite straightforward to change a task's status, reschedule it
+or add notes to it. If new tasks, appointments or ideas arise, they can quickly
+be added to my <i>inbox</i> with <i>org-capture</i> from anywhere within Emacs.
+</p>
+
+<p>
+At the end of the day, I try to take 5-10 minutes to clean-up my <i>inbox</i>. I add
+more information to the tasks or notes that came in and refile them to the
+relevant Org files. I use this time to go through my todos, adjust priorities
+and (re)schedule items <i>when it makes sense</i>.
+</p>
+
+<p>
+I perform a monthly review of all my Org files. I check the logs and archive
+completed tasks. I go through each file and check whether notes can be turned
+into tasks or vice versa. I also review my short-term goals and reorganize my
+todos if needed.
+</p>
+
+<p>
+Overall, I try to keep my agenda and todos to a minimal. I only create tasks
+from things that I actually <i>have to</i> do. For the rest, I rather take notes and
+consult them whenever it's relevant. Furthermore, I am not a big fan of
+overplanning. I only schedule tasks and assign deadlines when it's absolutely
+necessary, when exterior circumstances force me to it (appointments,
+administrative deadlines, etc.). I prefer to carry around a small list of todos
+(if I run out of tasks I know where to find more, don't worry about me..) rather
+than a huge backlog of tasks that is hidden from me because the tasks are
+scheduled for the future without any solid justification.
+</p>
+
+<blockquote>
+<p>
+Don't overload your agenda with tasks, don't overload tasks with details, don't
+mix tasks and notes - that's basically it.
+&#x2014; <a href="https://bzg.fr/en/the-zen-of-task-management-with-org/">The Zen Master</a>
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-list-of-files" class="outline-2">
+<h2 id="list-of-files">List of Org Files</h2>
+<div class="outline-text-2" id="text-list-of-files">
+<p>
+I use two setups across my workstations: one dedicated to personal things while
+the other is for work. Those two setups are nearly identical so I will just
+present how I use the personal one in the rest of this post (this is why
+everything is prefixed with <i>perso</i> or <i>p</i>).
+</p>
+</div>
+<div id="outline-container-directories-and-files" class="outline-3">
+<h3 id="directories-and-files">Directories and Files</h3>
+<div class="outline-text-3" id="text-directories-and-files">
+<p>
+The setup is made out of these files:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-terminal">./
+├── conf.org                               -- Org configuration file
+├── inbox.org                              -- To-be-processed captured items
+├── journal.org                            -- For thoughts and life events
+├── perso.org                              -- For my day-to-day doings and notes
+├── archives/                              -- Where old logbooks and projects go to sleep
+│   ├── logbooks/
+│   │   ├── logbook.org_archive
+│   │   └── logbook_2015-2020.org_archive
+│   └── projects/
+│       ├── blog.org_archive
+│       └── setup.org_archive
+└── projects/                              -- Collection of TODOs and notes that
+    ├── blog.org                           -- should be tracked over time
+    ├── concerts.org
+    ├── cookbook.org
+    └── setup.org
+</pre>
+</div>
+
+<p>
+For my usage, a project is simply a collection of tasks and/or notes related to
+a topic. For example I have a project for this blog, another one where I store
+my recipes, &#x2026; You get the idea. Each project has its own file. My general,
+day-to-day activities like appointments, chores and other todos are stored in
+<b>perso.org</b>.
+</p>
+
+<p>
+Completed tasks from my main file, <b>perso.org</b>, are archived in
+<b>archives/logbooks/logbook.org</b> in <a href="https://orgmode.org/manual/Template-elements.html#FOOT84">datetree format</a>. Tasks from projects are
+archived in their own file under <b>archives/projects/project_A.org</b>.
+</p>
+
+<p>
+My configuration file is actually the present file, <b>conf.org</b>, that you are
+currently reading. I use literate programming to document my configuration in
+the form of an Org file. Every code block with the tag <code>:tangle yes</code> will be
+exported and evaluated thanks to <a href="https://orgmode.org/worg/org-contrib/babel/intro.html">org-babel</a>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>conf.org</label><pre class="src src-org"><span class="org-org-block-begin-line">#+begin_src emacs-lisp :tangle yes
+</span><span class="org-org-block">(some cool elisp code)
+</span><span class="org-org-block-end-line">#+end_src</span>
+</pre>
+</div>
+
+<p>
+In my <b>~/.emacs.d/init.el</b> I just need to load the Org file with <i>org-babel</i> and
+<i>voilà</i>, the Org file gets processed and the exported Elisp code loaded.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 2: </span>init.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">if</span> (file-readable-p <span class="org-string">"~/org/perso/conf.org"</span>)
+    (org-babel-load-file <span class="org-string">"~/org/perso/conf.org"</span>))
+</pre>
+</div>
+
+<p>
+Back to this file, <b>conf.org</b>, where I create some variables to reference my
+files easily in the rest of the configuration.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span>
+ <span class="org-comment-delimiter">;; </span><span class="org-comment">directories
+</span> skw/d-org-perso          (skw/get-file-directory)
+ skw/d-org-perso-archives (concat skw/d-org-perso <span class="org-string">"archives/"</span>)
+ skw/d-org-perso-projects (concat skw/d-org-perso <span class="org-string">"projects/"</span>)
+ <span class="org-comment-delimiter">;; </span><span class="org-comment">files
+</span> skw/f-org-perso          (concat skw/d-org-perso <span class="org-string">"perso.org"</span>)
+ skw/f-org-perso-conf     (concat skw/d-org-perso <span class="org-string">"conf.org"</span>)
+ skw/f-org-perso-inbox    (concat skw/d-org-perso <span class="org-string">"inbox.org"</span>)
+ skw/f-org-perso-journal  (concat skw/d-org-perso <span class="org-string">"journal.org"</span>)
+ skw/f-org-perso-logbook  (concat skw/d-org-perso-archives <span class="org-string">"logbook.org_archive"</span>))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-quick-access" class="outline-3">
+<h3 id="quick-access">Quick Access</h3>
+<div class="outline-text-3" id="text-quick-access">
+<p>
+I added this to quickly open files that I use frequently with <code>C-c f p &lt;key&gt;</code>
+(instead of "p", I use the "w" prefix for my work files).
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>conf.org</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">perso.org
+</span>(global-set-key (kbd <span class="org-string">"C-c f p p"</span>)
+                (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>)
+                  (skw/open-file-readable skw/f-org-perso)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">inbox.org
+</span>(global-set-key (kbd <span class="org-string">"C-c f p i"</span>)
+                (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>)
+                  (skw/open-file-readable skw/f-org-perso-inbox)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">logbook.org
+</span>(global-set-key (kbd <span class="org-string">"C-c f p l"</span>)
+                (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>)
+                  (skw/open-file-readable skw/f-org-perso-logbook)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">journal.org
+</span>(global-set-key (kbd <span class="org-string">"C-c f p j"</span>)
+                (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>)
+                  (skw/open-file-readable skw/f-org-perso-journal)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">conf.org
+</span>(global-set-key (kbd <span class="org-string">"C-c f p c"</span>)
+                (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>)
+                  (skw/open-file-readable skw/f-org-perso-conf)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-tasks" class="outline-2">
+<h2 id="tasks">Defining Tasks</h2>
+<div class="outline-text-2" id="text-tasks">
+</div>
+<div id="outline-container-tasks-states" class="outline-3">
+<h3 id="tasks-states">States</h3>
+<div class="outline-text-3" id="text-tasks-states">
+<p>
+A task has 5 possible states:
+</p>
+
+<ul class="org-ul">
+<li><code>TODO</code> for when the task has not been started yet.</li>
+<li><code>CURR</code> and <code>STOP</code> for tasks that are either already in progress or on hold.</li>
+<li><code>DONE</code> and <code>ABRT</code> for fully completed or aborted tasks.</li>
+</ul>
+
+<p>
+This is a pretty basic classification but I don't really need more. Having this
+separation allows me to filter tasks quickly in <a href="https://orgmode.org/manual/Agenda-Views.html">agenda views</a> (<code>/</code>) or <a href="https://orgmode.org/manual/Sparse-Trees.html">sparse
+trees</a> (<code>C-c /</code>). I define another sequence with <code>MEET</code>, <code>DONE</code> or <code>ABRT</code> to
+handle appointments. The reason why I have a separate status keyword is that I
+want to be able to track them very carefully so that I don't overlook them. Most
+of my <code>TODO</code> items could be rescheduled if I somehow cannot work on them. This
+is not the case for <code>MEET</code> items.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 5: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-todo-keywords
+      '((sequence <span class="org-string">"TODO(t@/!)"</span> <span class="org-string">"CURR(c@/!)"</span> <span class="org-string">"STOP(s@/!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d@/@)"</span> <span class="org-string">"ABRT(a@/@)"</span>)
+        (sequence <span class="org-string">"MEET(m@/!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d@/@)"</span> <span class="org-string">"ABRT(a@/@)"</span>)))
+
+(<span class="org-keyword">setq</span> org-todo-keyword-faces
+      (<span class="org-keyword">quote</span>
+       ((<span class="org-string">"ABRT"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"gray"</span>       <span class="org-builtin">:weight</span> bold)
+        (<span class="org-string">"CURR"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"pale green"</span> <span class="org-builtin">:weight</span> bold)
+        (<span class="org-string">"DONE"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"green"</span>      <span class="org-builtin">:weight</span> bold)
+        (<span class="org-string">"MEET"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"magenta"</span>    <span class="org-builtin">:weight</span> bold)
+        (<span class="org-string">"STOP"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"orange"</span>     <span class="org-builtin">:weight</span> bold)
+        (<span class="org-string">"TODO"</span> <span class="org-builtin">:foreground</span> <span class="org-string">"red"</span>        <span class="org-builtin">:weight</span> bold))))
+</pre>
+</div>
+
+<p>
+I don't use the <a href="https://orgmode.org/manual/Clocking-Work-Time.html">clocking</a> functionality as I haven't identified a proper need for
+it in my workflow (yet) but I tend to make heavy use of modifiers (<code>@</code> and <code>!</code>)
+to track when a state change occurred and sometimes add a note to it. I often
+document the current status on important todos for when I will resuming the
+tasks. Additionally, I like to log every state change as the timeline can be
+valuable information while reviewing the task. They can always be deleted before
+archiving the task anyway.
+</p>
+
+<p>
+Tasks are items that are quite straightforward and can be completed in one go.
+For more complex tasks with dependencies, I use nested todos. This hook switches
+a <code>TODO</code> heading to <code>DONE</code> when all its subheadings (i.e. subtasks) are marked
+as <code>DONE</code>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 6: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw/org-summary-todo</span> (n-done n-not-done)
+  <span class="org-doc">"Switch entry to DONE when all subentries are DONE"</span>
+  (<span class="org-keyword">let</span> (org-log-done org-log-states)
+    (org-todo (<span class="org-keyword">if</span> (= n-not-done 0) <span class="org-string">"DONE"</span> <span class="org-string">"TODO"</span>))))
+
+(add-hook 'org-after-todo-statistics-hook 'skw/org-summary-todo)
+</pre>
+</div>
+
+<p>
+Here are some convenience options related to state changes:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 7: </span>conf.org</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">This enables fast selection for TODO keywords
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">Hitting "C-c C-t d" will select "DONE" for example
+</span>(<span class="org-keyword">setq</span> org-use-fast-todo-selection t)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Enable logging of the creation of a new TODO item
+</span>(<span class="org-keyword">setq</span> org-treat-insert-todo-heading-as-state-change t)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Log all state changes into the "LOGBOOK" drawer
+</span>(<span class="org-keyword">setq</span> org-log-into-drawer <span class="org-string">"LOGBOOK"</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">When no modifier, always log the DONE timestamp
+</span>(<span class="org-keyword">setq</span> org-log-done 'time)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-tasks-tags" class="outline-3">
+<h3 id="tasks-tags">Tags</h3>
+<div class="outline-text-3" id="text-tasks-tags">
+<p>
+Tags add more context to a task. They are used to perform additional sorting and
+filtering with <i>agenda views</i> or <i>sparse trees</i>. The following are global tags
+that can possibly apply across all my Org files.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-tag-alist
+      '((<span class="org-string">"@URGENT"</span> . ?u) <span class="org-comment-delimiter">;; </span><span class="org-comment">Items that should be handled immediately
+</span>        (<span class="org-string">"@REFILE"</span> . ?r) <span class="org-comment-delimiter">;; </span><span class="org-comment">Items that should be moved or processed later
+</span>        (<span class="org-string">"@CURR"</span> . ?c))) <span class="org-comment-delimiter">;; </span><span class="org-comment">Items currently in progress</span>
+</pre>
+</div>
+
+<p>
+With single key selection, hitting <code>C-c C-C</code> on an item will display a prompt in
+the minibuffer. From there, pressing the hotkey listed above will assign the
+corresponding tag, <code>space</code> will clear the current tags and &lt;tab&gt; will prompt for
+a tag, showing the pre-existing tags through completion. I use this feature
+quite a lot to mark tasks as <code>@URGENT</code> or <code>@REFILE</code> on-the-fly and have them pop
+on top of my priority list in the agenda view.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 9: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-fast-tag-selection-single-key 'expert)
+</pre>
+</div>
+
+<p>
+Filetags can be added per file via the directive <code>#+FILETAGS: &lt;tag&gt;</code>. Every
+single heading of the file will inherit the tag. Every Org file is assigned such
+filetags to facilitate differentiating between personal items and work items. If
+I find the need for it, I add some additional tags on a per-file-basis manually.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 10: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> skw/org-filetags '(<span class="org-string">"@PERSO"</span> <span class="org-string">"@PROJECT"</span> <span class="org-string">"@WORK"</span>))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-tasks-priority" class="outline-3">
+<h3 id="tasks-priority">Priority and Effort</h3>
+<div class="outline-text-3" id="text-tasks-priority">
+<p>
+Tasks are assigned one of 3 priorities: <code>A</code>, <code>B</code>, and <code>C</code>. Priorities are always
+relative to each other <i>within</i> a project, never <i>across</i> projects. Tasks with
+priority <code>A</code> should be ideally completed before anything else. Then it would be
+the turn of <code>B</code> and <code>C</code> (aka "whenever") tasks. A better looking font-face is
+assigned to different priorities with the package <a href="https://github.com/harrybournis/org-fancy-priorities">org-fancy-priorities</a>.
+</p>
+
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 11: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-highest-priority ?A
+      org-lowest-priority ?C
+      org-default-priority ?C)
+
+(<span class="org-keyword">setq</span> org-priority-faces '((?A . <span class="org-string">"red"</span>)
+                           (?B . <span class="org-string">"magenta"</span>)
+                           (?C . <span class="org-string">"color-46"</span>)))
+
+(<span class="org-keyword">use-package</span> org-fancy-priorities
+  <span class="org-builtin">:ensure</span> t
+  <span class="org-builtin">:diminish</span>
+  <span class="org-builtin">:hook</span>
+  (org-mode . org-fancy-priorities-mode)
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> org-fancy-priorities-list '(<span class="org-string">"&#9784;"</span> <span class="org-string">"&#9784;"</span> <span class="org-string">"&#9784;"</span>)))
+</pre>
+</div>
+
+<p>
+With <i>priority commands</i> enabled, it's possible to shift a priority of an item
+with <code>S-Up</code> and <code>S-Down</code> from the agenda view or with the cursor on the heading.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 12: </span>conf.org</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Allow setting priorities with S-Up / S-Down
+</span>(<span class="org-keyword">setq</span> org-enable-priority-commands t)
+</pre>
+</div>
+
+<p>
+Whenever possible, I use <code>C-c C-x e</code> (or <code>e</code> in the agenda view) to set <a href="https://orgmode.org/manual/Effort-Estimates.html">effort
+estimates</a> on a todo. Knowing how long a task would approximately take is useful
+when I need to plan my day. For that I follow my rule of thumb: I take the
+amount of time that I <i>guess</i> a task would take and multiply it by 2.
+</p>
+
+<p>
+The property is somehow not in uppercase like most of the others, let's fix it.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 13: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-effort-property <span class="org-string">"EFFORT"</span>)
+</pre>
+</div>
+
+<p>
+In the end, the combination of priority and effort estimate are mostly used to
+provide a sorting strategy in the agenda views. In my case, I often know
+on-the-spot which tasks should be tackled first so I don't need to rely on them
+too heavily.
+</p>
+</div>
+</div>
+<div id="outline-container-tasks-habits" class="outline-3">
+<h3 id="tasks-habits">Habits</h3>
+<div class="outline-text-3" id="text-tasks-habits">
+<p>
+<a href="https://orgmode.org/manual/Tracking-your-habits.html">Habits</a> are <code>TODO</code> items with the property "STYLE" set to "habit", a repeated
+scheduled date and logging enabled. The habit below can be done every day, with
+a maximum resting period of 3 days.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 14: </span>conf.org</label><pre class="src src-org"><span class="org-org-level-2">*** </span><span class="org-org-level-2"><span class="org-org-todo">TODO</span></span><span class="org-org-level-2"> </span><span class="org-org-level-2"><span class="org-org-priority">[#C]</span></span><span class="org-org-level-2"> Work out                                               </span><span class="org-org-level-2"><span class="org-org-tag">:health:</span></span>
+<span class="org-org-special-keyword">SCHEDULED:</span> <span class="org-org-date">&lt;2025-11-17 Mon .+1d/3d&gt;</span>
+<span class="org-org-drawer">:PROPERTIES:</span>
+<span class="org-org-special-keyword">:STYLE:</span>    <span class="org-org-property-value">habit</span>
+<span class="org-org-special-keyword">:Effort:</span>   <span class="org-org-property-value">00:30</span>
+<span class="org-org-drawer">:END:</span>
+<span class="org-org-drawer">:LOGBOOK:</span>
+- State "DONE"       from "TODO"       <span class="org-org-date">[2025-07-25 Fri 17:17]</span>
+- State "DONE"       from "TODO"       <span class="org-org-date">[2025-07-22 Tue 17:26]</span>
+<span class="org-org-drawer">:END:</span>
+
+Or:
+- 5x:
+  - 10 Push-ups
+  - 30 Sit-ups
+  - 10 Squats
+
+- Run for 00:30+
+
+- Cycle for 01:30+
+</pre>
+</div>
+
+<p>
+I want my habits to be displayed on today's agenda entry only if they are due on
+that day or overdue. Tracking them over the last 14 days if enough for my purposes.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 15: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">use-package</span> org-habit
+  <span class="org-builtin">:after</span> org
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> org-habit-show-all-today nil
+        org-habit-graph-column 70
+        org-habit-preceding-days 14))
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-agenda" class="outline-2">
+<h2 id="agenda">Viewing Tasks</h2>
+<div class="outline-text-2" id="text-agenda">
+</div>
+<div id="outline-container-agenda-files" class="outline-3">
+<h3 id="agenda-files">Agenda Files</h3>
+<div class="outline-text-3" id="text-agenda-files">
+<p>
+The following files are automatically tracked by the agenda:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 16: </span>conf.org</label><pre class="src src-emacs-lisp">(add-to-list 'org-agenda-files skw/f-org-perso)
+(add-to-list 'org-agenda-files skw/f-org-perso-inbox)
+(add-to-list 'org-agenda-files skw/d-org-perso-projects)
+(add-to-list 'org-agenda-files skw/d-org-perso-archives)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-skipping-tags-and-habits" class="outline-3">
+<h3 id="skipping-tags-and-habits">Skipping Tags and Habits</h3>
+<div class="outline-text-3" id="text-skipping-tags-and-habits">
+<p>
+These functions can be passed as argument to <code>org-agenda-skip-function</code> in order
+to ignore specific tags or properties in the agenda views.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 17: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw/agenda-skip-tags</span> (<span class="org-type">&amp;rest</span> args)
+  <span class="org-doc">"Skip tags passed as '</span><span class="org-doc"><span class="org-constant">args</span></span><span class="org-doc">' in the agenda view"</span>
+  (<span class="org-keyword">let</span> (beg end)
+    (org-back-to-heading t)
+    (<span class="org-keyword">setq</span> beg (point)
+          end (<span class="org-keyword">progn</span> (outline-next-heading) (1- (point))))
+    (goto-char beg)
+    (<span class="org-keyword">setq</span> alltags (prin1-to-string (org-get-tags)))
+    (goto-char beg)
+    (<span class="org-keyword">if</span> (-some (<span class="org-keyword">lambda</span> (x) (string-match x alltags)) args)
+        end)))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw/agenda-skip-property</span> (proprety value)
+  <span class="org-doc">"Skip an agenda entry if it has a '</span><span class="org-doc"><span class="org-constant">property</span></span><span class="org-doc">' equal to '</span><span class="org-doc"><span class="org-constant">value</span></span><span class="org-doc">'."</span>
+  (<span class="org-keyword">let</span> ((subtree-end (<span class="org-keyword">save-excursion</span> (org-end-of-subtree t))))
+    (<span class="org-keyword">if</span> (string= (org-entry-get nil proprety) value)
+        subtree-end
+      nil)))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-custom-agenda-views" class="outline-3">
+<h3 id="custom-agenda-views">Custom Agenda Views</h3>
+<div class="outline-text-3" id="text-custom-agenda-views">
+<p>
+I make use of 6 different sections in my custom agenda view. From top to bottom:
+</p>
+
+<ol class="org-ol">
+<li>Regular calender that spans over 14 days showing scheduled items, habits and
+upcoming deadlines. Habits are shown only on today's entry if they are
+scheduled for today or overdue. They can be hidden with <code>K</code>.</li>
+<li>Directly underneath are all items tagged <code>@URGENT</code> or <code>@REFILE</code>. I need to
+see these items before anything else to be able to prioritize correctly.</li>
+<li>Next, there is a list of all on-going tasks. If possible, I try to work on
+these tasks first.</li>
+<li>I like to set some small goals for myself over a period of 2 months. This
+section displays the current status.</li>
+<li>All the remaining open todos sorted by priority and effort. I go through it
+every day to make sure that I am not missing anything important.</li>
+<li>Finally, I have the list of all completed or canceled items. I go through it
+every month and archive items that are not needed anymore.</li>
+</ol>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 18: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> skw/org-perso-agenda-views
+      '((<span class="org-string">"p"</span> <span class="org-string">"Perso agenda"</span>
+         (
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">1) Agenda over the next 14 days
+</span>          (agenda <span class="org-string">""</span>
+                  ((org-agenda-show-all-dates nil)
+                   (org-agenda-use-time-grid nil)
+                   (org-agenda-span 14)
+                   (org-agenda-start-on-weekday nil)
+                   (org-deadline-warning-days 14)
+                   (org-agenda-skip-function
+                    '(skw/agenda-skip-tags <span class="org-string">"@WORK"</span>))))
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">2) Inbox
+</span>          (tags <span class="org-string">"@PERSO+@REFILE|@PERSO+@URGENT"</span>
+                ((org-agenda-overriding-header <span class="org-string">"Inbox || Urgent:"</span>)))
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">3) In Progress
+</span>          (tags-todo <span class="org-string">"@PERSO+@CURR|@PERSO+TODO={CURR}|@PERSO+TODO={STOP}"</span>
+                     ((org-agenda-overriding-header <span class="org-string">"In Progress:"</span>)
+                      (org-agenda-skip-function '(or <span class="org-comment-delimiter">;; </span><span class="org-comment">(org-agenda-skip-entry-if 'scheduled)
+</span>                                                     <span class="org-comment-delimiter">;; </span><span class="org-comment">(org-agenda-skip-entry-if 'deadline)
+</span>                                                     (skw/agenda-skip-property <span class="org-string">"STYLE"</span> <span class="org-string">"habit"</span>)
+                                                     (skw/agenda-skip-tags <span class="org-string">"monthlygoals"</span>)))))
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">4) Remaining Monthly Goals
+</span>          (tags <span class="org-string">"@PERSO+monthlygoals-TODO={DONE}"</span>
+                ((org-agenda-overriding-header <span class="org-string">"Monthly Goals:"</span>)))
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">5) Next
+</span>          (tags-todo <span class="org-string">"@PERSO+TODO={TODO}-@REFILE"</span>
+                     ((org-agenda-overriding-header <span class="org-string">"Next:"</span>)
+                      (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'scheduled)
+                                                     (org-agenda-skip-entry-if 'deadline)
+                                                     (skw/agenda-skip-property <span class="org-string">"STYLE"</span> <span class="org-string">"habit"</span>)
+                                                     (skw/agenda-skip-tags <span class="org-string">"monthlygoals"</span>)))))
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">6) Completed
+</span>          (todo <span class="org-string">"DONE|ABRT"</span>
+                ((org-agenda-overriding-header <span class="org-string">"Completed:"</span>)
+                 (org-agenda-skip-function '(skw/agenda-skip-tags <span class="org-string">"@WORK"</span> <span class="org-string">"monthlygoals"</span>))))))))
+
+
+(<span class="org-keyword">setq</span> org-agenda-custom-commands
+      (append org-agenda-custom-commands skw/org-perso-agenda-views))
+</pre>
+</div>
+
+<p>
+Here are the keybindings that I use the most within the agenda view (taken from
+<a href="https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html">Aaron Bieber</a>):
+</p>
+
+<ul class="org-ul">
+<li>To navigate the agenda:
+<ul class="org-ul">
+<li><code>&lt;tab&gt;</code>: Opens the selected entry in a new split window and jumps to it.</li>
+<li><code>&lt;enter&gt;</code>: Same but opens in the current window.</li>
+<li><code>S-f</code>: Activate "follow mode". This opens a new split window to show the
+selected entry with a highlight, but focus stays on the agenda view. I find it
+quite useful so that I always have more context on the entry that I'm
+currently viewing, without leaving the agenda view. If I really need to jump
+to the item, I press <code>&lt;tab&gt;</code>.</li>
+<li><code>sg</code>: Save the agenda files and rebuild the agenda view. I end up hitting that
+quite a lot out of reflex.</li>
+<li><code>/</code>: Prompt for a match (category, tag, regex, &#x2026;).</li>
+<li><code>v A</code>: Include archived entries.</li>
+<li><code>v L</code>: Toggle log mode.</li>
+<li><code>&lt;</code>: Focus the agenda view on the current category. Extremely useful.</li>
+<li><code>v E</code>: Add additional context on tasks when possible.</li>
+<li><code>K</code>: Toggle the display of habits.</li>
+<li><code>v &lt;space&gt;</code>: Reset the current view to org-agenda-span.</li>
+</ul></li>
+
+<li>To edit entries:
+<ul class="org-ul">
+<li><code>C-c C-c</code>: Add a tag.</li>
+<li><code>t</code>: Cycle the TODO state of an entry.</li>
+<li><code>e</code> (or <code>C-c C-x e</code>): Set the effort on an entry.</li>
+<li><code>z</code> (or <code>C-c C-z</code>): Add a note to the entry.</li>
+<li><code>+</code> / <code>-</code> (or <code>S-up</code> / <code>S-down</code>): Increase / decrease the priority of an
+entry.</li>
+<li><code>S-left / S-right</code>: Shift the scheduled date or deadline of an entry.</li>
+<li><code>C-c C-w</code>: Refile an entry.</li>
+<li><code>$</code> (or <code>C-c C-x C-s</code>): Archive entry (subtree) to it's corresponding
+archive file.</li>
+</ul></li>
+</ul>
+
+<p>
+Some additional agenda tweaks:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 19: </span>conf.org</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">This simple sorting strategy works for my purposes
+</span>(<span class="org-keyword">setopt</span> org-agenda-sorting-strategy
+        '((agenda time-up deadline-up scheduled-up todo-state-up priority-down)
+          (todo todo-state-up priority-down deadline-up)
+          (tags todo-state-up priority-down deadline-up)
+          (search todo-state-up priority-down deadline-up)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">I find it slightly neater this way
+</span>(<span class="org-keyword">setq</span> org-agenda-prefix-format <span class="org-string">"%-10:c %-12t %-6e %s"</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Do not display filetags like =@PERSO= or =@PROJECT= in the agenda views
+</span>(<span class="org-keyword">setq</span> org-agenda-hide-tags-regexp
+      (mapconcat (<span class="org-keyword">lambda</span> (x) x) skw/org-filetags <span class="org-string">"</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">"</span>))
+</pre>
+</div>
+
+<p>
+Here is the obligatory screenshot of my agenda view:
+</p>
+
+
+<div id="org2ab6bde" class="figure">
+<p><img src="../../files/posts/org-agenda-view.png" alt="org-agenda-view.png">
+</p>
+<p><span class="figure-number">Figure 1: </span>Custom Agenda View</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org27d631a" class="outline-3">
+<h3 id="org27d631a">Special Calender Entries</h3>
+<div class="outline-text-3" id="text-org27d631a">
+<p>
+I use a very simple <a href="https://orgmode.org/manual/Weekly_002fdaily-agenda.html">calendar integration</a> as I'm only interested in holidays and
+birthdays.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 20: </span>perso.org</label><pre class="src src-org"><span class="org-org-level-1">* Holidays &amp; Birthdays</span>
+<span class="org-org-drawer">:PROPERTIES:</span>
+<span class="org-org-special-keyword">:CATEGORY:</span> <span class="org-org-property-value">ephemeris</span>
+<span class="org-org-drawer">:END:</span>
+<span class="org-org-sexp-date">%%(org-calendar-holiday)</span>
+<span class="org-org-sexp-date">%%(org-anniversary 1869 10  2) Mahatma Gandhi (%d)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 21: </span>conf.org</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">check https://github.com/rudolfochrist/german-holidays for implementation
+</span>(<span class="org-keyword">setq</span> skw/holidays
+      '((holiday-fixed 01 01   <span class="org-string">"New Year's Day (free)"</span>)
+        (holiday-fixed 02 14    <span class="org-string">"Valentine's Day"</span>)
+        (holiday-fixed 03 17    <span class="org-string">"St. Patrick's Day"</span>)
+        (holiday-fixed 04 01    <span class="org-string">"April Fools' Day"</span>)
+        (holiday-easter-etc -2  <span class="org-string">"Easter Friday (free)"</span>)
+        (holiday-easter-etc 0   <span class="org-string">"Easter Sunday (free)"</span>)
+        (holiday-easter-etc 1   <span class="org-string">"Easter Monday (free)"</span>)
+        (holiday-easter-etc 39  <span class="org-string">"Christi Himmelfahrt (free)"</span>)
+        (holiday-easter-etc 50  <span class="org-string">"Pfingstmontag (free)"</span>)
+        (holiday-easter-etc 60  <span class="org-string">"Corpus Christi / Fronleichnam (free)"</span>)
+        (holiday-fixed 05 01    <span class="org-string">"Labor Day (free)"</span>)
+        (holiday-float 05 4 7   <span class="org-string">"Mother's Day"</span>) <span class="org-comment-delimiter">;; </span><span class="org-comment">needs checking
+</span>        (holiday-float 06 4 7   <span class="org-string">"Father's Day"</span>) <span class="org-comment-delimiter">;; </span><span class="org-comment">needs checking
+</span>        (holiday-fixed 10 03    <span class="org-string">"Tag der Deutschen Einheit (free)"</span>)
+        (holiday-fixed 10 31    <span class="org-string">"Halloween"</span>)
+        (holiday-fixed 11 01    <span class="org-string">"All Saints (free)"</span>)
+        (holiday-float 11 4 4   <span class="org-string">"Thanksgiving"</span>)
+        (holiday-fixed 12 06    <span class="org-string">"Sankt Nikolaus"</span>)
+        (holiday-fixed 12 25    <span class="org-string">"Christmas 1 (free)"</span>)
+        (holiday-fixed 12 26    <span class="org-string">"Christmas 2 (free)"</span>)
+        (holiday-fixed 12 31    <span class="org-string">"Silverster"</span>)
+
+        (holiday-islamic 9 1 <span class="org-string">"Ramadan Begins"</span>)
+        (holiday-islamic 1 10 <span class="org-string">"Ashura"</span>)
+        (holiday-islamic 3 12 <span class="org-string">"Mulad-al-Nabi"</span>)
+        (holiday-islamic 7 26 <span class="org-string">"Shab-e-Mi'raj"</span>)
+        (holiday-islamic 8 15 <span class="org-string">"Shab-e-Bara't"</span>)
+        (holiday-islamic 9 27 <span class="org-string">"Shab-e Qadr"</span>)
+        (holiday-islamic 10 1 <span class="org-string">"Id-al-Fitr"</span>)
+        (holiday-islamic 12 10 <span class="org-string">"Id-al-Adha"</span>)
+
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">Equinoxes, solstices and daylight saving time
+</span>        (solar-equinoxes-solstices)
+        (holiday-sexp calendar-daylight-savings-starts
+                      (format <span class="org-string">"Daylight Saving Time Begins %s"</span>
+                              (solar-time-string
+                               (/ calendar-daylight-savings-starts-time . #1=
+                                  ((float 60)))
+                               calendar-standard-time-zone-name)))
+        (holiday-sexp calendar-daylight-savings-ends
+                      (format <span class="org-string">"Daylight Saving Time Ends %s"</span>
+                              (solar-time-string
+                               (/ calendar-daylight-savings-ends-time . #1#)
+                               calendar-daylight-time-zone-name)))))
+
+
+(<span class="org-keyword">setq</span> calendar-holidays skw/holidays)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-refiling" class="outline-2">
+<h2 id="refiling">Working with Tasks</h2>
+<div class="outline-text-2" id="text-refiling">
+</div>
+<div id="outline-container-capture" class="outline-3">
+<h3 id="capture">Capture</h3>
+<div class="outline-text-3" id="text-capture">
+<p>
+Adding items to the system is done with org-capture. Pressing <code>C-c c</code> anywhere
+in Emacs will bring up custom capture templates, prompt for minimal information
+and close itself, allowing me to continue doing my previous task where I left it
+off.
+</p>
+
+<p>
+Everything I capture goes to my <b>inbox.org</b> file for later refiling and
+processing, except journal entries which get inserted in datetree format in
+<b>journal.org</b>. The templates are pretty self-explaining, the documentation is
+available <a href="https://orgmode.org/manual/Capture-templates.html">here</a>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 22: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> skw/org-perso-capture-templates
+      '((<span class="org-string">"p"</span> <span class="org-string">"Perso capture"</span>)
+        (<span class="org-string">"pj"</span> <span class="org-string">"Journal Entry"</span> entry (file+datetree skw/f-org-perso-journal)
+         <span class="org-string">"* %^{date}u %^{title}\n\n  %?\n\n"</span> <span class="org-builtin">:tree-type</span> month)
+
+        (<span class="org-string">"pm"</span> <span class="org-string">"Meeting"</span> entry (file skw/f-org-perso-inbox)
+         <span class="org-string">"* MEET [#A] %^{meeting} %^g\n  SCHEDULED: %^T\n  :LOGBOOK:\n  - CREATED: %U\n  :END:\n%?\n"</span>)
+
+        (<span class="org-string">"pn"</span> <span class="org-string">"Note"</span> entry (file skw/f-org-perso-inbox)
+         <span class="org-string">"* %^{item} %^g\n  :LOGBOOK:\n  - CREATED: %U\n  :END:\n%?\n"</span>)
+
+        (<span class="org-string">"pt"</span> <span class="org-string">"Task"</span> entry (file skw/f-org-perso-inbox)
+         <span class="org-string">"* TODO [#B] %^{task} %^g\n  :LOGBOOK:\n  - CREATED: %U\n  :END:\n%?\n"</span>)))
+
+(<span class="org-keyword">setq</span> org-capture-templates
+      (append org-capture-templates skw/org-perso-capture-templates))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org25a86c0" class="outline-3">
+<h3 id="org25a86c0">Refiling</h3>
+<div class="outline-text-3" id="text-org25a86c0">
+<p>
+<a href="https://orgmode.org/manual/Refile-and-Copy.html">org-refile</a> is invoked with <code>C-c C-w</code> and allows to conveniently move items
+across files or headings. The most important files and projects are added to
+<code>org-refile-targets</code>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 23: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> skw/org-perso-refile-targets `((skw/f-org-perso <span class="org-builtin">:maxlevel</span> . 5)
+                                     (skw/f-org-perso-inbox <span class="org-builtin">:maxlevel</span> . 5)
+                                     (skw/f-org-perso-journal <span class="org-builtin">:maxlevel</span> . 5)
+                                     (,(directory-files-recursively skw/d-org-perso-projects <span class="org-string">"\\.org$"</span>) <span class="org-builtin">:maxlevel</span> . 5)))
+(<span class="org-keyword">setq</span> org-refile-targets '())
+(<span class="org-keyword">setq</span> org-refile-targets (append org-refile-targets skw/org-perso-refile-targets))
+</pre>
+</div>
+
+<p>
+My main configuration options are very well explained <a href="https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html">here</a>. YMMV, so try out for
+yourself what work best for you.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 24: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-refile-use-outline-path 'file
+      org-outline-path-complete-in-steps nil
+      org-refile-allow-creating-parent-nodes 'confirm
+      org-refile-use-cache nil)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-archiving" class="outline-3">
+<h3 id="archiving">Archiving</h3>
+<div class="outline-text-3" id="text-archiving">
+<p>
+When a task has been completed or canceled for a while, I don't want to have it
+on the radar anymore so I <a href="https://orgmode.org/guide/Archiving.html">archive</a> it away. Items from <b>perso.org</b> go into
+<b>archives/logbooks/logbook.org_archive</b> in <a href="https://orgmode.org/manual/Template-elements.html#FOOT84">datetree</a> format and those from
+projects go to <b>archives/projects/&lt;project.org&gt;</b>. Hitting <code>C-c $</code> on a heading
+or <code>$</code> on the agenda view will archive the item to the correct location.
+</p>
+
+<p>
+From the agenda view, when I want to inspect archived items, I can press <code>v A l</code>
+(or <code>v A v L</code> for a more exhaustive view, with state changes) to add them to the
+agenda and then reduce I often reduce the view to a single category with <code>&lt;</code>.
+</p>
+
+<p>
+Locations are defined using the following in-buffer directives:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 25: </span>conf.org</label><pre class="src src-org"><span class="org-org-meta-line">#+ARCHIVE: ./archives/logbooks/logbook.org_archive::datetree/</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 26: </span>projects/projectA.org</label><pre class="src src-org"><span class="org-org-meta-line">#+ARCHIVE: ../archives/projects/%s_archive::</span>
+</pre>
+</div>
+
+<p>
+When archiving, I want to preserve the TODO state, keep existing tags and add
+some context. Lastly, I want to save the file after adding an archived item and
+still be able to cycle through tree tagged with <code>:ARCHIVE:</code>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 27: </span>conf.org</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-archive-mark-done nil
+      org-archive-subtree-add-inherited-tags t
+      org-archive-save-context-info '(time file category todo priority itags olpath ltags)
+      org-archive-subtree-save-file-p t
+      org-cycle-open-archived-trees t)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-resources" class="outline-2">
+<h2 id="resources">Resources</h2>
+<div class="outline-text-2" id="text-resources">
+<ul class="org-ul">
+<li><a href="https://doc.norang.ca/org-mode.html">Organize Your Life In Plain Text!</a>: Very exhaustive documentation by Bernt Hansen.</li>
+<li><a href="https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html">An Agenda for Life With Org Mode</a>: Focus on Agenda Views by (make
+sure you check out his blog for more tips).</li>
+<li><a href="https://bzg.fr/en/the-zen-of-task-management-with-org/">The Zen of Task Management with Org</a> by <a href="https://bzg.fr/en/">Bastien Guerry</a>.</li>
+<li><a href="https://www.philnewton.net/blog/org-agenda-monthly-goals/">Monthly Goals in Org Agenda</a> by <a href="https://www.philnewton.net/">Phil Newton</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>
+    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+</p>
+</div>
+</body>
+</html>

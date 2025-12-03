@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Reverse Engineering</title>
@@ -30,19 +30,19 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org276b1ca">NRO</a></li>
+<li><a href="#orgfaeefa8">NRO</a></li>
 <li><a href="#wasm">WASM (Web Assembly)</a>
 <ul>
-<li><a href="#orgc9d2b4c">Docs and tools</a></li>
-<li><a href="#orge14da49">Decompilation</a></li>
-<li><a href="#orgb0773e8">Debugging</a></li>
+<li><a href="#org8565e5f">Docs and tools</a></li>
+<li><a href="#orgab42621">Decompilation</a></li>
+<li><a href="#org11eb62d">Debugging</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-org276b1ca" class="outline-2">
-<h2 id="org276b1ca">NRO</h2>
-<div class="outline-text-2" id="text-org276b1ca">
+<div id="outline-container-orgfaeefa8" class="outline-2">
+<h2 id="orgfaeefa8">NRO</h2>
+<div class="outline-text-2" id="text-orgfaeefa8">
 <ul class="org-ul">
 <li><a href="https://github.com/dazjo/nxtool">nxtool</a> to parse file headers and transform the NRO files into ELF.</li>
 </ul>
@@ -52,9 +52,9 @@
 <h2 id="wasm">WASM (Web Assembly)</h2>
 <div class="outline-text-2" id="text-wasm">
 </div>
-<div id="outline-container-orgc9d2b4c" class="outline-3">
-<h3 id="orgc9d2b4c">Docs and tools</h3>
-<div class="outline-text-3" id="text-orgc9d2b4c">
+<div id="outline-container-org8565e5f" class="outline-3">
+<h3 id="org8565e5f">Docs and tools</h3>
+<div class="outline-text-3" id="text-org8565e5f">
 <p>
 First the mandatory references and tools:
 </p>
@@ -67,9 +67,9 @@ C and wat) and more.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orge14da49" class="outline-3">
-<h3 id="orge14da49">Decompilation</h3>
-<div class="outline-text-3" id="text-orge14da49">
+<div id="outline-container-orgab42621" class="outline-3">
+<h3 id="orgab42621">Decompilation</h3>
+<div class="outline-text-3" id="text-orgab42621">
 <p>
 <a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> can produce some decompiled C source, but it is pretty unreadable.
 Static analysis can be made much easier by retrieving the <a href="https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h">wasm-rt.h</a> header
@@ -78,16 +78,16 @@ Ghidra for example for further analysis.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell">wasm2c -o index.c index.wasm <span class="org-comment-delimiter"># </span><span class="org-comment">C source is _very_ verbose!</span>
-curl -OL https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h
+<pre class="src src-shell">wasm2c -o index.c index.wasm <span class="org-comment-delimiter"># </span><span class="org-comment">C source is _very_ verbose!
+</span>curl -OL https://raw.githubusercontent.com/WebAssembly/wabt/main/wasm2c/wasm-rt.h
 cc -c index.c index.o
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgb0773e8" class="outline-3">
-<h3 id="orgb0773e8">Debugging</h3>
-<div class="outline-text-3" id="text-orgb0773e8">
+<div id="outline-container-org11eb62d" class="outline-3">
+<h3 id="org11eb62d">Debugging</h3>
+<div class="outline-text-3" id="text-org11eb62d">
 <p>
 If the application is running in the browser, you can use the JS console to
 access its internal variables. Look for: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory">wasmMemory</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table">wasmTable</a>.
@@ -95,8 +95,8 @@ access its internal variables. Look for: <a href="https://developer.mozilla.org/
 
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span class="org-comment-delimiter">// </span><span class="org-comment">Read/Write internal memory as byte array or (u)int32 array</span>
-<span class="org-keyword">var</span> <span class="org-variable-name">mem</span> = <span class="org-keyword">new</span> <span class="org-type">Uint8Array</span>(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength);
+<pre class="src src-javascript"><span class="org-comment-delimiter">// </span><span class="org-comment">Read/Write internal memory as byte array or (u)int32 array
+</span><span class="org-keyword">var</span> <span class="org-variable-name">mem</span> = <span class="org-keyword">new</span> <span class="org-type">Uint8Array</span>(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength);
 <span class="org-keyword">var</span> <span class="org-variable-name">mem</span> = <span class="org-keyword">new</span> <span class="org-type">Uint32Array</span>(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength / 4);
 <span class="org-keyword">var</span> <span class="org-variable-name">mem</span> = <span class="org-keyword">new</span> <span class="org-type">Int32Array</span>(wasmMemory.buffer, 0, wasmMemory.buffer.bytelength / 4);
 </pre>

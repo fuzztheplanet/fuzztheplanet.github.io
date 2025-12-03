@@ -1,4 +1,5 @@
 #+TITLE: Posts (without preview)
 
+- {{{timestamp(2025-12-03)}}}: [[file:gtd-with-org.org][Getting Things Done with Org]]
 - {{{timestamp(2025-07-07)}}}: [[file:git-while-on-the-run.org][Using git while on-the-run]]
 - {{{timestamp(2025-05-25)}}}: [[file:hello-world-from-org.org][Hello World from Org]]

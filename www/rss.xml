@@ -14,9 +14,9 @@
   <link>https://www.skywhi.net/posts/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Mon, 14 Jul 2025 23:26:55 +0200</pubDate>
-  <lastBuildDate>Mon, 14 Jul 2025 23:26:55 +0200</lastBuildDate>
-  <generator>Emacs 30.1 Org-mode 9.7.11</generator>
+  <pubDate>Wed, 03 Dec 2025 23:31:54 +0100</pubDate>
+  <lastBuildDate>Wed, 03 Dec 2025 23:31:54 +0100</lastBuildDate>
+  <generator>Emacs 30.2 Org-mode 9.7.11</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
     <url>https://www.skywhi.net/files/img/profile.jpg</url>
@@ -24,6 +24,18 @@
     <link>https://www.skywhi.net/posts/</link>
   </image>
 
+  <item>
+    <title>Getting Things Done with Org</title>
+    <link>https://www.skywhi.net/posts/gtd-with-org.html</link>
+    <author>skywhi@skywhi.net (Skywhi)</author>
+    <guid isPermaLink="false">https://www.skywhi.net/posts/gtd-with-org.html</guid>
+    <pubDate>Wed, 03 Dec 2025 00:00:00 +0100</pubDate>
+
+    <description><![CDATA[<p>
+    <i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows. 
+    </p>
+    ]]></description>
+  </item>
   <item>
     <title>Using git while on-the-run</title>
     <link>https://www.skywhi.net/posts/git-while-on-the-run.html</link>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Application-related vulnerabilities</title>
@@ -30,64 +30,64 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3c501ee">Source code analysis</a>
+<li><a href="#org0836a20">Source code analysis</a>
 <ul>
-<li><a href="#orge68bbc3">General tools</a></li>
-<li><a href="#orge1974ef">Language specific</a></li>
+<li><a href="#orga0a49a1">General tools</a></li>
+<li><a href="#orgf1da0a4">Language specific</a></li>
 </ul>
 </li>
-<li><a href="#orge8bb736">.NET</a>
+<li><a href="#org3dd22a0">.NET</a>
 <ul>
-<li><a href="#orgfb5fa66">Decompilers</a></li>
+<li><a href="#org3517c84">Decompilers</a></li>
 </ul>
 </li>
 <li><a href="#php">PHP</a>
 <ul>
-<li><a href="#org50276c3">Filters</a></li>
-<li><a href="#orga3d8fb8">Type juggling</a></li>
-<li><a href="#org0e46d2b">Common functions</a></li>
-<li><a href="#org51c0fbd">Deserialization</a></li>
-<li><a href="#org2c40d17">Execution sinks</a></li>
+<li><a href="#orgd764c83">Filters</a></li>
+<li><a href="#org58c62a9">Type juggling</a></li>
+<li><a href="#org8b418fa">Common functions</a></li>
+<li><a href="#org5e27b0f">Deserialization</a></li>
+<li><a href="#org73c4ac1">Execution sinks</a></li>
 </ul>
 </li>
 <li><a href="#python">Python</a>
 <ul>
-<li><a href="#org0a8633f">Deserialization</a></li>
-<li><a href="#org8ae4992">Environment Variables</a></li>
+<li><a href="#orgd262257">Deserialization</a></li>
+<li><a href="#org917a654">Environment Variables</a></li>
 </ul>
 </li>
-<li><a href="#org8ba51a1">Node.js</a>
+<li><a href="#orgd5e5149">Node.js</a>
 <ul>
-<li><a href="#orgcce3af9">SQL Injection with Express and MySQL</a></li>
+<li><a href="#org544ef71">SQL Injection with Express and MySQL</a></li>
 </ul>
 </li>
-<li><a href="#org322906c">Misc</a>
+<li><a href="#org15852e0">Misc</a>
 <ul>
-<li><a href="#org7bacf3d">ImageMagick</a></li>
+<li><a href="#orgb054bfa">ImageMagick</a></li>
 <li><a href="#json">JSON</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-org3c501ee" class="outline-2">
-<h2 id="org3c501ee">Source code analysis</h2>
-<div class="outline-text-2" id="text-org3c501ee">
+<div id="outline-container-org0836a20" class="outline-2">
+<h2 id="org0836a20">Source code analysis</h2>
+<div class="outline-text-2" id="text-org0836a20">
 </div>
-<div id="outline-container-orge68bbc3" class="outline-3">
-<h3 id="orge68bbc3">General tools</h3>
-<div class="outline-text-3" id="text-orge68bbc3">
+<div id="outline-container-orga0a49a1" class="outline-3">
+<h3 id="orga0a49a1">General tools</h3>
+<div class="outline-text-3" id="text-orga0a49a1">
 <ul class="org-ul">
 <li><a href="https://www.sonarqube.org/">Sonarqube</a> (static analyis)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orge1974ef" class="outline-3">
-<h3 id="orge1974ef">Language specific</h3>
-<div class="outline-text-3" id="text-orge1974ef">
+<div id="outline-container-orgf1da0a4" class="outline-3">
+<h3 id="orgf1da0a4">Language specific</h3>
+<div class="outline-text-3" id="text-orgf1da0a4">
 </div>
-<div id="outline-container-org394d064" class="outline-4">
-<h4 id="org394d064">C/C++</h4>
-<div class="outline-text-4" id="text-org394d064">
+<div id="outline-container-org89ada61" class="outline-4">
+<h4 id="org89ada61">C/C++</h4>
+<div class="outline-text-4" id="text-org89ada61">
 <ul class="org-ul">
 <li><a href="https://cppcheck.sourceforge.io/">Cppcheck</a> (static analysis)</li>
 <li><a href="https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html">Pin</a> (instrumentation)</li>
@@ -95,9 +95,9 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd309e11" class="outline-4">
-<h4 id="orgd309e11">PHP</h4>
-<div class="outline-text-4" id="text-orgd309e11">
+<div id="outline-container-orge80207b" class="outline-4">
+<h4 id="orge80207b">PHP</h4>
+<div class="outline-text-4" id="text-orge80207b">
 <ul class="org-ul">
 <li><a href="http://rips-scanner.sourceforge.net/">RIPS scanner</a> (static analysis)</li>
 </ul>
@@ -105,13 +105,13 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orge8bb736" class="outline-2">
-<h2 id="orge8bb736">.NET</h2>
-<div class="outline-text-2" id="text-orge8bb736">
+<div id="outline-container-org3dd22a0" class="outline-2">
+<h2 id="org3dd22a0">.NET</h2>
+<div class="outline-text-2" id="text-org3dd22a0">
 </div>
-<div id="outline-container-orgfb5fa66" class="outline-3">
-<h3 id="orgfb5fa66">Decompilers</h3>
-<div class="outline-text-3" id="text-orgfb5fa66">
+<div id="outline-container-org3517c84" class="outline-3">
+<h3 id="org3517c84">Decompilers</h3>
+<div class="outline-text-3" id="text-org3517c84">
 <ul class="org-ul">
 <li><a href="https://www.jetbrains.com/decompiler/">dotPeek</a>: decompiles any .NET assembly into equivalent C# or IL code.</li>
 </ul>
@@ -122,12 +122,12 @@
 <h2 id="php">PHP</h2>
 <div class="outline-text-2" id="text-php">
 </div>
-<div id="outline-container-org50276c3" class="outline-3">
-<h3 id="org50276c3">Filters</h3>
+<div id="outline-container-orgd764c83" class="outline-3">
+<h3 id="orgd764c83">Filters</h3>
 </div>
-<div id="outline-container-orga3d8fb8" class="outline-3">
-<h3 id="orga3d8fb8">Type juggling</h3>
-<div class="outline-text-3" id="text-orga3d8fb8">
+<div id="outline-container-org58c62a9" class="outline-3">
+<h3 id="org58c62a9">Type juggling</h3>
+<div class="outline-text-3" id="text-org58c62a9">
 <ul class="org-ul">
 <li><p>
 <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Type%20Juggling">PayloadAllTheThings - Juggling type and magic hashes</a>.
@@ -190,41 +190,41 @@ First it is important to identify which version of PHP is running. Versions
 </div>
 </div>
 </div>
-<div id="outline-container-org0e46d2b" class="outline-3">
-<h3 id="org0e46d2b">Common functions</h3>
-<div class="outline-text-3" id="text-org0e46d2b">
+<div id="outline-container-org8b418fa" class="outline-3">
+<h3 id="org8b418fa">Common functions</h3>
+<div class="outline-text-3" id="text-org8b418fa">
 </div>
-<div id="outline-container-org7954fdc" class="outline-4">
-<h4 id="org7954fdc">assert()</h4>
+<div id="outline-container-org2d6f227" class="outline-4">
+<h4 id="org2d6f227">assert()</h4>
 </div>
-<div id="outline-container-org6e87288" class="outline-4">
-<h4 id="org6e87288">preg_match()</h4>
+<div id="outline-container-orgcf822e9" class="outline-4">
+<h4 id="orgcf822e9">preg_match()</h4>
 </div>
-<div id="outline-container-org2e72f4c" class="outline-4">
-<h4 id="org2e72f4c">preg_replace()</h4>
+<div id="outline-container-org8c03bcc" class="outline-4">
+<h4 id="org8c03bcc">preg_replace()</h4>
 </div>
 </div>
-<div id="outline-container-org51c0fbd" class="outline-3">
-<h3 id="org51c0fbd">Deserialization</h3>
+<div id="outline-container-org5e27b0f" class="outline-3">
+<h3 id="org5e27b0f">Deserialization</h3>
 </div>
-<div id="outline-container-org2c40d17" class="outline-3">
-<h3 id="org2c40d17">Execution sinks</h3>
+<div id="outline-container-org73c4ac1" class="outline-3">
+<h3 id="org73c4ac1">Execution sinks</h3>
 </div>
 </div>
 <div id="outline-container-python" class="outline-2">
 <h2 id="python">Python</h2>
 <div class="outline-text-2" id="text-python">
 </div>
-<div id="outline-container-org0a8633f" class="outline-3">
-<h3 id="org0a8633f">Deserialization</h3>
-<div class="outline-text-3" id="text-org0a8633f">
+<div id="outline-container-orgd262257" class="outline-3">
+<h3 id="orgd262257">Deserialization</h3>
+<div class="outline-text-3" id="text-orgd262257">
 </div>
-<div id="outline-container-org4ea2153" class="outline-4">
-<h4 id="org4ea2153">pickle</h4>
+<div id="outline-container-org3ddb2f4" class="outline-4">
+<h4 id="org3ddb2f4">pickle</h4>
 </div>
-<div id="outline-container-orge701dec" class="outline-4">
-<h4 id="orge701dec">yaml</h4>
-<div class="outline-text-4" id="text-orge701dec">
+<div id="outline-container-org106fe9c" class="outline-4">
+<h4 id="org106fe9c">yaml</h4>
+<div class="outline-text-4" id="text-org106fe9c">
 <p>
 General resources:
 </p>
@@ -283,9 +283,9 @@ yaml.load(payload, Loader<span class="org-operator">=</span>yaml.Loader)
 </div>
 </div>
 </div>
-<div id="outline-container-org8ae4992" class="outline-3">
-<h3 id="org8ae4992">Environment Variables</h3>
-<div class="outline-text-3" id="text-org8ae4992">
+<div id="outline-container-org917a654" class="outline-3">
+<h3 id="org917a654">Environment Variables</h3>
+<div class="outline-text-3" id="text-org917a654">
 <p>
 When running a Python script, the interpret will check if the <code>PYTHONWARNINGS</code>
 environment variable is set (equivalent to the <code>-W</code> flag). This variable is of
@@ -330,26 +330,26 @@ Sources:
 </div>
 </div>
 </div>
-<div id="outline-container-org8ba51a1" class="outline-2">
-<h2 id="org8ba51a1">Node.js</h2>
-<div class="outline-text-2" id="text-org8ba51a1">
+<div id="outline-container-orgd5e5149" class="outline-2">
+<h2 id="orgd5e5149">Node.js</h2>
+<div class="outline-text-2" id="text-orgd5e5149">
 </div>
-<div id="outline-container-orgcce3af9" class="outline-3">
-<h3 id="orgcce3af9">SQL Injection with Express and MySQL</h3>
-<div class="outline-text-3" id="text-orgcce3af9">
+<div id="outline-container-org544ef71" class="outline-3">
+<h3 id="org544ef71">SQL Injection with Express and MySQL</h3>
+<div class="outline-text-3" id="text-org544ef71">
 <p>
 Authentication bypass can be achieved due to type confusion, as explained <a href="https://flattsecurity.medium.com/finding-an-unseen-sql-injection-by-bypassing-escape-functions-in-mysqljs-mysql-90b27f6542b4">here</a>.
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org322906c" class="outline-2">
-<h2 id="org322906c">Misc</h2>
-<div class="outline-text-2" id="text-org322906c">
+<div id="outline-container-org15852e0" class="outline-2">
+<h2 id="org15852e0">Misc</h2>
+<div class="outline-text-2" id="text-org15852e0">
 </div>
-<div id="outline-container-org7bacf3d" class="outline-3">
-<h3 id="org7bacf3d">ImageMagick</h3>
-<div class="outline-text-3" id="text-org7bacf3d">
+<div id="outline-container-orgb054bfa" class="outline-3">
+<h3 id="orgb054bfa">ImageMagick</h3>
+<div class="outline-text-3" id="text-orgb054bfa">
 <ul class="org-ul">
 <li><a href="https://www.synacktiv.com/publications/playing-with-imagetragick-like-its-2016.html">Playing with ImageTragick like it's 2016</a>: revisited attacks on ImageMagick
 by <a href="https://www.synacktiv.com/index.html">Synacktiv</a>.</li>

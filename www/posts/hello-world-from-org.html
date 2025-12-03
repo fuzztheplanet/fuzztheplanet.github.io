@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
@@ -64,7 +64,7 @@
 </p>
 
 
-<div class="preview" id="orgeced3bd">
+<div class="preview" id="org2c29d7f">
 <p>
 I describe yet-another-simple-publishing-setup for a static website using
 Emacs's <a href="https://orgmode.org/">Org mode</a>.
@@ -79,6 +79,9 @@ skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span clas
 </pre>
 </div>
 
+<p>
+<b>Table of Contents:</b>
+</p>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
@@ -164,7 +167,7 @@ project. The github repository containing all the source files can be found
 <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
 </p>
 
-<pre class="example" id="org3ae7209">
+<pre class="example" id="org0dcc3c0">
 - ~/org/blog/
   - files/
     - css/
@@ -232,21 +235,21 @@ include a template and insert a preview. More on all this a little bit later.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-org"><span class="org-org-document-info-keyword">#+TITLE:</span> <span class="org-org-document-title">Hello World from Org</span>
-<span class="org-org-document-info-keyword">#+DATE:</span> <span class="org-org-document-info">[2025-05-25 Sun]</span>
-<span class="org-org-meta-line">#+INCLUDE: ../../templates/post.org</span>
+<pre class="src src-org"><span class="org-org-document-info-keyword">#+TITLE:</span> <span class="org-org-document-title">Hello World from Org
+</span><span class="org-org-document-info-keyword">#+DATE:</span> <span class="org-org-document-info">[2025-05-25 Sun]
+</span><span class="org-org-meta-line">#+INCLUDE: ../../templates/post.org</span>
 
-<span class="org-org-block-begin-line">#+begin_preview</span>
-I describe yet-another-simple-publishing-setup for a static website using
+<span class="org-org-block-begin-line">#+begin_preview
+</span>I describe yet-another-simple-publishing-setup for a static website using
 Emacs's <span class="org-org-link"><a href="https://orgmode.org/">Org mode</a></span>.
-<span class="org-org-block-end-line">#+end_preview</span>
-
-<span class="org-org-block-begin-line">#+begin_src sh</span>
-<span class="org-org-block">skywhi@dreamland:~/blog$ echo </span><span class="org-org-block"><span class="org-string">"Hello World Wild Web!"</span></span><span class="org-org-block"> &gt; posts/hello.org</span>
-<span class="org-org-block">skywhi@dreamland:~/blog$ make update &amp;&amp; make publish</span>
-<span class="org-org-block">skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!</span></span>
-<span class="org-org-block-end-line">#+end_src</span>
-
+<span class="org-org-block-end-line">#+end_preview
+</span>
+<span class="org-org-block-begin-line">#+begin_src sh
+</span><span class="org-org-block">skywhi@dreamland:~/blog$ echo </span><span class="org-org-block"><span class="org-string">"Hello World Wild Web!"</span></span><span class="org-org-block"> &gt; posts/hello.org
+skywhi@dreamland:~/blog$ make update &amp;&amp; make publish
+skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!
+</span></span><span class="org-org-block-end-line">#+end_src
+</span>
 <span class="org-org-meta-line">#+TOC: headlines 3</span>
 
 <span class="org-org-level-1">* Rationale</span>
@@ -340,10 +343,10 @@ tags.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Extract content between #+begin_preview and #+end_preview</span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-preview</span> (file)
-  <span class="org-doc">"The comments (begin/end_preview) in'</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">' have to be on their own lines,</span>
-<span class="org-doc">   preferably before and after paragraphs."</span>
+<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Extract content between #+begin_preview and #+end_preview
+</span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-preview</span> (file)
+  <span class="org-doc">"The comments (begin/end_preview) in'</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">' have to be on their own lines,
+   preferably before and after paragraphs."</span>
   (<span class="org-keyword">with-temp-buffer</span>
     (message file)
     (insert-file-contents file)
@@ -354,8 +357,8 @@ tags.
       (replace-regexp-in-string <span class="org-string">"\n"</span> <span class="org-string">" "</span> (buffer-substring beg end)))))
 
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Format list of blog post for the sitemap / index</span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post</span> (entry style project)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Format list of blog post for the sitemap / index
+</span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post</span> (entry style project)
   <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' in org-publish '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">' sitemap to include a timestamp."</span>
   (<span class="org-keyword">let</span> ((entry-title (org-publish-find-title entry project)))
     (<span class="org-keyword">if</span> (= (length entry-title) 0)
@@ -366,24 +369,24 @@ tags.
               entry-title))))
 
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Same but add the content between the "preview" tags</span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post-with-preview</span> (entry style project)
-  <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' in org-publish '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">' sitemap to include a timestamp</span>
-<span class="org-doc">   and preview ('</span><span class="org-doc"><span class="org-constant">begin/end_preview</span></span><span class="org-doc">' tag)."</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Same but add the content between the "preview" tags
+</span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/org-format-blog-post-with-preview</span> (entry style project)
+  <span class="org-doc">"Format '</span><span class="org-doc"><span class="org-constant">entry</span></span><span class="org-doc">' in org-publish '</span><span class="org-doc"><span class="org-constant">project</span></span><span class="org-doc">' sitemap to include a timestamp
+   and preview ('</span><span class="org-doc"><span class="org-constant">begin/end_preview</span></span><span class="org-doc">' tag)."</span>
   (<span class="org-keyword">let</span> ((entry-title (org-publish-find-title entry project))
-        (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) <span class="org-string">"src/posts/"</span> entry)))) <span class="org-comment-delimiter">;; </span><span class="org-comment">dirty</span>
-    (<span class="org-keyword">if</span> (= (length entry-title) 0)
+        (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) <span class="org-string">"src/posts/"</span> entry)))) <span class="org-comment-delimiter">;; </span><span class="org-comment">dirty
+</span>    (<span class="org-keyword">if</span> (= (length entry-title) 0)
         (format <span class="org-string">"*%s*"</span> entry)
-      (format <span class="org-string">"{{{timestamp(%s)}}}: [[file:%s][%s]]\n</span>
-<span class="org-string">%s"</span>
+      (format <span class="org-string">"{{{timestamp(%s)}}}: [[file:%s][%s]]\n
+%s"</span>
               (format-time-string <span class="org-string">"%Y-%m-%d"</span> (org-publish-find-date entry project))
               entry
               entry-title
               preview))))
 
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Exporting macros</span>
-(<span class="org-keyword">setq</span> org-export-global-macros
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Exporting macros
+</span>(<span class="org-keyword">setq</span> org-export-global-macros
       '((<span class="org-string">"timestamp"</span> . <span class="org-string">"@@html:&lt;span class=\"timestamp\"&gt;$1&lt;/span&gt;@@"</span>)))
 </pre>
 </div>
@@ -409,8 +412,8 @@ The corresponding publishing rules then look like this:
  <span class="org-builtin">:html-postamble</span> ,skw-blog/footer
  <span class="org-builtin">:html-head</span> ,(concat skw-blog/main-css skw-blog/favicon))
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts</span>
-(<span class="org-string">"website-posts-index"</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts
+</span>(<span class="org-string">"website-posts-index"</span>
  <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
  <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
  <span class="org-builtin">:exclude</span> ,(regexp-opt '(<span class="org-string">"rss.org"</span> <span class="org-string">"index.org"</span> <span class="org-string">"index-no-preview.org"</span>))
@@ -426,8 +429,8 @@ The corresponding publishing rules then look like this:
  <span class="org-builtin">:sitemap-format-entry</span> skw-blog/org-format-blog-post
  <span class="org-builtin">:sitemap-sort-files</span> anti-chronologically)
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts with preview</span>
-(<span class="org-string">"website-posts-index-preview"</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Index of all blog posts with preview
+</span>(<span class="org-string">"website-posts-index-preview"</span>
  <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
  <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
  <span class="org-builtin">:exclude</span> ,(regexp-opt '(<span class="org-string">"rss.org"</span> <span class="org-string">"index.org"</span> <span class="org-string">"index-no-preview.org"</span>))
@@ -480,7 +483,6 @@ Let's use <b>make</b> to avoid building and managing the website by hand.
 
 <span class="org-makefile-targets">update</span>:
     make all
-    make mathjax
     git add .
     git status
 
@@ -583,15 +585,15 @@ converted to XML. The description field of each item is the content of the
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation</span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/publish-to-rss</span> (plist filename dir)
+<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation
+</span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/publish-to-rss</span> (plist filename dir)
   <span class="org-doc">"Publish '</span><span class="org-doc"><span class="org-constant">plist</span></span><span class="org-doc">' when '</span><span class="org-doc"><span class="org-constant">filename</span></span><span class="org-doc">' corresponds to RSS feed Org-file to '</span><span class="org-doc"><span class="org-constant">dir</span></span><span class="org-doc">'."</span>
   (<span class="org-keyword">if</span> (equal skw-blog/rss-filename (file-name-nondirectory filename))
       (org-rss-publish-to-rss plist filename dir)))
 
 (<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/format-rss-feed</span> (title list)
-  <span class="org-doc">"Generate a sitemap of posts that will be exported as a RSS feed. '</span><span class="org-doc"><span class="org-constant">title</span></span><span class="org-doc">' is</span>
-<span class="org-doc">title of the RSS feed and '</span><span class="org-doc"><span class="org-constant">list</span></span><span class="org-doc">' the files to be included."</span>
+  <span class="org-doc">"Generate a sitemap of posts that will be exported as a RSS feed. '</span><span class="org-doc"><span class="org-constant">title</span></span><span class="org-doc">' is
+title of the RSS feed and '</span><span class="org-doc"><span class="org-constant">list</span></span><span class="org-doc">' the files to be included."</span>
   (concat <span class="org-string">"#+TITLE: "</span> title <span class="org-string">"\n\n"</span> (org-list-to-subtree list)))
 
 (<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/format-rss-feed-entry</span> (entry style project)
@@ -602,12 +604,12 @@ converted to XML. The description field of each item is the content of the
                                       (org-publish-find-date entry project)))
          (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) <span class="org-string">"src/posts/"</span> entry))))
 
-    (format <span class="org-string">"%s</span>
-<span class="org-string">:properties:</span>
-<span class="org-string">:rss_permalink: %s</span>
-<span class="org-string">:pubdate: %s</span>
-<span class="org-string">:end:</span>
-<span class="org-string">%s"</span> title link pubdate preview)))
+    (format <span class="org-string">"%s
+:properties:
+:rss_permalink: %s
+:pubdate: %s
+:end:
+%s"</span> title link pubdate preview)))
 </pre>
 </div>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ArchLinux installation</title>
@@ -75,19 +75,19 @@ out-of-the-box and I use <a href="https://wiki.archlinux.org/title/Iwd">iwd</a> 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Set keymap</span>
-loadkeys fr-latin9
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Set keymap
+</span>loadkeys fr-latin9
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configure network, here wireless with iwd</span>
-iwctl
+<span class="org-comment-delimiter"># </span><span class="org-comment">Configure network, here wireless with iwd
+</span>iwctl
 [iwd]
 [iwd] station wlan0 get-networks
 [iwd] station wlan0 connect &lt;ssid&gt;
 [iwd] exit
 ping -c3 archlinux.org
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Time over the network with ntp</span>
-timedatectl set-ntp true
+<span class="org-comment-delimiter"># </span><span class="org-comment">Time over the network with ntp
+</span>timedatectl set-ntp true
 </pre>
 </div>
 </div>
@@ -130,22 +130,22 @@ you might regret it!
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Partition the disk</span>
-fdisk -l
-fdisk /dev/sda <span class="org-comment-delimiter"># </span><span class="org-comment">fdisk /dev/nvme0n1</span>
-<span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make EFI partition sda1: +256M - type "EFI System"</span>
-<span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make System partition sda2: type "Linux filesystem"</span>
-<span class="org-function-name">Command</span> (m for help): w <span class="org-comment-delimiter"># </span><span class="org-comment">Write changes to disk</span>
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Partition the disk
+</span>fdisk -l
+fdisk /dev/sda <span class="org-comment-delimiter"># </span><span class="org-comment">fdisk /dev/nvme0n1
+</span><span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make EFI partition sda1: +256M - type "EFI System"
+</span><span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make System partition sda2: type "Linux filesystem"
+</span><span class="org-function-name">Command</span> (m for help): w <span class="org-comment-delimiter"># </span><span class="org-comment">Write changes to disk
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Format sda1 for EFI
+</span>mkfs.fat -F32 /dev/sda1
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Format sda1 for EFI</span>
-mkfs.fat -F32 /dev/sda1
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">LuksFormat sda2</span>
-cryptsetup luksFormat /dev/sda2
+<span class="org-comment-delimiter"># </span><span class="org-comment">LuksFormat sda2
+</span>cryptsetup luksFormat /dev/sda2
 cryptsetup open /dev/sda2 cryptlvm
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Setup LVM logical volumes</span>
-pvcreate /dev/mapper/cryptlvm
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setup LVM logical volumes
+</span>pvcreate /dev/mapper/cryptlvm
 vgcreate MyVolGroup /dev/mapper/cryptlvm
 lvcreate -L 8G MyVolGroup -n swap
 lvcreate -L 50G MyVolGroup -n root
@@ -155,8 +155,8 @@ mkfs.ext4 /dev/MyVolGroup/root
 mkfs.ext4 /dev/MyVolGroup/home
 mkswap /dev/MyVolGroup/swap
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Mount everything</span>
-mount /dev/MyVolGroup/root /mnt
+<span class="org-comment-delimiter"># </span><span class="org-comment">Mount everything
+</span>mount /dev/MyVolGroup/root /mnt
 mkdir /mnt/{home,boot}
 mount /dev/MyVolGroup/home /mnt/home
 mount /dev/sda1 /mnt/boot
@@ -179,14 +179,14 @@ packages, do not forget!).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages</span>
-pacstrap /mnt base linux linux-firmware <span class="org-sh-escaped-newline">\</span>
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages
+</span>pacstrap /mnt base linux linux-firmware <span class="org-sh-escaped-newline">\</span>
          sudo nano lvm2 <span class="org-sh-escaped-newline">\</span>
          networkmanager wpa_supplicant dhcpcd <span class="org-sh-escaped-newline">\</span>
          grub efibootmgr intel-ucode
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Update the new fstab</span>
-genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
+<span class="org-comment-delimiter"># </span><span class="org-comment">Update the new fstab
+</span>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
 </pre>
 </div>
 
@@ -195,34 +195,34 @@ We can finally <code>chroot</code> into the new installation and start configuri
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Switch to the new installation</span>
-arch-chroot /mnt
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Switch to the new installation
+</span>arch-chroot /mnt
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Set time info</span>
-ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+<span class="org-comment-delimiter"># </span><span class="org-comment">Set time info
+</span>ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Edit locale, vconsole and hostname</span>
-sed -i <span class="org-string">'s/#en_US.UTF-8/en_US.UTF-8/g'</span> /etc/locale.gen &amp;&amp; locale-gen
+<span class="org-comment-delimiter"># </span><span class="org-comment">Edit locale, vconsole and hostname
+</span>sed -i <span class="org-string">'s/#en_US.UTF-8/en_US.UTF-8/g'</span> /etc/locale.gen &amp;&amp; locale-gen
 <span class="org-builtin">echo</span> <span class="org-string">'LANG=en_US.UTF-8'</span> &gt; /etc/locale.conf
 <span class="org-builtin">echo</span> <span class="org-string">'KEYMAP=fr-latin9'</span> &gt; /etc/vconsole.conf
 <span class="org-builtin">echo</span> <span class="org-string">'foobaz'</span> &gt; /etc/hostname
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Change root password</span>
-passwd
+<span class="org-comment-delimiter"># </span><span class="org-comment">Change root password
+</span>passwd
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Add hooks for system encryption and lvm (keymap encrypt lvm2)</span>
-nano /etc/mkinitcpio.conf
+<span class="org-comment-delimiter"># </span><span class="org-comment">Add hooks for system encryption and lvm (keymap encrypt lvm2)
+</span>nano /etc/mkinitcpio.conf
 mkinitcpio -P
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Setup the GRUB bootloader</span>
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setup the GRUB bootloader
+</span>grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
-lsblk -f <span class="org-comment-delimiter"># </span><span class="org-comment">take note of sda2's UUID</span>
-nano /boot/grub/grub.cfg <span class="org-comment-delimiter"># </span><span class="org-comment">add sda2's cryptdevice=UUID=&lt;UUID&gt;:cryptlvm</span>
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Exit and reboot</span>
-<span class="org-keyword">exit</span>
+lsblk -f <span class="org-comment-delimiter"># </span><span class="org-comment">take note of sda2's UUID
+</span>nano /boot/grub/grub.cfg <span class="org-comment-delimiter"># </span><span class="org-comment">add sda2's cryptdevice=UUID=&lt;UUID&gt;:cryptlvm
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Exit and reboot
+</span><span class="org-keyword">exit</span>
 umount -R /mnt
 reboot
 </pre>

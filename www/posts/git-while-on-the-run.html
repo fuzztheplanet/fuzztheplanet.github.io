@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-07-14 Mon 23:26 -->
+<!-- 2025-12-03 Wed 23:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Using git while on-the-run</title>
@@ -31,7 +31,7 @@
 </div>
 </p>
 
-<div class="preview" id="org6479c8f">
+<div class="preview" id="org1e838ad">
 <p>
 This post describes how to use a custom <i>git</i> configuration, including SSH and
 GPG keys, on devices where there are already keys present and the user does not
@@ -53,14 +53,14 @@ where I am not the sole administrator and would like my key material to remain
 somewhat separated.
 </p>
 
-<div id="table-of-contents" role="doc-toc">
-<h2>Table of Contents</h2>
+<p>
+<b>Table of Contents:</b>
+</p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#gen-keys">Generating and storing the secret keys</a></li>
 <li><a href="#new-device">Working on a new device</a></li>
 </ul>
-</div>
 </div>
 <div id="outline-container-gen-keys" class="outline-2">
 <h2 id="gen-keys">Generating and storing the secret keys</h2>
@@ -120,8 +120,8 @@ The <b>alias.sh</b> file contains the following 2 functions:
 
     <span class="org-variable-name">KEY_DIR</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec"> cd "$( dirname "${BASH_SOURCE[0]}" </span><span class="org-string">)" &amp;&amp; pwd )"</span>;
 
-    <span class="org-comment-delimiter"># </span><span class="org-comment">If the variable is already defined, make a backup before updating it and export both</span>
-    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>=$<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">If the variable is already defined, make a backup before updating it and export both
+</span>    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>=$<span class="org-variable-name">GIT_CONFIG_GLOBAL</span>
     <span class="org-builtin">export</span> <span class="org-variable-name">GIT_CONFIG_GLOBAL</span>=<span class="org-string">"${KEY_DIR}/git/config"</span>
 
     [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GIT_SSH_COMMAND</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GIT_SSH_COMMAND</span>=$<span class="org-variable-name">GIT_SSH_COMMAND</span>
@@ -134,8 +134,8 @@ The <b>alias.sh</b> file contains the following 2 functions:
 
 <span class="org-function-name">unsetupgit</span>() {
 
-    <span class="org-comment-delimiter"># </span><span class="org-comment">If there is a backup, then restore the old value and export it</span>
-    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>+x} ]] <span class="org-sh-escaped-newline">\</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">If there is a backup, then restore the old value and export it
+</span>    [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>+x} ]] <span class="org-sh-escaped-newline">\</span>
         &amp;&amp; { <span class="org-builtin">export</span> <span class="org-variable-name">GIT_CONFIG_GLOBAL</span>=${<span class="org-variable-name">BAK_GIT_CONFIG_GLOBAL</span>} ; <span class="org-builtin">export</span> -n BAK_GIT_CONFIG_GLOBAL ; } <span class="org-sh-escaped-newline">\</span>
         || <span class="org-builtin">export</span> -n GIT_CONFIG_GLOBAL
 
@@ -203,20 +203,20 @@ So when I need to do some <i>git</i> operations, I use the following commands:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Open and mount the LUKS-encrypted device /dev/sdb</span>
-$ sudo cryptsetup open /dev/sdb cool-pendrive
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Open and mount the LUKS-encrypted device /dev/sdb
+</span>$ sudo cryptsetup open /dev/sdb cool-pendrive
 $ sudo mount /dev/mapper/cool-pendrive /mnt/usb
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Load the environment variables</span>
-$ . /mnt/usb/alias.sh
+<span class="org-comment-delimiter"># </span><span class="org-comment">Load the environment variables
+</span>$ . /mnt/usb/alias.sh
 $ setupgit
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Do some git things...</span>
-$ git commit -m <span class="org-string">'My commit'</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Do some git things...
+</span>$ git commit -m <span class="org-string">'My commit'</span>
 $ git push
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Restore the environment and unmount the usb stick</span>
-$ unsetupgit
+<span class="org-comment-delimiter"># </span><span class="org-comment">Restore the environment and unmount the usb stick
+</span>$ unsetupgit
 $ sudo umount /mnt/usb
 $ sudo cryptsetup close cool-pendrive
 </pre>

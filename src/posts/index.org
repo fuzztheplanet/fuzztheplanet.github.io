@@ -1,5 +1,8 @@
 #+TITLE: Posts
 
+- {{{timestamp(2025-12-03)}}}: [[file:gtd-with-org.org][Getting Things Done with Org]]
+  
+  /Yet-another-GTD-post/ featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows. 
 - {{{timestamp(2025-07-07)}}}: [[file:git-while-on-the-run.org][Using git while on-the-run]]
   
   This post describes how to use a custom /git/ configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct /git/ to use different configs and keys. 
