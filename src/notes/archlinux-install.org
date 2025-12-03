@@ -69,18 +69,18 @@ Replace =/dev/sda= by your actual device (=/dev/nvme0n1= for example).
   - =/home= (rest of disk space) on a separate volume in case things get south.
   - =swap= (a few Gigabytes) for swapping purposes (duh!).
 
-  We will boot bare-metal installations over UEFI because we are modern people.
-  I am perfectly fine with having *sda1* un-encrypted and the whole system data
-  on *sda2* encrypted with a single passphrase. The use of LVM gives the
-  flexibility to create or resize partitions / logical volumes later if needed.
+We will boot bare-metal installations over UEFI because we are modern people. I
+am perfectly fine with having *sda1* un-encrypted and the whole system data on
+*sda2* encrypted with a single passphrase. The use of LVM gives the
+flexibility to create or resize partitions / logical volumes later if needed.
 
-  The wiki pages [[https://wiki.archlinux.org/title/EFI_system_partition][EFI system partition]] and [[https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS][Encrypting an entire system]] (section
-  "LVM on LUKS") cover the required steps. The usual *warning message* applies:
-  note that from here on data will be actually written to the given disks. Make
-  sure to triple-check that everything is in order before executing a command or
-  you might regret it!
+The wiki pages [[https://wiki.archlinux.org/title/EFI_system_partition][EFI system partition]] and [[https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS][Encrypting an entire system]] (section
+"LVM on LUKS") cover the required steps. The usual *warning message* applies:
+note that from here on data will be actually written to the given disks. Make
+sure to triple-check that everything is in order before executing a command or
+you might regret it!
 
-  #+begin_src sh
+#+begin_src sh
 # Partition the disk
 fdisk -l
 fdisk /dev/sda # fdisk /dev/nvme0n1
@@ -112,7 +112,7 @@ mkdir /mnt/{home,boot}
 mount /dev/MyVolGroup/home /mnt/home
 mount /dev/sda1 /mnt/boot
 swapon /dev/MyVolGroup/swap
-  #+end_src
+#+end_src
 
 * Diving in!
 :PROPERTIES:
@@ -129,7 +129,7 @@ packages, do not forget!).
 #+begin_src sh
 # Install all our required packages
 pacstrap /mnt base linux linux-firmware \
-         sudo nano lvm2 \
+         sudo nano tmux lvm2 \
          networkmanager wpa_supplicant dhcpcd \
          grub efibootmgr intel-ucode
 
@@ -185,7 +185,6 @@ account that will be used for administrative tasks. It will be added to the
 useradd -m -G wheel skywhi
 passwd skywhi
 visudo
-# uncomment line 82 for example: wheel users can run any command with password
 #+end_src
 
 Installing [[https://github.com/Jguer/yay][yay]] is never a bad idea if you wish to install package from [[https://aur.archlinux.org/][AUR]].
@@ -198,6 +197,6 @@ cd ~ && rm -rf yay
 #+end_src
 
 Here we are! We now enjoy a fully functional ArchLinux workstation with full
-disk encryption and basic networking capabilities. From here on we should
-check the [[https://wiki.archlinux.org/title/General_recommendations][General recommendations]] to complete the setup of users, services,
-system management and so forth.
+disk encryption and basic networking capabilities. From here on we should check
+the [[https://wiki.archlinux.org/title/General_recommendations][General recommendations]] to complete the setup of users, services, system
+management and so forth.

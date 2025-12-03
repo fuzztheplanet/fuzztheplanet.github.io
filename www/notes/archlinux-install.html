@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-12-03 Wed 23:31 -->
+<!-- 2025-12-03 Wed 23:38 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ArchLinux installation</title>
@@ -103,21 +103,20 @@ Replace <code>/dev/sda</code> by your actual device (<code>/dev/nvme0n1</code> f
 
 <ul class="org-ul">
 <li><b>sda1</b> (256M) is the un-encrypted <code>/boot</code> partition.</li>
-<li><p>
-<b>sda2</b> is passphrase-encrypted with LUKS. It will host 3 LVM logical
+<li><b>sda2</b> is passphrase-encrypted with LUKS. It will host 3 LVM logical
 volumes:
-</p>
 <ul class="org-ul">
 <li><code>/</code> (usually something like 30-50G, depending on usage) the filesystem's
 root for our installation.</li>
 <li><code>/home</code> (rest of disk space) on a separate volume in case things get south.</li>
 <li><code>swap</code> (a few Gigabytes) for swapping purposes (duh!).</li>
+</ul></li>
 </ul>
 
 <p>
-We will boot bare-metal installations over UEFI because we are modern people.
-I am perfectly fine with having <b>sda1</b> un-encrypted and the whole system data
-on <b>sda2</b> encrypted with a single passphrase. The use of LVM gives the
+We will boot bare-metal installations over UEFI because we are modern people. I
+am perfectly fine with having <b>sda1</b> un-encrypted and the whole system data on
+<b>sda2</b> encrypted with a single passphrase. The use of LVM gives the
 flexibility to create or resize partitions / logical volumes later if needed.
 </p>
 
@@ -162,8 +161,7 @@ mount /dev/MyVolGroup/home /mnt/home
 mount /dev/sda1 /mnt/boot
 swapon /dev/MyVolGroup/swap
 </pre>
-</div></li>
-</ul>
+</div>
 </div>
 </div>
 <div id="outline-container-diving" class="outline-2">
@@ -181,7 +179,7 @@ packages, do not forget!).
 <div class="org-src-container">
 <pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages
 </span>pacstrap /mnt base linux linux-firmware <span class="org-sh-escaped-newline">\</span>
-         sudo nano lvm2 <span class="org-sh-escaped-newline">\</span>
+         sudo nano tmux lvm2 <span class="org-sh-escaped-newline">\</span>
          networkmanager wpa_supplicant dhcpcd <span class="org-sh-escaped-newline">\</span>
          grub efibootmgr intel-ucode
 
@@ -242,7 +240,6 @@ account that will be used for administrative tasks. It will be added to the
 <pre class="src src-sh">useradd -m -G wheel skywhi
 passwd skywhi
 visudo
-<span class="org-comment-delimiter"># </span><span class="org-comment">uncomment line 82 for example: wheel users can run any command with password</span>
 </pre>
 </div>
 
@@ -260,9 +257,9 @@ makepkg -sirc
 
 <p>
 Here we are! We now enjoy a fully functional ArchLinux workstation with full
-disk encryption and basic networking capabilities. From here on we should
-check the <a href="https://wiki.archlinux.org/title/General_recommendations">General recommendations</a> to complete the setup of users, services,
-system management and so forth.
+disk encryption and basic networking capabilities. From here on we should check
+the <a href="https://wiki.archlinux.org/title/General_recommendations">General recommendations</a> to complete the setup of users, services, system
+management and so forth.
 </p>
 </div>
 </div>
