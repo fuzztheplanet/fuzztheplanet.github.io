@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-12-03 Wed 23:50 -->
+<!-- 2025-12-04 Thu 00:02 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Web stuff</title>
@@ -32,19 +32,19 @@
 <ul>
 <li><a href="#scanners">General Scanners</a>
 <ul>
-<li><a href="#org50174fb">Nuclei</a></li>
+<li><a href="#org861b7dd">Nuclei</a></li>
 </ul>
 </li>
 <li><a href="#enumeration">Enumeration</a>
 <ul>
-<li><a href="#orge6ce093">Directory busting</a></li>
-<li><a href="#org3a75dd8">Extract remote git repositories</a></li>
+<li><a href="#org7820fbf">Directory busting</a></li>
+<li><a href="#org91f3a99">Extract remote git repositories</a></li>
 </ul>
 </li>
 <li><a href="#auth">Authentication Issues</a>
 <ul>
-<li><a href="#org27bc6b4">Bypass "403 Forbidden"</a></li>
-<li><a href="#orgba5aab8">Auth bruteforce</a></li>
+<li><a href="#org8b276b8">Bypass "403 Forbidden"</a></li>
+<li><a href="#org5c26ece">Auth bruteforce</a></li>
 </ul>
 </li>
 <li><a href="#cors">CORS</a></li>
@@ -53,44 +53,44 @@
 <li><a href="#smuggling">Request Smuggling</a></li>
 <li><a href="#frameworks">Frameworks / CMS</a>
 <ul>
-<li><a href="#orga12868e">Django</a></li>
-<li><a href="#orgf98a2c1">Flask</a></li>
-<li><a href="#orgbe27d6c">Spring-boot</a></li>
-<li><a href="#org76c15ae">Symphony</a></li>
-<li><a href="#org53ce27b">Tomcat</a></li>
+<li><a href="#orgf108479">Django</a></li>
+<li><a href="#org9a368b5">Flask</a></li>
+<li><a href="#org64b53b6">Spring-boot</a></li>
+<li><a href="#org6701b4b">Symphony</a></li>
+<li><a href="#orga78c23e">Tomcat</a></li>
 </ul>
 </li>
 <li><a href="#proxy">Intercept HTTP Traffic</a>
 <ul>
-<li><a href="#orgb94a6cb">Browsers</a></li>
-<li><a href="#org3867621">CLI applications</a></li>
+<li><a href="#org0bd4705">Browsers</a></li>
+<li><a href="#org05bac77">CLI applications</a></li>
 </ul>
 </li>
 <li><a href="#sql">SQL Injections</a>
 <ul>
-<li><a href="#org15aab66">MSSQL</a></li>
+<li><a href="#org4516a09">MSSQL</a></li>
 </ul>
 </li>
 <li><a href="#graphql">GraphQL</a>
 <ul>
-<li><a href="#org80ca844">Resources</a></li>
-<li><a href="#org5726a00">Tools of the trade</a></li>
-<li><a href="#org2402dd0">Introspection</a></li>
-<li><a href="#orgdfd0144">Searching for a path</a></li>
+<li><a href="#org3f32367">Resources</a></li>
+<li><a href="#orga795cc4">Tools of the trade</a></li>
+<li><a href="#orgfc4a08f">Introspection</a></li>
+<li><a href="#org71c6382">Searching for a path</a></li>
 </ul>
 </li>
 <li><a href="#web-servers">Web Servers</a>
 <ul>
-<li><a href="#orge794b20">Nginx</a></li>
+<li><a href="#org91f0c6e">Nginx</a></li>
 </ul>
 </li>
 <li><a href="#misc">Misc</a>
 <ul>
-<li><a href="#org17f510b">Apache James 2.3.2 RCE</a></li>
-<li><a href="#orge445f4c">Fuzz through NTLM authentication</a></li>
-<li><a href="#org740437b">Enumerating VHOSTs (Virtual Hosts)</a></li>
-<li><a href="#orgb3fb99d">Wordpress</a></li>
-<li><a href="#orga16e890">Webshells</a></li>
+<li><a href="#org3652e44">Apache James 2.3.2 RCE</a></li>
+<li><a href="#org15de5d2">Fuzz through NTLM authentication</a></li>
+<li><a href="#org4d0e998">Enumerating VHOSTs (Virtual Hosts)</a></li>
+<li><a href="#org53b6375">Wordpress</a></li>
+<li><a href="#orgc7527d5">Webshells</a></li>
 </ul>
 </li>
 </ul>
@@ -99,9 +99,9 @@
 <h2 id="scanners">General Scanners</h2>
 <div class="outline-text-2" id="text-scanners">
 </div>
-<div id="outline-container-org50174fb" class="outline-3">
-<h3 id="org50174fb">Nuclei</h3>
-<div class="outline-text-3" id="text-org50174fb">
+<div id="outline-container-org861b7dd" class="outline-3">
+<h3 id="org861b7dd">Nuclei</h3>
+<div class="outline-text-3" id="text-org861b7dd">
 <p>
 Before running <a href="https://projectdiscovery.io">projectdiscovery</a>'s <a href="https://github.com/projectdiscovery/nuclei">nuclei</a> it is highly recommended to update
 the templates and select the relevant ones to avoid unnecessary requests.
@@ -123,16 +123,16 @@ $ <span class="org-comment-delimiter"># </span><span class="org-comment">Run nuc
 <h2 id="enumeration">Enumeration</h2>
 <div class="outline-text-2" id="text-enumeration">
 </div>
-<div id="outline-container-orge6ce093" class="outline-3">
-<h3 id="orge6ce093">Directory busting</h3>
-<div class="outline-text-3" id="text-orge6ce093">
+<div id="outline-container-org7820fbf" class="outline-3">
+<h3 id="org7820fbf">Directory busting</h3>
+<div class="outline-text-3" id="text-org7820fbf">
 </div>
-<div id="outline-container-org40fc7a0" class="outline-4">
-<h4 id="org40fc7a0">ffuf</h4>
+<div id="outline-container-orgcb6d9d4" class="outline-4">
+<h4 id="orgcb6d9d4">ffuf</h4>
 </div>
-<div id="outline-container-orge5b3cb5" class="outline-4">
-<h4 id="orge5b3cb5">gobuster</h4>
-<div class="outline-text-4" id="text-orge5b3cb5">
+<div id="outline-container-orgaf6d3e6" class="outline-4">
+<h4 id="orgaf6d3e6">gobuster</h4>
+<div class="outline-text-4" id="text-orgaf6d3e6">
 <div class="org-src-container">
 <pre class="src src-shell">gobuster dir -edk -u &lt;url&gt; -w &lt;wordlist&gt; -o &lt;output file&gt;
 grep -E <span class="org-string">'Status: (200|301|302)'</span> &lt;output file&gt;
@@ -141,9 +141,9 @@ grep -E <span class="org-string">'Status: (200|301|302)'</span> &lt;output file&
 </div>
 </div>
 </div>
-<div id="outline-container-org3a75dd8" class="outline-3">
-<h3 id="org3a75dd8">Extract remote git repositories</h3>
-<div class="outline-text-3" id="text-org3a75dd8">
+<div id="outline-container-org91f3a99" class="outline-3">
+<h3 id="org91f3a99">Extract remote git repositories</h3>
+<div class="outline-text-3" id="text-org91f3a99">
 <p>
 Use <a href="https://github.com/internetwache/GitTools">GitTools</a>:
 </p>
@@ -159,14 +159,14 @@ Use <a href="https://github.com/internetwache/GitTools">GitTools</a>:
 <h2 id="auth">Authentication Issues</h2>
 <div class="outline-text-2" id="text-auth">
 </div>
-<div id="outline-container-org27bc6b4" class="outline-3">
-<h3 id="org27bc6b4">Bypass "403 Forbidden"</h3>
-<div class="outline-text-3" id="text-org27bc6b4">
+<div id="outline-container-org8b276b8" class="outline-3">
+<h3 id="org8b276b8">Bypass "403 Forbidden"</h3>
+<div class="outline-text-3" id="text-org8b276b8">
 <p>
 Confusion through HTTP headers:
 </p>
 
-<pre class="example" id="orge4b650b">
+<pre class="example" id="org67c5d15">
 GET /admin HTTP/1.1
 Host: target.com
 ==&gt; 403 Forbidden
@@ -181,7 +181,7 @@ Host: target.com
 Fuzz the url:
 </p>
 
-<pre class="example" id="orgcfd6d56">
+<pre class="example" id="org7392401">
 target.com/admin ==&gt; 403 Forbidden
 target.com/%2e/admin ==&gt; 200 OK
 target.com/./admin ==&gt; 200 OK
@@ -196,9 +196,9 @@ then try target.com/admin/page/;core ==&gt; 200 OK
 </pre>
 </div>
 </div>
-<div id="outline-container-orgba5aab8" class="outline-3">
-<h3 id="orgba5aab8">Auth bruteforce</h3>
-<div class="outline-text-3" id="text-orgba5aab8">
+<div id="outline-container-org5c26ece" class="outline-3">
+<h3 id="org5c26ece">Auth bruteforce</h3>
+<div class="outline-text-3" id="text-org5c26ece">
 <p>
 <a href="https://github.com/vanhauser-thc/thc-hydra">Hydra</a> is pretty versatile, it supports HTTP basic/digest authentication,
 GET/POST forms and much more (cheatsheet <a href="https://github.com/gnebbia/hydra_notes">here</a>):
@@ -296,43 +296,43 @@ Tools:
 <h2 id="frameworks">Frameworks / CMS</h2>
 <div class="outline-text-2" id="text-frameworks">
 </div>
-<div id="outline-container-orga12868e" class="outline-3">
-<h3 id="orga12868e">Django</h3>
+<div id="outline-container-orgf108479" class="outline-3">
+<h3 id="orgf108479">Django</h3>
 </div>
-<div id="outline-container-orgf98a2c1" class="outline-3">
-<h3 id="orgf98a2c1">Flask</h3>
-<div class="outline-text-3" id="text-orgf98a2c1">
+<div id="outline-container-org9a368b5" class="outline-3">
+<h3 id="org9a368b5">Flask</h3>
+<div class="outline-text-3" id="text-org9a368b5">
 <p>
 Use <a href="https://github.com/Paradoxis/Flask-Unsign">Flask-Unsign</a> to read, forge or crack session tokens generated by Flask.
 </p>
 </div>
 </div>
-<div id="outline-container-orgbe27d6c" class="outline-3">
-<h3 id="orgbe27d6c">Spring-boot</h3>
-<div class="outline-text-3" id="text-orgbe27d6c">
+<div id="outline-container-org64b53b6" class="outline-3">
+<h3 id="org64b53b6">Spring-boot</h3>
+<div class="outline-text-3" id="text-org64b53b6">
 <p>
 Look for <i>/heapdump</i>, <i>/env</i>, <i>/trace</i> endpoints, they can contain sensitive
 information.
 </p>
 </div>
 </div>
-<div id="outline-container-org76c15ae" class="outline-3">
-<h3 id="org76c15ae">Symphony</h3>
-<div class="outline-text-3" id="text-org76c15ae">
+<div id="outline-container-org6701b4b" class="outline-3">
+<h3 id="org6701b4b">Symphony</h3>
+<div class="outline-text-3" id="text-org6701b4b">
 <p>
 RCE is possible via ESI fragments, check <a href="https://book.hacktricks.xyz/pentesting/pentesting-web/symphony">Hacktricks on Symphony</a> (mirror of
 <a href="https://www.ambionics.io/blog/symfony-secret-fragment">Ambionics.io</a>).
 </p>
 </div>
 </div>
-<div id="outline-container-org53ce27b" class="outline-3">
-<h3 id="org53ce27b">Tomcat</h3>
-<div class="outline-text-3" id="text-org53ce27b">
+<div id="outline-container-orga78c23e" class="outline-3">
+<h3 id="orga78c23e">Tomcat</h3>
+<div class="outline-text-3" id="text-orga78c23e">
 <p>
 Tomcat + NGINX:
 </p>
 
-<pre class="example" id="orgba97355">
+<pre class="example" id="org77136c2">
 https://test.example.com/manager/html =&gt; 404
 https://test.example.com/foo/..;/manager/html =&gt; 200
 </pre>
@@ -343,9 +343,9 @@ https://test.example.com/foo/..;/manager/html =&gt; 200
 <h2 id="proxy">Intercept HTTP Traffic</h2>
 <div class="outline-text-2" id="text-proxy">
 </div>
-<div id="outline-container-orgb94a6cb" class="outline-3">
-<h3 id="orgb94a6cb">Browsers</h3>
-<div class="outline-text-3" id="text-orgb94a6cb">
+<div id="outline-container-org0bd4705" class="outline-3">
+<h3 id="org0bd4705">Browsers</h3>
+<div class="outline-text-3" id="text-org0bd4705">
 <p>
 I leave this here because I always look for the proxy settings on chromium
 and never seem to find them. Start chromium from the command line with
@@ -358,17 +358,17 @@ settings on-the-fly.
 </p>
 </div>
 </div>
-<div id="outline-container-org3867621" class="outline-3">
-<h3 id="org3867621">CLI applications</h3>
-<div class="outline-text-3" id="text-org3867621">
+<div id="outline-container-org05bac77" class="outline-3">
+<h3 id="org05bac77">CLI applications</h3>
+<div class="outline-text-3" id="text-org05bac77">
 <p>
 First check out <a href="https://blog.ropnop.com">ROPNOP</a>'s <a href="https://blog.ropnop.com/proxying-cli-tools/">post</a> on intercepting HTTP(S) traffic from
 CLI-tools.
 </p>
 </div>
-<div id="outline-container-org713889e" class="outline-4">
-<h4 id="org713889e">Environment variables</h4>
-<div class="outline-text-4" id="text-org713889e">
+<div id="outline-container-orgb1c0369" class="outline-4">
+<h4 id="orgb1c0369">Environment variables</h4>
+<div class="outline-text-4" id="text-orgb1c0369">
 <p>
 Some programs like curl and wget will look for specific environment
 variables (case sensitive) and use them as proxy settings. Either check
@@ -390,14 +390,14 @@ $ <span class="org-comment-delimiter"># </span><span class="org-comment">run som
 <h2 id="sql">SQL Injections</h2>
 <div class="outline-text-2" id="text-sql">
 </div>
-<div id="outline-container-org15aab66" class="outline-3">
-<h3 id="org15aab66">MSSQL</h3>
-<div class="outline-text-3" id="text-org15aab66">
+<div id="outline-container-org4516a09" class="outline-3">
+<h3 id="org4516a09">MSSQL</h3>
+<div class="outline-text-3" id="text-org4516a09">
 <p>
 Retrieve user hashes:
 </p>
 
-<pre class="example" id="org8b444c6">
+<pre class="example" id="org9aa28fd">
 select name,master.sys.fn_sqlvarbasetostr(password_hash) from master.sys.sql_logins
 </pre>
 </div>
@@ -407,9 +407,9 @@ select name,master.sys.fn_sqlvarbasetostr(password_hash) from master.sys.sql_log
 <h2 id="graphql">GraphQL</h2>
 <div class="outline-text-2" id="text-graphql">
 </div>
-<div id="outline-container-org80ca844" class="outline-3">
-<h3 id="org80ca844">Resources</h3>
-<div class="outline-text-3" id="text-org80ca844">
+<div id="outline-container-org3f32367" class="outline-3">
+<h3 id="org3f32367">Resources</h3>
+<div class="outline-text-3" id="text-org3f32367">
 <ul class="org-ul">
 <li><a href="https://graphql.org/learn/">GraphQL "learn" documentation</a></li>
 <li><a href="https://medium.com/@the.bilal.rizwan/graphql-common-vulnerabilities-how-to-exploit-them-464f9fdce696">Overview of common vulnerabilities</a></li>
@@ -417,9 +417,9 @@ select name,master.sys.fn_sqlvarbasetostr(password_hash) from master.sys.sql_log
 </ul>
 </div>
 </div>
-<div id="outline-container-org5726a00" class="outline-3">
-<h3 id="org5726a00">Tools of the trade</h3>
-<div class="outline-text-3" id="text-org5726a00">
+<div id="outline-container-orga795cc4" class="outline-3">
+<h3 id="orga795cc4">Tools of the trade</h3>
+<div class="outline-text-3" id="text-orga795cc4">
 <ul class="org-ul">
 <li><a href="https://apis.guru/graphql-voyager/">GraphQL Voyager</a>: Visualisation of graphql data schemes</li>
 <li><a href="https://github.com/swisskyrepo/GraphQLmap">GraphQLMap</a> (by <a href="https://github.com/swisskyrepo">Swissky</a>): Explore and attack graphql endpoints</li>
@@ -427,16 +427,16 @@ select name,master.sys.fn_sqlvarbasetostr(password_hash) from master.sys.sql_log
 </ul>
 </div>
 </div>
-<div id="outline-container-org2402dd0" class="outline-3">
-<h3 id="org2402dd0">Introspection</h3>
-<div class="outline-text-3" id="text-org2402dd0">
+<div id="outline-container-orgfc4a08f" class="outline-3">
+<h3 id="orgfc4a08f">Introspection</h3>
+<div class="outline-text-3" id="text-orgfc4a08f">
 <p>
 Run the following introspection query to retrieve information about the
 schema and objects. The response can directly be copied into <a href="https://apis.guru/graphql-voyager/">GraphQL Voyager</a>
 (Change Schema -&gt; Introspection) for visualisation.
 </p>
 
-<pre class="example" id="org4b9b18b">
+<pre class="example" id="orgcf0212a">
 query IntrospectionQuery {
     __schema {
     queryType { name }
@@ -486,9 +486,9 @@ JSON, HTML and more.
 </p>
 </div>
 </div>
-<div id="outline-container-orgdfd0144" class="outline-3">
-<h3 id="orgdfd0144">Searching for a path</h3>
-<div class="outline-text-3" id="text-orgdfd0144">
+<div id="outline-container-org71c6382" class="outline-3">
+<h3 id="org71c6382">Searching for a path</h3>
+<div class="outline-text-3" id="text-org71c6382">
 <p>
 Use <a href="https://gitlab.com/dee-see/graphql-path-enum">graphql-path-enum</a> to check which queries lead to some <i>TargetObject</i>, the
 full schema is required.
@@ -505,19 +505,19 @@ full schema is required.
 <h2 id="web-servers">Web Servers</h2>
 <div class="outline-text-2" id="text-web-servers">
 </div>
-<div id="outline-container-orge794b20" class="outline-3">
-<h3 id="orge794b20">Nginx</h3>
-<div class="outline-text-3" id="text-orge794b20">
+<div id="outline-container-org91f0c6e" class="outline-3">
+<h3 id="org91f0c6e">Nginx</h3>
+<div class="outline-text-3" id="text-org91f0c6e">
 </div>
-<div id="outline-container-org8139f03" class="outline-4">
-<h4 id="org8139f03">Off-By-One Slash</h4>
-<div class="outline-text-4" id="text-org8139f03">
+<div id="outline-container-org104d614" class="outline-4">
+<h4 id="org104d614">Off-By-One Slash</h4>
+<div class="outline-text-4" id="text-org104d614">
 <p>
 This happens when the trailing slash is omitted in the <code>nginx.conf</code> file. As in
 the following example:
 </p>
 
-<pre class="example" id="org2de9819">
+<pre class="example" id="org221811c">
 location /foobar {
  alias /var/www/foobar/;
 }
@@ -534,15 +534,15 @@ appended in configurations containing an "alias" directive.
 </p>
 </div>
 </div>
-<div id="outline-container-org30b23c1" class="outline-4">
-<h4 id="org30b23c1">Missing root location</h4>
-<div class="outline-text-4" id="text-org30b23c1">
+<div id="outline-container-org1e72ce6" class="outline-4">
+<h4 id="org1e72ce6">Missing root location</h4>
+<div class="outline-text-4" id="text-org1e72ce6">
 <p>
 This default configuration doesn't specify a location for the server's root
 directory:
 </p>
 
-<pre class="example" id="org64fa13a">
+<pre class="example" id="orgbece616">
 server {
         root /etc/nginx;
 
@@ -560,15 +560,15 @@ example, are possible.
 </p>
 </div>
 </div>
-<div id="outline-container-orge8da87c" class="outline-4">
-<h4 id="orge8da87c">SSRF and proxy_pass bypass</h4>
-<div class="outline-text-4" id="text-orge8da87c">
+<div id="outline-container-orga2615eb" class="outline-4">
+<h4 id="orga2615eb">SSRF and proxy_pass bypass</h4>
+<div class="outline-text-4" id="text-orga2615eb">
 <p>
 The following feature, abusing placeholders / variables and the "proxy_pass"
 directive can be used to perform requests to arbitrary locations.
 </p>
 
-<pre class="example" id="orgfa7618b">
+<pre class="example" id="org2d47cbb">
 server {
   server_name localhost;
 
@@ -582,7 +582,7 @@ server {
 Some locations could be protected by IP address whitelisting:
 </p>
 
-<pre class="example" id="org147f466">
+<pre class="example" id="org1816c78">
 location /secrets/ {
     allow 127.0.0.1;
     deny all;
@@ -597,9 +597,9 @@ private IP address.
 </p>
 </div>
 </div>
-<div id="outline-container-org0fe7147" class="outline-4">
-<h4 id="org0fe7147">Tools</h4>
-<div class="outline-text-4" id="text-org0fe7147">
+<div id="outline-container-orgd17f163" class="outline-4">
+<h4 id="orgd17f163">Tools</h4>
+<div class="outline-text-4" id="text-orgd17f163">
 <ul class="org-ul">
 <li><a href="https://github.com/yandex/gixy">Gixy</a>: tool to analyze Nginx configurations.</li>
 <li><a href="https://github.com/stark0de/nginxpwner">Nginxpwner</a>: look for common Nginx misconfigurations and vulnerabilities.</li>
@@ -607,9 +607,9 @@ private IP address.
 </ul>
 </div>
 </div>
-<div id="outline-container-org3683885" class="outline-4">
-<h4 id="org3683885">Resources</h4>
-<div class="outline-text-4" id="text-org3683885">
+<div id="outline-container-orgce73e56" class="outline-4">
+<h4 id="orgce73e56">Resources</h4>
+<div class="outline-text-4" id="text-orgce73e56">
 <ul class="org-ul">
 <li><a href="https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-web/nginx.html">Hacktricks on Nginx</a>.</li>
 </ul>
@@ -621,18 +621,18 @@ private IP address.
 <h2 id="misc">Misc</h2>
 <div class="outline-text-2" id="text-misc">
 </div>
-<div id="outline-container-org17f510b" class="outline-3">
-<h3 id="org17f510b">Apache James 2.3.2 RCE</h3>
-<div class="outline-text-3" id="text-org17f510b">
+<div id="outline-container-org3652e44" class="outline-3">
+<h3 id="org3652e44">Apache James 2.3.2 RCE</h3>
+<div class="outline-text-3" id="text-org3652e44">
 <ul class="org-ul">
 <li><a href="https://www.exploit-db.com/exploits/35513">https://www.exploit-db.com/exploits/35513</a> : Exploit gets executed when any
 user logs in on the target host.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orge445f4c" class="outline-3">
-<h3 id="orge445f4c">Fuzz through NTLM authentication</h3>
-<div class="outline-text-3" id="text-orge445f4c">
+<div id="outline-container-org15de5d2" class="outline-3">
+<h3 id="org15de5d2">Fuzz through NTLM authentication</h3>
+<div class="outline-text-3" id="text-org15de5d2">
 <p>
 Use JavaScript XHR to fuzz websites that authenticate with NTLM on every
 single request. This avoids having to manually deal with the authentication
@@ -661,18 +661,18 @@ logged in on the target.
 </div>
 </div>
 </div>
-<div id="outline-container-org740437b" class="outline-3">
-<h3 id="org740437b">Enumerating VHOSTs (Virtual Hosts)</h3>
-<div class="outline-text-3" id="text-org740437b">
+<div id="outline-container-org4d0e998" class="outline-3">
+<h3 id="org4d0e998">Enumerating VHOSTs (Virtual Hosts)</h3>
+<div class="outline-text-3" id="text-org4d0e998">
 <div class="org-src-container">
 <pre class="src src-shell">ffuf -u <span class="org-string">'http://example.com'</span> -H <span class="org-string">'Host: FUZZ.example.com'</span> -w subdomains.txt -o vhosts.txt
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgb3fb99d" class="outline-3">
-<h3 id="orgb3fb99d">Wordpress</h3>
-<div class="outline-text-3" id="text-orgb3fb99d">
+<div id="outline-container-org53b6375" class="outline-3">
+<h3 id="org53b6375">Wordpress</h3>
+<div class="outline-text-3" id="text-org53b6375">
 <p>
 Enumeration with <a href="https://github.com/wpscanteam/wpscan">wpscan</a>:
 </p>
@@ -692,13 +692,13 @@ Brute-force login credentials:
 </div>
 </div>
 </div>
-<div id="outline-container-orga16e890" class="outline-3">
-<h3 id="orga16e890">Webshells</h3>
-<div class="outline-text-3" id="text-orga16e890">
+<div id="outline-container-orgc7527d5" class="outline-3">
+<h3 id="orgc7527d5">Webshells</h3>
+<div class="outline-text-3" id="text-orgc7527d5">
 </div>
-<div id="outline-container-org1e41948" class="outline-4">
-<h4 id="org1e41948">ASP</h4>
-<div class="outline-text-4" id="text-org1e41948">
+<div id="outline-container-org20ef023" class="outline-4">
+<h4 id="org20ef023">ASP</h4>
+<div class="outline-text-4" id="text-org20ef023">
 <ul class="org-ul">
 <li><a href="https://github.com/tennc/webshell/blob/master/asp/webshell.asp">webshell by tennc</a>.</li>
 </ul>
