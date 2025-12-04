@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-12-04 Thu 11:09 -->
+<!-- 2025-12-04 Thu 17:32 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
@@ -64,7 +64,7 @@
 </p>
 
 
-<div class="preview" id="org4b4f469">
+<div class="preview" id="org54414f7">
 <p>
 I describe yet-another-simple-publishing-setup for a static website using
 Emacs's <a href="https://orgmode.org/">Org mode</a>.
@@ -167,8 +167,8 @@ project. The github repository containing all the source files can be found
 <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
 </p>
 
-<pre class="example" id="org4178d4f">
-- ~/org/blog/
+<div class="org-src-container">
+<pre class="src src-terminal">- ~/org/blog/
   - files/
     - css/
     - fonts/
@@ -188,6 +188,7 @@ project. The github repository containing all the source files can be found
   - publish-website.el
   - README.org
 </pre>
+</div>
 
 <p>
 <b>src/</b> contains the standalone Org files that will be published to HTML. They
@@ -235,7 +236,7 @@ include a template and insert a preview. More on all this a little bit later.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-org"><span class="org-org-document-info-keyword">#+TITLE:</span> <span class="org-org-document-title">Hello World from Org
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>posts/hello-world-from-org.org</label><pre class="src src-org"><span class="org-org-document-info-keyword">#+TITLE:</span> <span class="org-org-document-title">Hello World from Org
 </span><span class="org-org-document-info-keyword">#+DATE:</span> <span class="org-org-document-info">[2025-05-25 Sun]
 </span><span class="org-org-meta-line">#+INCLUDE: ../../templates/post.org</span>
 
@@ -280,7 +281,7 @@ this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-org"><span class="org-comment">@@</span><span class="org-org-tag">html:</span>&lt;div class="post-date"&gt;<span class="org-comment">@@</span>
+<label class="org-src-name"><span class="listing-number">Listing 2: </span>templates/post.org</label><pre class="src src-org"><span class="org-comment">@@</span><span class="org-org-tag">html:</span>&lt;div class="post-date"&gt;<span class="org-comment">@@</span>
 <span class="org-italic">/First published: </span><span class="org-org-macro"><span class="org-italic">{{{date(%d %b %Y)}}}</span></span><span class="org-italic">/</span>
 <span class="org-comment">@@</span><span class="org-org-tag">html:</span>&lt;/div&gt;<span class="org-comment">@@</span>
 </pre>
@@ -297,7 +298,7 @@ into any page published with it:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-org"><span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/&gt;</span>
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>templates/readtheorg.org</label><pre class="src src-org"><span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/&gt;</span>
 <span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/&gt;</span>
 <span class="org-org-meta-line">#+HTML_HEAD_EXTRA:</span>
 <span class="org-org-meta-line">#+OPTIONS: html-preamble:nil</span>
@@ -343,7 +344,7 @@ tags.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Extract content between #+begin_preview and #+end_preview
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Extract content between #+begin_preview and #+end_preview
 </span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-preview</span> (file)
   <span class="org-doc">"The comments (begin/end_preview) in'</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">' have to be on their own lines,
    preferably before and after paragraphs."</span>
@@ -396,7 +397,7 @@ The corresponding publishing rules then look like this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span class="org-string">"website-src"</span>
+<label class="org-src-name"><span class="listing-number">Listing 5: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website-src"</span>
  <span class="org-builtin">:base-directory</span> ,skw-blog/srcdir
  <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
  <span class="org-builtin">:exclude</span> ,(regexp-opt '(<span class="org-string">"rss.org"</span>))
@@ -454,7 +455,7 @@ homepage with:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-org"><span class="org-org-meta-line">#+INCLUDE: "./posts/index-no-description.org" :lines "3-7"</span>
+<label class="org-src-name"><span class="listing-number">Listing 6: </span>src/index.org</label><pre class="src src-org"><span class="org-org-meta-line">#+INCLUDE: "./posts/index-no-description.org" :lines "3-7"</span>
 </pre>
 </div>
 </div>
@@ -467,7 +468,7 @@ Let's use <b>make</b> to avoid building and managing the website by hand.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-makefile"><span class="org-variable-name">OUT_DIR</span>=<span class="org-string">'www'</span>
+<label class="org-src-name"><span class="listing-number">Listing 7: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">OUT_DIR</span>=<span class="org-string">'www'</span>
 <span class="org-variable-name">PUBLISH_FILE</span>=<span class="org-string">'publish-website.el'</span>
 <span class="org-variable-name">PUBLISH_FUNC</span>=<span class="org-string">'(org-publish "website")'</span>
 <span class="org-variable-name">WS_CMD</span>=python -m http.server 12345 --bind localhost --directory $(<span class="org-variable-name">OUT_DIR</span>)
@@ -555,7 +556,7 @@ want to be able to view the website offline, I opted for a local install.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-makefile"><span class="org-makefile-targets">mathjax</span>:
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>Makefile</label><pre class="src src-makefile"><span class="org-makefile-targets">mathjax</span>:
     rm -rf files/js/mathjax
     <span class="org-makefile-targets">git clone https</span>://github.com/mathjax/MathJax.git files/js/mathjax
     rm -rf files/js/mathjax/.git
@@ -563,7 +564,7 @@ want to be able to view the website offline, I opted for a local install.
 </div>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-html-mathjax-options
+<label class="org-src-name"><span class="listing-number">Listing 9: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-html-mathjax-options
       '((path <span class="org-string">"/files/js/mathjax/es5/tex-mml-chtml.js"</span>)
         (scale 1.0) (align <span class="org-string">"center"</span>) (font <span class="org-string">"mathjax-modern"</span>) (overflow <span class="org-string">"overflow"</span>)
         (tags <span class="org-string">"ams"</span>) (indent <span class="org-string">"0em"</span>) (multlinewidth <span class="org-string">"85%"</span>) (tagindent <span class="org-string">".8em"</span>)
@@ -585,7 +586,7 @@ converted to XML. The description field of each item is the content of the
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation
+<label class="org-src-name"><span class="listing-number">Listing 10: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation
 </span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/publish-to-rss</span> (plist filename dir)
   <span class="org-doc">"Publish '</span><span class="org-doc"><span class="org-constant">plist</span></span><span class="org-doc">' when '</span><span class="org-doc"><span class="org-constant">filename</span></span><span class="org-doc">' corresponds to RSS feed Org-file to '</span><span class="org-doc"><span class="org-constant">dir</span></span><span class="org-doc">'."</span>
   (<span class="org-keyword">if</span> (equal skw-blog/rss-filename (file-name-nondirectory filename))
@@ -618,7 +619,7 @@ These functions are then called inside a new publishing rule.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span class="org-string">"website-rss"</span>
+<label class="org-src-name"><span class="listing-number">Listing 11: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website-rss"</span>
  <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
  <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
  <span class="org-builtin">:recursive</span> nil

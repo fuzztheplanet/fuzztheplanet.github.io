@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-12-04 Thu 11:09 -->
+<!-- 2025-12-04 Thu 17:32 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Android pentesting</title>
@@ -30,57 +30,57 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org671469b">General resources</a></li>
-<li><a href="#org3abe2ec">Setup</a>
+<li><a href="#org43e3ee6">General resources</a></li>
+<li><a href="#org4722bea">Setup</a>
 <ul>
-<li><a href="#org20acb15">Retrieve APKs</a></li>
+<li><a href="#org6a90d2c">Retrieve APKs</a></li>
 </ul>
 </li>
-<li><a href="#org088381c">Static analysis</a>
+<li><a href="#org4461439">Static analysis</a>
 <ul>
-<li><a href="#orgd551217">Decompiling</a></li>
-<li><a href="#org1fb271f">Patching APK</a></li>
-<li><a href="#org436b8eb">Decompiling Xamarin / .NET applications</a></li>
-<li><a href="#org9a3cf36">Flutter applications</a></li>
-<li><a href="#org64db465">Extract Android backup</a></li>
-<li><a href="#org201eebf">Looking for secrets</a></li>
+<li><a href="#org122adfd">Decompiling</a></li>
+<li><a href="#orgca0396c">Patching APK</a></li>
+<li><a href="#org633b2d8">Decompiling Xamarin / .NET applications</a></li>
+<li><a href="#orgcc92f4a">Flutter applications</a></li>
+<li><a href="#org18b10ac">Extract Android backup</a></li>
+<li><a href="#orga7d5c6a">Looking for secrets</a></li>
 </ul>
 </li>
-<li><a href="#org16651af">Dynamic analysis</a>
+<li><a href="#org64f1bad">Dynamic analysis</a>
 <ul>
-<li><a href="#orgdb41302">Injecting frida into an APK with objection</a></li>
-<li><a href="#org21b1887">Drozer setup</a></li>
-<li><a href="#org66a6171">ADB logs</a></li>
+<li><a href="#org8ce8972">Injecting frida into an APK with objection</a></li>
+<li><a href="#org597d59f">Drozer setup</a></li>
+<li><a href="#orgf739fe5">ADB logs</a></li>
 </ul>
 </li>
-<li><a href="#org480124f">ADB</a>
+<li><a href="#orga1a6e29">ADB</a>
 <ul>
-<li><a href="#org04d848a">SSH forwarding to adb</a></li>
-<li><a href="#org69a4c90">Set global Android proxy</a></li>
+<li><a href="#org6613300">SSH forwarding to adb</a></li>
+<li><a href="#org1fbcd44">Set global Android proxy</a></li>
 </ul>
 </li>
-<li><a href="#org3722357">Misc</a>
+<li><a href="#org232828b">Misc</a>
 <ul>
-<li><a href="#orgc644d51">EF File Explorer</a></li>
+<li><a href="#org9ea2756">EF File Explorer</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-org671469b" class="outline-2">
-<h2 id="org671469b">General resources</h2>
-<div class="outline-text-2" id="text-org671469b">
+<div id="outline-container-org43e3ee6" class="outline-2">
+<h2 id="org43e3ee6">General resources</h2>
+<div class="outline-text-2" id="text-org43e3ee6">
 <ul class="org-ul">
 <li><a href="https://owasp.org/www-project-mobile-security/">OWASP Mobile Security Project</a> and in particular the <a href="https://owasp.org/www-project-mobile-security-testing-guide/">Mobile Security Testing Guide (MSTG)</a>.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org3abe2ec" class="outline-2">
-<h2 id="org3abe2ec">Setup</h2>
-<div class="outline-text-2" id="text-org3abe2ec">
+<div id="outline-container-org4722bea" class="outline-2">
+<h2 id="org4722bea">Setup</h2>
+<div class="outline-text-2" id="text-org4722bea">
 </div>
-<div id="outline-container-org20acb15" class="outline-3">
-<h3 id="org20acb15">Retrieve APKs</h3>
-<div class="outline-text-3" id="text-org20acb15">
+<div id="outline-container-org6a90d2c" class="outline-3">
+<h3 id="org6a90d2c">Retrieve APKs</h3>
+<div class="outline-text-3" id="text-org6a90d2c">
 <p>
 Download APKs from these platforms to avoid going through the Google
 PlayStore. Make sure to double-check that you are testing the correct
@@ -96,13 +96,13 @@ version of the app.
 </div>
 </div>
 </div>
-<div id="outline-container-org088381c" class="outline-2">
-<h2 id="org088381c">Static analysis</h2>
-<div class="outline-text-2" id="text-org088381c">
+<div id="outline-container-org4461439" class="outline-2">
+<h2 id="org4461439">Static analysis</h2>
+<div class="outline-text-2" id="text-org4461439">
 </div>
-<div id="outline-container-orgd551217" class="outline-3">
-<h3 id="orgd551217">Decompiling</h3>
-<div class="outline-text-3" id="text-orgd551217">
+<div id="outline-container-org122adfd" class="outline-3">
+<h3 id="org122adfd">Decompiling</h3>
+<div class="outline-text-3" id="text-org122adfd">
 <p>
 <a href="https://github.com/skylot/jadx">jadx</a> is doing a great job at decompiling dex files, here are some options
 that I tend to use:
@@ -114,9 +114,9 @@ that I tend to use:
 </div>
 </div>
 </div>
-<div id="outline-container-org1fb271f" class="outline-3">
-<h3 id="org1fb271f">Patching APK</h3>
-<div class="outline-text-3" id="text-org1fb271f">
+<div id="outline-container-orgca0396c" class="outline-3">
+<h3 id="orgca0396c">Patching APK</h3>
+<div class="outline-text-3" id="text-orgca0396c">
 <p>
 Simply use <code>apktool</code> to decode the APK to smali and extract the resources,
 then rebuild the modified APK. This can be useful to quickly edit some files
@@ -154,12 +154,12 @@ zipalign -v 4 MyApp/dist/MyApp.apk MyApp-signed.apk
 </div>
 </div>
 </div>
-<div id="outline-container-org436b8eb" class="outline-3">
-<h3 id="org436b8eb">Decompiling Xamarin / .NET applications</h3>
+<div id="outline-container-org633b2d8" class="outline-3">
+<h3 id="org633b2d8">Decompiling Xamarin / .NET applications</h3>
 </div>
-<div id="outline-container-org9a3cf36" class="outline-3">
-<h3 id="org9a3cf36">Flutter applications</h3>
-<div class="outline-text-3" id="text-org9a3cf36">
+<div id="outline-container-orgcc92f4a" class="outline-3">
+<h3 id="orgcc92f4a">Flutter applications</h3>
+<div class="outline-text-3" id="text-orgcc92f4a">
 <p>
 If the application has been compiled with <a href="https://docs.flutter.dev/testing/build-modes">debug mode</a>, the source code is
 embedded into a <b>kernel_blob.bin</b> file bundled with the apk. To retrieve it, simply
@@ -174,12 +174,12 @@ $ strings test/resources/assets/flutter_assets/kernel_blob.bin &gt; extracted.da
 </div>
 </div>
 </div>
-<div id="outline-container-org64db465" class="outline-3">
-<h3 id="org64db465">Extract Android backup</h3>
+<div id="outline-container-org18b10ac" class="outline-3">
+<h3 id="org18b10ac">Extract Android backup</h3>
 </div>
-<div id="outline-container-org201eebf" class="outline-3">
-<h3 id="org201eebf">Looking for secrets</h3>
-<div class="outline-text-3" id="text-org201eebf">
+<div id="outline-container-orga7d5c6a" class="outline-3">
+<h3 id="orga7d5c6a">Looking for secrets</h3>
+<div class="outline-text-3" id="text-orga7d5c6a">
 <p>
 Links to some github repo plz.
 </p>
@@ -190,13 +190,13 @@ Links to some github repo plz.
 </div>
 </div>
 </div>
-<div id="outline-container-org16651af" class="outline-2">
-<h2 id="org16651af">Dynamic analysis</h2>
-<div class="outline-text-2" id="text-org16651af">
+<div id="outline-container-org64f1bad" class="outline-2">
+<h2 id="org64f1bad">Dynamic analysis</h2>
+<div class="outline-text-2" id="text-org64f1bad">
 </div>
-<div id="outline-container-orgdb41302" class="outline-3">
-<h3 id="orgdb41302">Injecting frida into an APK with objection</h3>
-<div class="outline-text-3" id="text-orgdb41302">
+<div id="outline-container-org8ce8972" class="outline-3">
+<h3 id="org8ce8972">Injecting frida into an APK with objection</h3>
+<div class="outline-text-3" id="text-org8ce8972">
 <p>
 Injecting Frida into an APK allows it to be run on non-rooted devices.
 </p>
@@ -217,9 +217,9 @@ frida -h
 </div>
 </div>
 </div>
-<div id="outline-container-org21b1887" class="outline-3">
-<h3 id="org21b1887">Drozer setup</h3>
-<div class="outline-text-3" id="text-org21b1887">
+<div id="outline-container-org597d59f" class="outline-3">
+<h3 id="org597d59f">Drozer setup</h3>
+<div class="outline-text-3" id="text-org597d59f">
 <ol class="org-ol">
 <li>Download the drozer-agent from <a href="https://github.com/FSecureLABS/drozer/releases/download/2.3.4/drozer-agent-2.3.4.apk">here</a> and install it on the device with <code>adb
    install drozer-agent-2.3.4.apk</code>.</li>
@@ -235,9 +235,9 @@ for the docker container): <code>sudo docker run --network host --rm -it
 </ol>
 </div>
 </div>
-<div id="outline-container-org66a6171" class="outline-3">
-<h3 id="org66a6171">ADB logs</h3>
-<div class="outline-text-3" id="text-org66a6171">
+<div id="outline-container-orgf739fe5" class="outline-3">
+<h3 id="orgf739fe5">ADB logs</h3>
+<div class="outline-text-3" id="text-orgf739fe5">
 <p>
 Source: <a href="https://twitter.com/_bagipro/status/1572569994512461827">Sergey Toshin</a>
 </p>
@@ -251,13 +251,13 @@ adb logcat -s libc,DEBUG
 </div>
 </div>
 </div>
-<div id="outline-container-org480124f" class="outline-2">
-<h2 id="org480124f">ADB</h2>
-<div class="outline-text-2" id="text-org480124f">
+<div id="outline-container-orga1a6e29" class="outline-2">
+<h2 id="orga1a6e29">ADB</h2>
+<div class="outline-text-2" id="text-orga1a6e29">
 </div>
-<div id="outline-container-org04d848a" class="outline-3">
-<h3 id="org04d848a">SSH forwarding to adb</h3>
-<div class="outline-text-3" id="text-org04d848a">
+<div id="outline-container-org6613300" class="outline-3">
+<h3 id="org6613300">SSH forwarding to adb</h3>
+<div class="outline-text-3" id="text-org6613300">
 <p>
 Use ssh forwarding if adb is only listening locally on the target device and
 you have ssh access to it.
@@ -271,9 +271,9 @@ adb -s localhost shell
 </div>
 </div>
 </div>
-<div id="outline-container-org69a4c90" class="outline-3">
-<h3 id="org69a4c90">Set global Android proxy</h3>
-<div class="outline-text-3" id="text-org69a4c90">
+<div id="outline-container-org1fbcd44" class="outline-3">
+<h3 id="org1fbcd44">Set global Android proxy</h3>
+<div class="outline-text-3" id="text-org1fbcd44">
 <div class="org-src-container">
 <pre class="src src-shell">adb shell settings put global http_proxy 10.0.2.2:8080
 </pre>
@@ -281,13 +281,13 @@ adb -s localhost shell
 </div>
 </div>
 </div>
-<div id="outline-container-org3722357" class="outline-2">
-<h2 id="org3722357">Misc</h2>
-<div class="outline-text-2" id="text-org3722357">
+<div id="outline-container-org232828b" class="outline-2">
+<h2 id="org232828b">Misc</h2>
+<div class="outline-text-2" id="text-org232828b">
 </div>
-<div id="outline-container-orgc644d51" class="outline-3">
-<h3 id="orgc644d51">EF File Explorer</h3>
-<div class="outline-text-3" id="text-orgc644d51">
+<div id="outline-container-org9ea2756" class="outline-3">
+<h3 id="org9ea2756">EF File Explorer</h3>
+<div class="outline-text-3" id="text-org9ea2756">
 <p>
 EF File Explorer File Manager usually runs on port 59777 and is vulnerable to
 <a href="https://nvd.nist.gov/vuln/detail/CVE-2019-6447">CVE-2019-6447</a> for which there exist a simple <a href="https://www.exploit-db.com/exploits/50070">poc</a>. You can also use <code>curl -d

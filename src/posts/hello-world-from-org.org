@@ -69,7 +69,7 @@ I ended up with something like the following directory structure for this
 project. The github repository containing all the source files can be found
 [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
 
-#+begin_example
+#+begin_src terminal
 - ~/org/blog/
   - files/
     - css/
@@ -89,7 +89,7 @@ project. The github repository containing all the source files can be found
   - Makefile
   - publish-website.el
   - README.org
-#+end_example
+#+end_src
 
 *src/* contains the standalone Org files that will be published to HTML. They
 are declaring as few exporting options as possible so that they can easily be
@@ -130,6 +130,7 @@ content will then plainly be inserted in the source file before processing.
 This is for example the beginning of this post. I set the title, the date, I
 include a template and insert a preview. More on all this a little bit later.
 
+#+caption: posts/hello-world-from-org.org
 #+begin_src org
 ,#+TITLE: Hello World from Org
 ,#+DATE: [2025-05-25 Sun]
@@ -172,6 +173,7 @@ Template are used to group seveal Org rendering and exporting that are common to
 several files. For example, the template under *templates/post.org* looks like
 this:
 
+#+caption: templates/post.org
 #+begin_src org
 @@html:<div class="post-date">@@
 /First published: {{{date(%d %b %Y)}}}/
@@ -184,6 +186,7 @@ publishing.
 Here is a template for the [[https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg][ReadTheOrg]] theme by [[https://github.com/fniessen][Fabrice Niessen]] that inserts HTML
 into any page published with it:
 
+#+caption: templates/readtheorg.org
 #+begin_src org
 ,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/>
 ,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/>
@@ -228,6 +231,7 @@ first added. A custom macro is used to format the timestamp. The content of the
 "preview" is written in between the custom =#+begin_preview= and =#+end_preview=
 tags.
 
+#+caption: publish-website.el
 #+begin_src emacs-lisp
 ;; Extract content between #+begin_preview and #+end_preview
 (defun skw-blog/get-preview (file)
@@ -278,6 +282,7 @@ tags.
 
 The corresponding publishing rules then look like this:
 
+#+caption: publish-website.el
 #+begin_src emacs-lisp
 ("website-src"
  :base-directory ,skw-blog/srcdir
@@ -333,6 +338,7 @@ The corresponding publishing rules then look like this:
 The generated *./src/posts/index-no-description.org* is inserted into the
 homepage with:
 
+#+caption: src/index.org
 #+begin_src org
 ,#+INCLUDE: "./posts/index-no-description.org" :lines "3-7"
 #+end_src
@@ -345,6 +351,7 @@ homepage with:
 
 Let's use *make* to avoid building and managing the website by hand.
 
+#+caption: Makefile
 #+begin_src makefile
 OUT_DIR='www'
 PUBLISH_FILE='publish-website.el'
@@ -421,6 +428,7 @@ I install and update regularly /MathJax/ via the *Makefile* and then enable it
 in *publish-website.el* via the =org-html-mathjax-options= variable. Since I
 want to be able to view the website offline, I opted for a local install.
 
+#+caption: Makefile
 #+begin_src makefile
 mathjax:
     rm -rf files/js/mathjax
@@ -428,6 +436,7 @@ mathjax:
     rm -rf files/js/mathjax/.git
 #+end_src
 
+#+caption: publish-website.el
 #+begin_src emacs-lisp
 (setq org-html-mathjax-options
       '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
@@ -449,6 +458,7 @@ complicated with [[https://github.com/emacsmirror/ox-rss][ox-rss]]. Here are a c
 converted to XML. The description field of each item is the content of the
 =preview= tags used earlier.
 
+#+caption: publish-website.el
 #+begin_src emacs-lisp
 ;; RSS feed generation
 (defun skw-blog/publish-to-rss (plist filename dir)
@@ -479,6 +489,7 @@ title of the RSS feed and 'list' the files to be included."
 
 These functions are then called inside a new publishing rule.
 
+#+caption: publish-website.el
 #+begin_src emacs-lisp
 ("website-rss"
  :base-directory ,(concat skw-blog/srcdir "posts")
