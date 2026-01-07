@@ -2,7 +2,7 @@
 
 This is my [[https://nownownow.com/about][now]] page (inspired by [[https://sive.rs][Derek Siver]]'s [[https://sive.rs/nowff][/now movement]] and [[https://breakpoint.purrfect.fr/][cym13]]'s [[https://breakpoint.purrfect.fr/soc.html][Stream
 of Consciousness]]). Here you will find a brief overview of my current activities
-and points of focus as well as some random, unsorted and unfiltered thoughts.
+and points of focus as well as some random, unsorted and unfiltered rambling.
 
 
 * [2025-12-04 Thu]

