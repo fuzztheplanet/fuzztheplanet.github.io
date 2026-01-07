@@ -58,12 +58,12 @@
 
  ;; Stylesheets included by default
  skw-blog/main-css
- "<link rel=\"stylesheet\" type=\"text/css\" href=\"/files/css/style.css\"/>
-<link rel=\"stylesheet\" type=\"text/css\" href=\"/files/css/htmlize.css\"/>
+ "<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/style.css\"/>
+<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/htmlize.css\"/>
 "
  ;; Favicon
  skw-blog/favicon
- "<link rel=\"icon\" href=\"/files/img/favicon.ico\" type=\"image/x-icon\">
+ "<link rel=\"icon\" href=\"/static/img/favicon.ico\" type=\"image/x-icon\">
 "
  )
 
@@ -95,7 +95,7 @@
 
  org-html-table-use-header-tags-for-first-column nil
 
- org-html-mathjax-options '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
+ org-html-mathjax-options '((path "/static/js/mathjax/es5/tex-mml-chtml.js")
                             (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
                             (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
                             (tagside "right")))
@@ -169,6 +169,7 @@ title of the RSS feed and 'list' the files to be included."
 %s" title link pubdate preview)))
 
 
+(setq org-safe-remote-resources '("https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/theme-readtheorg.setup"))
 
 ;; Publishing rules
 (setq org-publish-project-alist
@@ -177,7 +178,7 @@ title of the RSS feed and 'list' the files to be included."
         ("website-src"
          :base-directory ,skw-blog/srcdir
          :base-extension "org"
-         :exclude ,(regexp-opt '("rss.org"))
+         :exclude ,(regexp-opt '("rss.org" "tlchtcc"))
 
          :recursive t
          :publishing-directory ,skw-blog/outdir
@@ -238,7 +239,7 @@ title of the RSS feed and 'list' the files to be included."
          :email ,skw-blog/email
 
          :rss-extension "xml"
-         :rss-image-url ,(concat skw-blog/upstream-url "/files/img/profile.jpg")
+         :rss-image-url ,(concat skw-blog/upstream-url "/static/img/profile.jpg")
          :html-link-home ,(concat skw-blog/upstream-url "/posts/")
          :html-link-use-abs-url t
          :html-link-org-files-as-html t
@@ -252,14 +253,24 @@ title of the RSS feed and 'list' the files to be included."
 
         ;; Attachment files
         ("website-files"
-         :base-directory ,(concat skw-blog/rootdir "files")
+         :base-directory ,skw-blog/srcdir
          :base-extension ".*"
+         :exclude "*.org"
          :recursive t
-         :publishing-directory ,(concat skw-blog/outdir "files")
+         :publishing-directory ,skw-blog/outdir
+         :publishing-function org-publish-attachment)
+
+        ;; Static files
+        ("website-static"
+         :base-directory ,(concat skw-blog/rootdir "static")
+         :base-extension ".*"
+         :exclude "*.org"
+         :recursive t
+         :publishing-directory ,(concat skw-blog/outdir "static")
          :publishing-function org-publish-attachment)
 
         ("website" :components
-         ("website-posts-index" "website-posts-index-preview" "website-rss" "website-src" "website-files"))))
+         ("website-src" "website-posts-index" "website-posts-index-preview" "website-rss"  "website-files" "website-static"))))
 
 
 (provide 'publish-website)

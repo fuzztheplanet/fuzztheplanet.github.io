@@ -2,6 +2,7 @@ OUT_DIR='www'
 PUBLISH_FILE='publish-website.el'
 PUBLISH_FUNC='(org-publish "website")'
 WS_CMD=python -m http.server 12345 --bind localhost --directory $(OUT_DIR)
+WS_CMD=python -m http.server 12345 --directory $(OUT_DIR)
 
 all:
 	rm -rf .cache www

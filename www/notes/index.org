@@ -1,0 +1,14 @@
+#+TITLE: Various notes
+
+#+TOC: headlines 2 local
+
+[[./rtfsg/][Red Team Field Survival Guide]] is my personal note collection about anything
+related to offensive security. It contains tips and tricks gathered along the
+way that could be useful in pentesting, red teaming, bug bounty or CTF
+scenarios. Links to more in-depth and exhaustive resources are provided as much
+as possible. *Warning:* this section is by no means exhaustive and lots of tips
+here might be outdated or not fully accurate.
+
+[[./archlinux-install.org][Personal installation notes]] for [[https://archlinux.org/][ArchLinux]]-based workstations.
+
+A list of [[.//windows-tools.org][pentesting tools for Windows]].

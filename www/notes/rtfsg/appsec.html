@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2025-12-04 Thu 17:32 -->
+<!-- 2026-01-07 Wed 23:38 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Application-related vulnerabilities</title>
 <meta name="generator" content="Org Mode" />
-<link rel="stylesheet" type="text/css" href="/files/css/style.css"/>
-<link rel="stylesheet" type="text/css" href="/files/css/htmlize.css"/>
-<link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
+<link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <div id="preamble" class="status">
-<a href="/"><img src="/files/img/profile.jpg"/></a>
-<h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
-<nav>
-    <span class="nav-item">[<a href="/index.html" title="Home">./Home</a>]</span>
-    <span class="nav-item">[<a href="/posts/index.html" title="Posts">./Posts</a>]</span>
-    <span class="nav-item">[<a href="/notes/index.html" title="Notes">./Notes</a>]</span>
-    <span class="nav-item">[<a href="/links.html" title="Links">./Links</a>]</span>
-    <span class="nav-item">[<a href="/about.html" title="About">./About</a>]</span>
-</nav>
-<hr>
+<header>
+    <div class="banner">
+        <a href="/">
+            <div class="logo" style="background-image:url(/static/img/profile.jpg)"></div>
+            <h1>skywhi@dreamland:/var/log$ <span class="blink">_</span></h1>
+        </a>
+    </div>
+    <nav>
+        <a href="/posts/" title="Posts">~/Posts</a>
+        <a href="/notes/" title="Notes">~/Notes</a>
+        <a href="/links.html" title="Links">~/Links</a>
+        <a href="/about.html" title="About">~/About</a>
+    </nav>
+</header>
 </div>
 <div id="content" class="content">
 <h1 class="title">Application-related vulnerabilities</h1>
@@ -30,64 +34,64 @@
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org406d58c">Source code analysis</a>
+<li><a href="#org6b1ce77">Source code analysis</a>
 <ul>
-<li><a href="#orgf87f592">General tools</a></li>
-<li><a href="#orgf74fbdc">Language specific</a></li>
+<li><a href="#org71b3370">General tools</a></li>
+<li><a href="#orgb39c7d0">Language specific</a></li>
 </ul>
 </li>
-<li><a href="#org775d36d">.NET</a>
+<li><a href="#orgc35c345">.NET</a>
 <ul>
-<li><a href="#orgde5c815">Decompilers</a></li>
+<li><a href="#org31154e3">Decompilers</a></li>
 </ul>
 </li>
 <li><a href="#php">PHP</a>
 <ul>
-<li><a href="#org7094ffd">Filters</a></li>
-<li><a href="#orgd065c47">Type juggling</a></li>
-<li><a href="#org35b1ac9">Common functions</a></li>
-<li><a href="#org7f76a4d">Deserialization</a></li>
-<li><a href="#org216f3cd">Execution sinks</a></li>
+<li><a href="#org61b3ec7">Filters</a></li>
+<li><a href="#orgd72e7e5">Type juggling</a></li>
+<li><a href="#org2a45ef8">Common functions</a></li>
+<li><a href="#orgcf8abf4">Deserialization</a></li>
+<li><a href="#org1ad9ca0">Execution sinks</a></li>
 </ul>
 </li>
 <li><a href="#python">Python</a>
 <ul>
-<li><a href="#orgb619bd3">Deserialization</a></li>
-<li><a href="#org20be982">Environment Variables</a></li>
+<li><a href="#orgae1daf3">Deserialization</a></li>
+<li><a href="#org728754c">Environment Variables</a></li>
 </ul>
 </li>
-<li><a href="#org46be6cb">Node.js</a>
+<li><a href="#orgba2108c">Node.js</a>
 <ul>
-<li><a href="#org16168d9">SQL Injection with Express and MySQL</a></li>
+<li><a href="#org41d3796">SQL Injection with Express and MySQL</a></li>
 </ul>
 </li>
-<li><a href="#org0e07ed7">Misc</a>
+<li><a href="#org1b12026">Misc</a>
 <ul>
-<li><a href="#org421a124">ImageMagick</a></li>
+<li><a href="#org9dc7484">ImageMagick</a></li>
 <li><a href="#json">JSON</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="outline-container-org406d58c" class="outline-2">
-<h2 id="org406d58c">Source code analysis</h2>
-<div class="outline-text-2" id="text-org406d58c">
+<div id="outline-container-org6b1ce77" class="outline-2">
+<h2 id="org6b1ce77">Source code analysis</h2>
+<div class="outline-text-2" id="text-org6b1ce77">
 </div>
-<div id="outline-container-orgf87f592" class="outline-3">
-<h3 id="orgf87f592">General tools</h3>
-<div class="outline-text-3" id="text-orgf87f592">
+<div id="outline-container-org71b3370" class="outline-3">
+<h3 id="org71b3370">General tools</h3>
+<div class="outline-text-3" id="text-org71b3370">
 <ul class="org-ul">
 <li><a href="https://www.sonarqube.org/">Sonarqube</a> (static analyis)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf74fbdc" class="outline-3">
-<h3 id="orgf74fbdc">Language specific</h3>
-<div class="outline-text-3" id="text-orgf74fbdc">
+<div id="outline-container-orgb39c7d0" class="outline-3">
+<h3 id="orgb39c7d0">Language specific</h3>
+<div class="outline-text-3" id="text-orgb39c7d0">
 </div>
-<div id="outline-container-orgc9effe2" class="outline-4">
-<h4 id="orgc9effe2">C/C++</h4>
-<div class="outline-text-4" id="text-orgc9effe2">
+<div id="outline-container-org3d2b1e5" class="outline-4">
+<h4 id="org3d2b1e5">C/C++</h4>
+<div class="outline-text-4" id="text-org3d2b1e5">
 <ul class="org-ul">
 <li><a href="https://cppcheck.sourceforge.io/">Cppcheck</a> (static analysis)</li>
 <li><a href="https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html">Pin</a> (instrumentation)</li>
@@ -95,9 +99,9 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org5e8c22c" class="outline-4">
-<h4 id="org5e8c22c">PHP</h4>
-<div class="outline-text-4" id="text-org5e8c22c">
+<div id="outline-container-org2ff2763" class="outline-4">
+<h4 id="org2ff2763">PHP</h4>
+<div class="outline-text-4" id="text-org2ff2763">
 <ul class="org-ul">
 <li><a href="http://rips-scanner.sourceforge.net/">RIPS scanner</a> (static analysis)</li>
 </ul>
@@ -105,13 +109,13 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org775d36d" class="outline-2">
-<h2 id="org775d36d">.NET</h2>
-<div class="outline-text-2" id="text-org775d36d">
+<div id="outline-container-orgc35c345" class="outline-2">
+<h2 id="orgc35c345">.NET</h2>
+<div class="outline-text-2" id="text-orgc35c345">
 </div>
-<div id="outline-container-orgde5c815" class="outline-3">
-<h3 id="orgde5c815">Decompilers</h3>
-<div class="outline-text-3" id="text-orgde5c815">
+<div id="outline-container-org31154e3" class="outline-3">
+<h3 id="org31154e3">Decompilers</h3>
+<div class="outline-text-3" id="text-org31154e3">
 <ul class="org-ul">
 <li><a href="https://www.jetbrains.com/decompiler/">dotPeek</a>: decompiles any .NET assembly into equivalent C# or IL code.</li>
 </ul>
@@ -122,12 +126,12 @@
 <h2 id="php">PHP</h2>
 <div class="outline-text-2" id="text-php">
 </div>
-<div id="outline-container-org7094ffd" class="outline-3">
-<h3 id="org7094ffd">Filters</h3>
+<div id="outline-container-org61b3ec7" class="outline-3">
+<h3 id="org61b3ec7">Filters</h3>
 </div>
-<div id="outline-container-orgd065c47" class="outline-3">
-<h3 id="orgd065c47">Type juggling</h3>
-<div class="outline-text-3" id="text-orgd065c47">
+<div id="outline-container-orgd72e7e5" class="outline-3">
+<h3 id="orgd72e7e5">Type juggling</h3>
+<div class="outline-text-3" id="text-orgd72e7e5">
 <ul class="org-ul">
 <li><p>
 <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Type%20Juggling">PayloadAllTheThings - Juggling type and magic hashes</a>.
@@ -190,41 +194,41 @@ First it is important to identify which version of PHP is running. Versions
 </div>
 </div>
 </div>
-<div id="outline-container-org35b1ac9" class="outline-3">
-<h3 id="org35b1ac9">Common functions</h3>
-<div class="outline-text-3" id="text-org35b1ac9">
+<div id="outline-container-org2a45ef8" class="outline-3">
+<h3 id="org2a45ef8">Common functions</h3>
+<div class="outline-text-3" id="text-org2a45ef8">
 </div>
-<div id="outline-container-org952a2db" class="outline-4">
-<h4 id="org952a2db">assert()</h4>
+<div id="outline-container-org5a1a4ed" class="outline-4">
+<h4 id="org5a1a4ed">assert()</h4>
 </div>
-<div id="outline-container-org99ffcb9" class="outline-4">
-<h4 id="org99ffcb9">preg_match()</h4>
+<div id="outline-container-orge0e914b" class="outline-4">
+<h4 id="orge0e914b">preg_match()</h4>
 </div>
-<div id="outline-container-org176bd53" class="outline-4">
-<h4 id="org176bd53">preg_replace()</h4>
+<div id="outline-container-org13968b8" class="outline-4">
+<h4 id="org13968b8">preg_replace()</h4>
 </div>
 </div>
-<div id="outline-container-org7f76a4d" class="outline-3">
-<h3 id="org7f76a4d">Deserialization</h3>
+<div id="outline-container-orgcf8abf4" class="outline-3">
+<h3 id="orgcf8abf4">Deserialization</h3>
 </div>
-<div id="outline-container-org216f3cd" class="outline-3">
-<h3 id="org216f3cd">Execution sinks</h3>
+<div id="outline-container-org1ad9ca0" class="outline-3">
+<h3 id="org1ad9ca0">Execution sinks</h3>
 </div>
 </div>
 <div id="outline-container-python" class="outline-2">
 <h2 id="python">Python</h2>
 <div class="outline-text-2" id="text-python">
 </div>
-<div id="outline-container-orgb619bd3" class="outline-3">
-<h3 id="orgb619bd3">Deserialization</h3>
-<div class="outline-text-3" id="text-orgb619bd3">
+<div id="outline-container-orgae1daf3" class="outline-3">
+<h3 id="orgae1daf3">Deserialization</h3>
+<div class="outline-text-3" id="text-orgae1daf3">
 </div>
-<div id="outline-container-orga645241" class="outline-4">
-<h4 id="orga645241">pickle</h4>
+<div id="outline-container-orga865f44" class="outline-4">
+<h4 id="orga865f44">pickle</h4>
 </div>
-<div id="outline-container-orgbc34a26" class="outline-4">
-<h4 id="orgbc34a26">yaml</h4>
-<div class="outline-text-4" id="text-orgbc34a26">
+<div id="outline-container-org436c9ff" class="outline-4">
+<h4 id="org436c9ff">yaml</h4>
+<div class="outline-text-4" id="text-org436c9ff">
 <p>
 General resources:
 </p>
@@ -283,9 +287,9 @@ yaml.load(payload, Loader<span class="org-operator">=</span>yaml.Loader)
 </div>
 </div>
 </div>
-<div id="outline-container-org20be982" class="outline-3">
-<h3 id="org20be982">Environment Variables</h3>
-<div class="outline-text-3" id="text-org20be982">
+<div id="outline-container-org728754c" class="outline-3">
+<h3 id="org728754c">Environment Variables</h3>
+<div class="outline-text-3" id="text-org728754c">
 <p>
 When running a Python script, the interpret will check if the <code>PYTHONWARNINGS</code>
 environment variable is set (equivalent to the <code>-W</code> flag). This variable is of
@@ -330,26 +334,26 @@ Sources:
 </div>
 </div>
 </div>
-<div id="outline-container-org46be6cb" class="outline-2">
-<h2 id="org46be6cb">Node.js</h2>
-<div class="outline-text-2" id="text-org46be6cb">
+<div id="outline-container-orgba2108c" class="outline-2">
+<h2 id="orgba2108c">Node.js</h2>
+<div class="outline-text-2" id="text-orgba2108c">
 </div>
-<div id="outline-container-org16168d9" class="outline-3">
-<h3 id="org16168d9">SQL Injection with Express and MySQL</h3>
-<div class="outline-text-3" id="text-org16168d9">
+<div id="outline-container-org41d3796" class="outline-3">
+<h3 id="org41d3796">SQL Injection with Express and MySQL</h3>
+<div class="outline-text-3" id="text-org41d3796">
 <p>
 Authentication bypass can be achieved due to type confusion, as explained <a href="https://flattsecurity.medium.com/finding-an-unseen-sql-injection-by-bypassing-escape-functions-in-mysqljs-mysql-90b27f6542b4">here</a>.
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org0e07ed7" class="outline-2">
-<h2 id="org0e07ed7">Misc</h2>
-<div class="outline-text-2" id="text-org0e07ed7">
+<div id="outline-container-org1b12026" class="outline-2">
+<h2 id="org1b12026">Misc</h2>
+<div class="outline-text-2" id="text-org1b12026">
 </div>
-<div id="outline-container-org421a124" class="outline-3">
-<h3 id="org421a124">ImageMagick</h3>
-<div class="outline-text-3" id="text-org421a124">
+<div id="outline-container-org9dc7484" class="outline-3">
+<h3 id="org9dc7484">ImageMagick</h3>
+<div class="outline-text-3" id="text-org9dc7484">
 <ul class="org-ul">
 <li><a href="https://www.synacktiv.com/publications/playing-with-imagetragick-like-its-2016.html">Playing with ImageTragick like it's 2016</a>: revisited attacks on ImageMagick
 by <a href="https://www.synacktiv.com/index.html">Synacktiv</a>.</li>
@@ -370,7 +374,7 @@ between applications (from <a href="https://labs.bishopfox.com">Bishop Fox Labs<
 </div>
 <div id="postamble" class="status">
 <p>
-    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/files/img/rss.png" height="16" width="16"></a>
+    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/static/img/rss.png" height="16" width="16"></a>
 </p>
 </div>
 </body>

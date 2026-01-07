@@ -1,0 +1,24 @@
+#+TITLE: Red Team Field Survival Guide
+
+
+Here I post some notes that I take during my humble journey through infosec and
+the universe. The tips and tricks exposed here are mostly oriented towards
+offensive security as can be found in pentests, red team engagements, bug bounty
+hunting or CTF challenges. I try to put as many relevant references as possible
+for every topic and I strongly encourage the reader to go through and bookmark
+them.
+
+Please keep in mind that these notes can be sometimes poorly written,
+out-of-date and are not meant to be any complete guides or whatsoever. While
+links to references are provided as much as possible, checking against the
+current documentation should always be the first reflex. Happy hacking!
+
+- [[./android.org][Android]]
+- [[./appsec.org][Appsec]]
+- [[./default-credentials.org][Default Credentials]]
+- [[./misc.org][Misc]]
+- [[./network.org][Networking]]
+- [[./reverse.org][Reverse Engineering]]
+- [[./unix.org][Unix]]
+- [[./web.org][Web]]
+- [[./windows.org][Windows]]

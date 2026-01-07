@@ -18,7 +18,10 @@
     --white-back:  #fffff0;
     --white:       #ffffff;
     --yellow:      #ffff50;
+    --yellow1:     #ffe466;
+    --yellow2:     #fff8dc;
 }
+
 
 /* Inconsolata typefaces */
 @font-face {
@@ -35,97 +38,124 @@
     font-weight: bold;
 }
 
-
-html {
-    font-size: 1.1rem;
-    background-color: var(--white-back);
-    color: var(--black);
+/* Core elements */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+html {
+    overflow-y: scroll;
+    height: 100%;
+    word-wrap: break-word;
+    background-color: var(--white-back);
+    color: var(--black);
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 125%;
+        max-width: 42em;
+    } }
+
 body {
     display: block;
-    width: 80%;
-    margin: auto;
-
     font-size: 16px;
-    line-height: 1.5;
-
+    line-height: 1.4;
 }
+
 
 /* Preamble (header) */
 #preamble {
     font-family: 'Inconsolata', sans-serif;
+    display: block;
+    margin: 0 auto 2rem auto;
+    border-bottom: 2px solid var(--red-dark);
 }
 
-#preamble img {
-    border-radius: 40%;
+#preamble .banner a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#preamble .banner .logo {
     display: inline-block;
     float: left;
-    margin-top: 0.8em;
-    width: 7%;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    margin-right: 0.5rem;
 }
 
-#preamble h1 {
-    display: inline-block;
-    text-align: left;
-    font-size: 2.80em;
+#preamble .banner h1 {
+    margin-top: 0;
+    margin-bottom: 0;
     color: var(--blue-dark2);
-    margin-left: 1em;
-    margin-bottom: 0em;
+    letter-spacing: .01em;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 1.5rem;
+    line-height: 2rem;
 }
 
-
-#preamble nav {
-    display: block;
+#preamble header nav {
     text-align: right;
+    padding-bottom: 0.3rem;
 }
 
-#preamble nav .nav-item {
-    padding-left: 1em;
-    font-size: 140%;
+#preamble header nav a {
+    text-align: right;
+    margin-left: 1.5rem;
 }
 
 /* Main content */
 #content {
     text-align: justify;
     max-width: 900px;
-    margin: auto;
-    margin-bottom: 40px;
+    margin: auto auto 2rem auto;
 }
 
 #content #table-of-contents h2 {
     display: none;
 }
 
-#content h1, h2, h3, h4, h5, h6 {
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
     font-weight: bold;
     color: var(--red-dark);
-    margin-top:    1em;
+    margin-top:    1rem;
     margin-bottom: 0.5em;
 }
 
 #content h1 {
-    font-size: 2.0em;
-    padding-bottom: 0.5em;
+    font-size: 2.0rem;
+    padding-bottom: 0.5rem;
 }
 
 #content h2 {
-    font-size: 2.0em;
+    font-size: 2.0rem;
 }
 
 #content h3 {
-    font-size: 1.60em;
+    font-size: 1.60rem;
 }
 
 #content h4 {
-    font-size: 1.30em;
+    font-size: 1.30rem;
 }
 
 #content .title {
     text-align: center;
-    font-size: 2.25em;
+    font-size: 2.25rem;
     font-weight: bold;
     padding-top: 0;
 }
@@ -134,7 +164,34 @@ body {
     text-decoration: underline;
 }
 
-/* Stuff */
+#content p {
+    margin: 1em 0;
+    line-height: 1.5;
+}
+
+/* Lists */
+#content ol,
+#content ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    padding-inline-start: 2em;
+}
+
+#content ol li ol,
+#content ol li ul,
+#content ul li ol,
+#content ul li ul {
+    margin: 0 2em;
+}
+
+#content ol li p,
+#content ul li p {
+    margin: 0;
+}
+
+/* Tables */
 #content tr:nth-child(even) {
     background-color:var(--grey4);
 }
@@ -147,34 +204,32 @@ body {
     background-color: var(--blue-dark);
 }
 
-#content table ,th, td {
-    border: 1px solid black;
-}
 
 #content table {
+    border: 1px solid black;
     border-collapse: collapse;
 }
 
 #content th {
-    padding: 15px;
     text-align: left;
-}
-
-#content td {
-    padding: 15px;
-    text-align: left;
-}
-
-#content table {
+    border: 1px solid black;
+    padding: 0.5rem;
     margin-left: auto ;
     margin-right: auto ;
 }
 
+#content td {
+    text-align: left;
+    border: 1px solid black;
+    padding: 0.5rem;
+}
+
+/* Blocks */
 #content pre {
-    border: 1pt solid var(--grey-2);
+    border: 1pt solid var(--grey2);
     white-space: pre-wrap;
     word-wrap: break-word;
-    padding: 0.5em;
+    padding: 0.5rem;
 }
 
 #content .example {
@@ -184,38 +239,60 @@ body {
 #content code {
     color: var(--red);
     background-color: var(--white);
-    font-size: 0.9rem;
     white-space: nowrap;
 }
-
-#content .post-date {
-    width: 100%;
-    text-align: right;
-    padding-bottom: 0.5em;
-}
-
 
 #content blockquote {
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #FFF8DC;
-    border-left: 2px solid #ffe466;
     display: block;
     margin-block-start: 1em;
     margin-block-end: 1em;
     margin-inline-start: 40px;
     margin-inline-end: 40px;
+    background-color: var(--yellow2);
+    /* border-width: 0 0 0 2px; */
+    /* border-style: none none none solid; */
+    /* border-color: var(--yellow1); */
+    border-left: 2px solid var(--yellow1);
+}
+
+/* Images */
+#content .figure img {
+    max-height:100% !important;
+    max-width:100% !important;
+}
+
+#content .figure p {
+    text-align: center;
+}
+
+/* Timestamps (Org macro) */
+#content .timestamp {
+    font-weight: bold;
+}
+
+#content .timestamp h1, h2, h3, h4, h5 {
+    font-weight: normal;
+}
+
+/* "First published:" */
+#content .post-date {
+    width: 100%;
+    text-align: right;
+    padding-bottom: 0.5rem;
 }
 
 /* Postamble (footer) */
 #postamble {
     text-align: center;
-    padding-top: 4em;
+    border-top: 2px solid var(--red-dark);
+    padding: 2rem 0 2rem 0;
 }
 
 #postamble img {
     vertical-align: middle;
-    margin: 0px;
+    margin: 0;
     object-fit: contain;
 }
 
@@ -241,23 +318,4 @@ body {
     50% {
         opacity: 0;
     }
-}
-
-/* Images */
-.figure img {
-    max-height:100% !important;
-    max-width:100% !important;
-}
-
-.figure p {
-    text-align: center;
-}
-
-/* Timestamp (Org macro) */
-.timestamp {
-    font-weight: bold;
-}
-
-h2 span.timestamp {
-    font-weight: normal;
 }
