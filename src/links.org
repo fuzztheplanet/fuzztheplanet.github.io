@@ -24,10 +24,6 @@ administration and more. May you find something useful to you as well!
 :PROPERTIES:
 :CUSTOM_ID: online
 :END:
-
-*Table of content*
-#+TOC: headlines 6 local
-
 *** Calculators
 :PROPERTIES:
 :CUSTOM_ID: online-calc
@@ -92,10 +88,6 @@ administration and more. May you find something useful to you as well!
 :PROPERTIES:
 :CUSTOM_ID: prog
 :END:
-
-*Table of content*
-#+TOC: headlines 6 local
-
 *** General
 :PROPERTIES:
 :CUSTOM_ID: prog-general
@@ -156,9 +148,6 @@ administration and more. May you find something useful to you as well!
 :PROPERTIES:
 :CUSTOM_ID: sec
 :END:
-
-*Table of Content*
-#+TOC: headlines 6 local
 *** General resources
 :PROPERTIES:
 :CUSTOM_ID: sec-general
@@ -326,10 +315,6 @@ Tools:
 :PROPERTIES:
 :CUSTOM_ID: sys
 :END:
-
-*Table of content*
-#+TOC: headlines 6 local
-
 *** Docker
 :PROPERTIES:
 :CUSTOM_ID: sys-docker

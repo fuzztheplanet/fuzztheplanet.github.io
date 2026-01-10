@@ -184,7 +184,7 @@ body {
 #content ol li ul,
 #content ul li ol,
 #content ul li ul {
-    margin: 0 2em;
+    margin: 0;
 }
 
 #content ol li p,
