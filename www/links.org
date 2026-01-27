@@ -109,9 +109,11 @@ administration and more. May you find something useful to you as well!
 :PROPERTIES:
 :CUSTOM_ID: prog-asm
 :END:
-***** ARM
 
-- [[https://www.azeria-labs.com][Azeria Labs]]: Detailed ARM assembly tutorials and ref card.
+- x86asm.net's [[http://ref.x86asm.net/index.html][reference]]
+- Félix Cloutier's [[https://www.felixcloutier.com/x86/][instruction reference]]
+- [[https://syscall.sh/][syscall.sh]] Linux syscall reference on various architectures
+- [[https://www.azeria-labs.com][Azeria Labs]]'s detailed ARM assembly tutorials and ref card
 
 *** Bash / Shell
 :PROPERTIES:
@@ -267,15 +269,15 @@ administration and more. May you find something useful to you as well!
 ***** Subdomain enumeration
 
 Guides:
-  - [[https://appsecco.com/books/subdomain-enumeration/][The Art of Subdomain Enumeration]] gitbook by [[https://appsecco.com/][Appsecco]]
-  - [[https://0xpatrik.com/][Patrik Hudak's blog]]: subdomain enumeration and targeted OSINT techniques
+- [[https://appsecco.com/books/subdomain-enumeration/][The Art of Subdomain Enumeration]] gitbook by [[https://appsecco.com/][Appsecco]]
+- [[https://0xpatrik.com/][Patrik Hudak's blog]]: subdomain enumeration and targeted OSINT techniques
 
 Tools:
-  - [[https://github.com/OWASP/Amass][OWASP Amass]]: large attack surface mapping and asset discovery framework
-  - [[https://github.com/tomnomnom/assetfinder][assetfinder]]: find subdomains from various open sources
-  - Sonardb by [[https://omnisint.io][Omnisint]]: simply request [[https://sonar.omnisint.io/subdomains/example.com][https://sonar.omnisint.io/subdomains/<tld.com>]]
-  - [[https://github.com/blechschmidt/massdns][massdns]]: high performance DNS stub resolver
-  - [[https://github.com/jhaddix][Jason Haddix]]'s [[https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056][all.txt]] DNS wordlist
+- [[https://github.com/OWASP/Amass][OWASP Amass]]: large attack surface mapping and asset discovery framework
+- [[https://github.com/tomnomnom/assetfinder][assetfinder]]: find subdomains from various open sources
+- Sonardb by [[https://omnisint.io][Omnisint]]: simply request [[https://sonar.omnisint.io/subdomains/example.com][https://sonar.omnisint.io/subdomains/<tld.com>]]
+- [[https://github.com/blechschmidt/massdns][massdns]]: high performance DNS stub resolver
+- [[https://github.com/jhaddix][Jason Haddix]]'s [[https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056][all.txt]] DNS wordlist
 
 *** Web
 ***** JavaScript and browser security
@@ -320,14 +322,14 @@ Tools:
 :CUSTOM_ID: sys-docker
 :END:
 
-- [[https://github.com/bcicen/ctop][ctop]]: Top-like interface for container metrics.
+- [[https://github.com/bcicen/ctop][ctop]]: Top-like interface for container metrics
 
 *** Emacs
 :PROPERTIES:
 :CUSTOM_ID: sys-emacs
 :END:
 
-- [[https://www.masteringemacs.org/][Mastering Emacs]] and in particular its [[https://www.masteringemacs.org/reading-guide][Reading Guide]].
+- [[https://www.masteringemacs.org/][Mastering Emacs]] and in particular its [[https://www.masteringemacs.org/reading-guide][Reading Guide]]
 
 *** Org-mode
 :PROPERTIES:
@@ -344,12 +346,12 @@ Tools:
 :CUSTOM_ID: sys-git
 :END:
 
-- [[https://ohshitgit.com][Oh Shit, Git!?!]]: Tips to troubleshoot yourself out of bad situations.
+- [[https://nvie.com/posts/a-successful-git-branching-model/][A successful Git branching model]]
+- [[https://ohshitgit.com][Oh Shit, Git!?!]] are tips to troubleshoot yourself out of bad situations
 
 *** Mail
 :PROPERTIES:
 :CUSTOM_ID: sys-mail
 :END:
 
-- [[https://seanthegeek.net/459/demystifying-dmarc/][Demistifying DMARC]]:
-  Intro to SPF, DKIM and DMARC.
+- [[https://seanthegeek.net/459/demystifying-dmarc/][Demistifying DMARC]] is an intro to SPF, DKIM and DMARC
