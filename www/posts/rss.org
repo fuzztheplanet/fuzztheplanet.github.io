@@ -4,20 +4,20 @@
 :properties:
 :rss_permalink: gtd-with-org.html
 :pubdate: 2025-12-03 Wed
-:ID:       945cdaef-f507-496c-a1bf-64ef4e9e5255
+:ID:       c9c20e5c-beb4-4932-8da3-9e73e795316e
 :END:
 /Yet-another-GTD-post/ featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows. 
 * Using git while on-the-run
 :properties:
 :rss_permalink: git-while-on-the-run.html
 :pubdate: 2025-07-07 Mon
-:ID:       ff20f551-50f1-4863-b343-005af120ef6e
+:ID:       984be2b4-37f4-4aae-b55c-c7e4b683530f
 :END:
 This post describes how to use a custom /git/ configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct /git/ to use different configs and keys. 
 * Hello World from Org
 :properties:
 :rss_permalink: hello-world-from-org.html
 :pubdate: 2025-05-25 Sun
-:ID:       20bda3fe-2ea4-4534-a066-3fc709530c2f
+:ID:       695ec0a2-016a-4790-8bac-b85bd0a88933
 :END:
 I describe yet-another-simple-publishing-setup for a static website using Emacs's [[https://orgmode.org/][Org mode]]. 

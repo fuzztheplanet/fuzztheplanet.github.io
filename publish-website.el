@@ -130,7 +130,7 @@
     (if (= (length entry-title) 0)
         (format "*%s*" entry)
       (format "{{{timestamp(%s)}}}: [[file:%s][%s]]\n
-%s"
+%s {{{br}}}"
               (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
               entry
               entry-title
@@ -139,7 +139,8 @@
 
 ;; Exporting macros
 (setq org-export-global-macros
-      '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")))
+      '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")
+        ("br" . "@@html:</br></br>@@")))
 
 
 ;; RSS feed generation
