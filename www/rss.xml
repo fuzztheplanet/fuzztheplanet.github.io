@@ -14,8 +14,8 @@
   <link>https://www.skywhi.net/posts/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Tue, 27 Jan 2026 12:08:01 +0100</pubDate>
-  <lastBuildDate>Tue, 27 Jan 2026 12:08:01 +0100</lastBuildDate>
+  <pubDate>Tue, 27 Jan 2026 18:59:04 +0100</pubDate>
+  <lastBuildDate>Tue, 27 Jan 2026 18:59:04 +0100</lastBuildDate>
   <generator>Emacs 30.2 Org-mode 9.7.11</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
@@ -56,7 +56,7 @@
     <pubDate>Sun, 25 May 2025 00:00:00 +0200</pubDate>
 
     <description><![CDATA[<p>
-    I describe yet-another-simple-publishing-setup for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. 
+    I describe <i>yet-another-simple-publishing-setup</i> for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two. 
     </p>
     ]]></description>
   </item>

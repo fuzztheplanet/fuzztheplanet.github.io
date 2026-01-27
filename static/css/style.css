@@ -228,7 +228,7 @@ body {
 /* Blocks */
 #content pre {
     border: 1pt solid var(--grey2);
-    white-space: pre-wrap;
+    white-space: pre;
     word-wrap: break-word;
     padding: 0.5rem;
 }
@@ -241,6 +241,7 @@ body {
     color: var(--red);
     background-color: var(--white);
     white-space: nowrap;
+    font-size: 0.6rem;
 }
 
 #content blockquote {

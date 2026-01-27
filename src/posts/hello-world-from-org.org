@@ -4,8 +4,10 @@
 
 
 #+begin_preview
-I describe yet-another-simple-publishing-setup for a static website using
-Emacs's [[https://orgmode.org/][Org mode]].
+I describe /yet-another-simple-publishing-setup/ for a static website using
+Emacs's [[https://orgmode.org/][Org mode]]. While there are plenty of resources on the topic available
+already, I wanted to document my setup here for self-reference. Maybe someone
+will take away an idea or two.
 #+end_preview
 
 #+begin_src sh
@@ -21,13 +23,12 @@ skywhi@dreamland:~/blog$ # make blogging great again!
 * Rationale
 :PROPERTIES:
 :CUSTOM_ID: rationale
-:ID:       0923b17f-b133-4d7a-bafc-1af8d229c6e4
-:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
-I figured it was finally the time to host some of my content online for sharing,
-fun, persistence, easy access and all the other usual suspects. Going into this
-adventure there were only a few requirements that I wanted my website to meet:
+I figured the time had come to host some of my modest content online for
+sharing, fun, persistence, easy access and all the other usual suspects. Going
+into this adventure there were only a few requirements that I wanted my website
+to meet:
 
 - Content should be written in my favorite [[https://www.gnu.org/software/emacs/][text editor]] with [[https://orgmode.org/][Org mode]].
 - No need for any back-end or front-end logic: serving a static website without
@@ -37,41 +38,40 @@ adventure there were only a few requirements that I wanted my website to meet:
   project would not make any sense to me.
 
 Let me explain. I have been using Emacs and Org mode for several years now. Its
-markup language really fits my needs and the files integrate well with the
-agenda and other nifty features Org mode has to offer. The ability to hack its
-behavior directly in elisp is also a great plus to me. This is why I searched
-for options that would allow me to use my Org content without too much trouble.
+markup language really fits my needs and I have integrated my Org files with the
+agenda and other nifty features Emacs and Org have to offer. The ability to hack
+their behavior in elisp is also a great plus to me as it immensely increases the
+flexibility of this setup.
 
-When it comes to this website, I want to be able to turn what I am currently
+When it comes to this website, I want to be able to turn whatever I am currently
 working on into publishable content without having to spend extra time on
-re-formatting my writing completely. It was thus pretty obvious that I would
-give a try to the built-in [[https://orgmode.org/manual/Publishing.html][org-publish]] package for Emacs as it is exactly what I
-am looking for: automated and configurable exporting of Org projects to simple
-HTML files. There a few other projects which turn a collection of Org files into
-a website, such as [[https://github.com/bastibe/org-static-blog][org-static-blog]], but I figured I would like to have maximal
-control over the toolchain and keep external dependencies as low as possible.
+re-formatting my writing from the ground up. It was thus pretty obvious that I
+would give a try to the built-in [[https://orgmode.org/manual/Publishing.html][org-publish]] package for Emacs as it is exactly
+what I am looking for: automated and configurable exporting of Org projects to
+HTML files, as plain as possible. There exist quite a few other projects which
+turn a collection of Org files into a website, such as [[https://gohugo.io/][Hugo]] or [[https://github.com/bastibe/org-static-blog][org-static-blog]].
+But I figured I would like to retain maximal control over the exporting process
+and keep external dependencies as low as possible so I stuck to /org-publish/.
 
 Using git versioning gives me the opportunity to track and manage changes over
 time. Since we are dealing with a static website with exclusively public data,
-[[https://github.io][github.io]] will handle the hosting for me. Whenever I work on a new item, I can
-pull the remote github repository, create a local branch and start editing. When
-the content is ready for publishing, the branch is merged into main, pushed to
-the remote github repository and /voilà/!
+[[https://github.io][github.io]] will handle the hosting for me. Whenever I want to work on a new item,
+I can pull the remote github repository, create a local branch and start
+editing. When the content is ready for publishing, the branch is merged into
+main, pushed to the remote github repository and /voilà/!
 
 * Project layout
 :PROPERTIES:
 :CUSTOM_ID: project-layout
-:ID:       c16786f2-dc4f-467e-8b95-7798b2e988cb
-:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
 I ended up with something like the following directory structure for this
-project. The github repository containing all the source files can be found
-[[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
+project. The github repository containing all the up-to-date source files can be
+found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
 
 #+begin_src terminal
 - ~/org/blog/
-  - files/
+  - static/
     - css/
     - fonts/
     - img/
@@ -91,44 +91,34 @@ project. The github repository containing all the source files can be found
   - README.org
 #+end_src
 
-*src/* contains the standalone Org files that will be published to HTML. They
-are declaring as few exporting options as possible so that they can easily be
-used in other contexts or projects. Global exporting options will be defined in
-*publish-website.el* and page specific options provided via templates or
-directly in the files themselves. The *files/* and *templates/* directories host
-assets such as stylesheets, fonts, images, etc. that are specific to the HTML
-export.
+*src/* contains the Org files that will be published to HTML. These files are
+declaring as few exporting options as possible so that they can easily be used
+in other contexts or projects. Global exporting options will be defined in
+*publish-website.el* and page-specific options provided via *templates/* or, in
+rare cases, directly in the files themselves. The *static/* directory hosts
+assets such as stylesheets, fonts, images, etc. that will be exported "as is".
 
 The logic behind publishing is implemented in *publish-website.el* which is
-then called by a *Makefile* for convenience. It defines all the directories,
-files and exporting options to be fed into /org-publish/. I could have written
-*publish-website.el* in literate programming style and use it as source for this
-blog post, but that would have been a little bit too meta, even for me :)
+called by a *Makefile* for convenience. It defines all the directories, files
+and exporting options that will be fed into /org-publish/. I could have written
+my *publish-website.el* in literate programming style and use it as source for
+this blog post, but that would have been a little bit too meta, even for me :)
 
-Finally, *README.org* is just a symbolic link to *src/about.org*. Why? Because I
-can.
+Finally, *README.org* is just a symbolic link to *src/about.org*. Why? Because
+we can!
 
 * To the first page!
 :PROPERTIES:
 :CUSTOM_ID: first-page
-:ID:       fde32b21-b1df-40a1-a3a5-ae43fd5fd349
-:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 *** Source files
 :PROPERTIES:
 :CUSTOM_ID: source-files
-:ID:       92914880-048f-42c7-aa02-21c2998e11a4
 :END:
 
-Global exporting options are defined in *publish-website.el* which can be
-overridden by the definitions in the single Org files. When several Org files
-share the same defaults, it can make sense to define them in an Org template
-file and use the =#+SETUPFILE: ../templates/mytemplate.org= directive in the
-relevant source files. =#+INCLUDE: <path/to/file.org>= can also be used, its
-content will then plainly be inserted in the source file before processing.
-
-This is for example the beginning of this post. I set the title, the date, I
-include a template and insert a preview. More on all this a little bit later.
+This is for example the beginning of [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org][this post]]. It does not contain much beside
+a title, a date, a template and a table of content. There is also a custom
+=preview= block, but more on that a little bit later.
 
 #+caption: posts/hello-world-from-org.org
 #+begin_src org
@@ -137,8 +127,10 @@ include a template and insert a preview. More on all this a little bit later.
 ,#+INCLUDE: ../../templates/post.org
 
 ,#+begin_preview
-I describe yet-another-simple-publishing-setup for a static website using
-Emacs's [[https://orgmode.org/][Org mode]].
+I describe /yet-another-simple-publishing-setup/ for a static website using
+Emacs's [[https://orgmode.org/][Org mode]]. While there are plenty of resources on the topic available
+already, I wanted to document my setup here for self-reference. Maybe someone
+will take away a tip or two.
 ,#+end_preview
 
 ,#+begin_src sh
@@ -147,6 +139,7 @@ skywhi@dreamland:~/blog$ make update && make publish
 skywhi@dreamland:~/blog$ # make blogging great again!
 ,#+end_src
 
+,*Table of Contents:*
 ,#+TOC: headlines 3
 
 ,* Rationale
@@ -154,24 +147,26 @@ skywhi@dreamland:~/blog$ # make blogging great again!
 :CUSTOM_ID: rationale
 :END:
 
-I figured it was finally the time to host some of my content online for sharing,
-fun, persistence, easy access and all the other usual suspects. Going into this
-adventure there were only a few requirements that I wanted my website to meet:
-[...]
+I figured the time had come to host some of my modest content online for
+sharing, fun, persistence, easy access and all the other usual suspects. Going
+into this adventure there were only a few requirements that I wanted my website
+to meet: [...]
 #+end_src
 
-Appending a =CUSTOM_ID= property to headlines makes it possible to link to the
-specific headline in the table of contents and HTML.
+Appending a =CUSTOM_ID= property (=C-c C-x p=) to headings makes it possible to
+link to them in the HTML. [[#source-files][This example link]] points to the present section.
 
 *** Templates
 :PROPERTIES:
 :CUSTOM_ID: templates
-:ID:       54813495-a911-47c7-ab28-fdaaba4504af
 :END:
 
-Template are used to group seveal Org rendering and exporting that are common to
-several files. For example, the template under *templates/post.org* looks like
-this:
+When several Org files share the same rendering and exporting options, it can
+make sense to regroup them in an Org template file and use the =#+SETUPFILE= or
+=#+INCLUDE= directive in the relevant source files.
+
+For example, the template under [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/templates/post.org][templates/post.org]] will extract the =date=
+directive of the source file and add custom HTML to the post.
 
 #+caption: templates/post.org
 #+begin_src org
@@ -180,16 +175,13 @@ this:
 @@html:</div>@@
 #+end_src
 
-The /date/ tag of the post will be extracted and added to the HTML during
-publishing.
-
-Here is a template for the [[https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg][ReadTheOrg]] theme by [[https://github.com/fniessen][Fabrice Niessen]] that inserts HTML
-into any page published with it:
+Here is a template for the [[https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg][ReadTheOrg]] theme by [[https://github.com/fniessen][Fabrice Niessen]] that inserts the
+correct CSS styling into any page published with it:
 
 #+caption: templates/readtheorg.org
 #+begin_src org
-,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/>
-,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/>
+,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/static/css/readtheorg/readtheorg.css"/>
+,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/static/css/readtheorg/htmlize.css"/>
 ,#+HTML_HEAD_EXTRA:
 ,#+OPTIONS: html-preamble:nil
 ,#+OPTIONS: html-postamble:nil
@@ -198,26 +190,22 @@ into any page published with it:
 *** CSS styling
 :PROPERTIES:
 :CUSTOM_ID: css
-:ID:       30c5e646-114c-470d-b141-abaeead4546b
 :END:
 
-The two files that are used are *files/css/style.css* and
-*files/css/htmlize.css*. In *style.css* are all the base styles for the pages
-defined. Since I am aiming for a small and flexible website I decided to write
-my own CSS manually (and I suck at it tbh). People who don't want to enjoy the
-same +painful+ wonderful experience should try to look for pre-existing
-stylesheets and exporting options. *htmlize.css* is used to pretty source code
-blocks.
+The two files that are used are [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/style.css][style.css]] and [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/htmlize.css][htmlize.css]]. The first hosts all
+the base styles for the website while the second prettifies source code blocks
+by redefining various =.org-*= CSS classes. Since I am aiming for a small and
+flexible website I decided to write my own CSS manually (and I suck at it tbh).
+People who don't want to enjoy the same +painful+ wonderful experience should
+try to look for pre-existing stylesheets and nice exporting options.
 
 *** Building and publishing
 :PROPERTIES:
 :CUSTOM_ID: publishing
-:ID:       3f538dde-d268-40f2-8661-0897b4de6187
 :END:
 ***** publish-website.el
 :PROPERTIES:
 :CUSTOM_ID: publish-website
-:ID:       a3c0fb43-91d7-422e-93a5-0279d0d0e440
 :END:
 
 It was hyped for long enough, here is the [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/publish-website.el][publish-website.el]] file. This file
@@ -233,10 +221,11 @@ tags.
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
-;; Extract content between #+begin_preview and #+end_preview
+;; Preview block
 (defun skw-blog/get-preview (file)
-  "The comments (begin/end_preview) in'file' have to be on their own lines,
-   preferably before and after paragraphs."
+  "Extract the content between #+begin_preview and #+end_preview blocks
+   in 'file'. The block tags have to be on their own lines, preferably
+   before and after paragraphs."
   (with-temp-buffer
     (message file)
     (insert-file-contents file)
@@ -268,7 +257,7 @@ tags.
     (if (= (length entry-title) 0)
         (format "*%s*" entry)
       (format "{{{timestamp(%s)}}}: [[file:%s][%s]]\n
-%s"
+%s {{{br}}}"
               (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
               entry
               entry-title
@@ -277,10 +266,13 @@ tags.
 
 ;; Exporting macros
 (setq org-export-global-macros
-      '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")))
+      '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")
+        ("br" . "@@html:</br></br>@@")))
 #+end_src
 
-The corresponding publishing rules then look like this:
+The following rules publish the Org file and generate 2 index files:
+*posts/index.org* and *posts/index-no-preview.org*. The first one containing
+previews of all posts and the second one with just the post title.
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
@@ -335,8 +327,8 @@ The corresponding publishing rules then look like this:
  :sitemap-sort-files anti-chronologically)
 #+end_src
 
-The generated *./src/posts/index-no-description.org* is inserted into the
-homepage with:
+The generated *src/posts/index-no-description.org* is inserted into the homepage
+with =:lines "3-7"= in order to display only the last 5 most recent posts.
 
 #+caption: src/index.org
 #+begin_src org
@@ -346,7 +338,6 @@ homepage with:
 ***** Makefile
 :PROPERTIES:
 :CUSTOM_ID: makefile
-:ID:       dfdfec47-534b-4c51-8eac-84af63d128eb
 :END:
 
 Let's use *make* to avoid building and managing the website by hand.
@@ -379,23 +370,20 @@ run:
 #+end_src
 
 Whenever I want to work on a new item, like adding a new file or editing an
-existing one, I switch to a new local branch. I then simply run =make=
-periodically while editing to visualize my changes. When I am done I merge the
-branch into my local main branch and run =make update= to verify what will be
-committed and then =make publish= to push the changes on the remote repository.
-Cherry on top, =make run= spawns a python web-server to view the website locally
-at http://localhost:12345.
+existing one, I switch to a new local branch in the git repository. I then
+simply run =make= periodically while editing to visualize my changes. When I am
+done, I merge the branch into my local main branch and run =make update= to
+verify what will be committed and then =make publish= to push the changes on the
+remote repository. Cherry on top, =make run= spawns a python web-server to view
+the website locally at http://localhost:12345.
 
 * A few more functionalities
 :PROPERTIES:
 :CUSTOM_ID: more
-:ID:       4921e40a-4f0e-4477-bd0b-f483988617e1
-:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 *** MathJax
 :PROPERTIES:
 :CUSTOM_ID: mathjax
-:ID:       1f7ef906-fcbb-45da-a0f1-637c72b26d52
 :END:
 
 [[https://www.mathjax.org/][MathJax]]' [[https://orgmode.org/manual/Math-formatting-in-HTML-export.html][Org mode support]] lets me export to HTML math formulas written in LaTeX.
@@ -448,7 +436,6 @@ mathjax:
 *** RSS feed
 :PROPERTIES:
 :CUSTOM_ID: resources
-:ID:       1c0d497e-7409-43a9-bb7a-b9e74dc8b6d7
 :END:
 
 Generating a RSS to track when new posts are published is actually not that
@@ -520,8 +507,6 @@ These functions are then called inside a new publishing rule.
 * Resources
 :PROPERTIES:
 :CUSTOM_ID: resources
-:ID:       a78da189-9dfa-404c-b706-beae710d7524
-:PUBDATE:  2025-05-26 Mon 14:59
 :END:
 
 This publishing setup is quite rudimentary. I wrote this note mostly for self
@@ -545,3 +530,8 @@ you check them out as well as their publishing workflow:
 - [[https://ogbe.net/blog/blogging_with_org.html][Blogging using org-mode (and nothing else)]] by [[https://ogbe.net/][Dennis Ogbe]] is a really neat
   explanations and setup with Org-file pre-processing before publishing.
 - [[https://ryuslash.org/literate-build.html][A literate programming example]] by [[https://ryuslash.org/][ryuslash]].
+
+
+
+*Edit* [2026-01-27 Tue]: Updated directory structure and rephrased some
+ sections.

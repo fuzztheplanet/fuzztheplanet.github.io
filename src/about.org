@@ -2,7 +2,7 @@
 
 
 I'm Skywhi and this is my personal website. I finally decided to jump onto the
-modern train and instead of managing my =~/notes/*.txt= files locally they are
+modern train and instead of managing my /~/notes/*.txt/ files locally they are
 now also hosted /"in the Cloud" (©)/. The opinions and views expressed on this
 website are solely my own as I don't always like to share :)
 
@@ -20,7 +20,7 @@ You can learn more about how this static blog is generated with [[https://orgmod
 [[./posts/hello-world-from-org.org][blog post]] where I also link to setups that inspired this one. The sauce for all
 this madness is available [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]] on my [[https://github.com/fuzztheplanet][Github]].
 
-* www/ presence
+* me@www
 :PROPERTIES:
 :CUSTOM_ID: contact
 :END:
@@ -33,4 +33,4 @@ though, I am too :) I occasionally hang out on /irc.libera.chat/ and
 me a friendly ping request there!
 
 I sometimes lurk on [[https://twitter.com/fuzztheplanet][Twitter]] and play the occasional CTF (Capture The Flag)
-challenge on [[https://www.root-me.org/skywhi][Root-Me]], [[https://app.hackthebox.com/users/736961][HackTheBox]] and [[https://www.cryptohack.org/user/skywhi][Cryptohack]].
+challenge on [[https://www.root-me.org/skywhi][Root-Me]], [[https://app.hackthebox.com/users/736961][HackTheBox]] or [[https://www.cryptohack.org/user/skywhi][Cryptohack]].

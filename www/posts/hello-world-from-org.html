@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-01-27 Tue 12:07 -->
+<!-- 2026-01-27 Tue 18:59 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
@@ -68,10 +68,12 @@
 </p>
 
 
-<div class="preview" id="org34230b7">
+<div class="preview" id="org3e6e87a">
 <p>
-I describe yet-another-simple-publishing-setup for a static website using
-Emacs's <a href="https://orgmode.org/">Org mode</a>.
+I describe <i>yet-another-simple-publishing-setup</i> for a static website using
+Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available
+already, I wanted to document my setup here for self-reference. Maybe someone
+will take away an idea or two.
 </p>
 
 </div>
@@ -119,9 +121,10 @@ skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span clas
 <h2 id="rationale">Rationale</h2>
 <div class="outline-text-2" id="text-rationale">
 <p>
-I figured it was finally the time to host some of my content online for sharing,
-fun, persistence, easy access and all the other usual suspects. Going into this
-adventure there were only a few requirements that I wanted my website to meet:
+I figured the time had come to host some of my modest content online for
+sharing, fun, persistence, easy access and all the other usual suspects. Going
+into this adventure there were only a few requirements that I wanted my website
+to meet:
 </p>
 
 <ul class="org-ul">
@@ -135,30 +138,31 @@ project would not make any sense to me.</li>
 
 <p>
 Let me explain. I have been using Emacs and Org mode for several years now. Its
-markup language really fits my needs and the files integrate well with the
-agenda and other nifty features Org mode has to offer. The ability to hack its
-behavior directly in elisp is also a great plus to me. This is why I searched
-for options that would allow me to use my Org content without too much trouble.
+markup language really fits my needs and I have integrated my Org files with the
+agenda and other nifty features Emacs and Org have to offer. The ability to hack
+their behavior in elisp is also a great plus to me as it immensely increases the
+flexibility of this setup.
 </p>
 
 <p>
-When it comes to this website, I want to be able to turn what I am currently
+When it comes to this website, I want to be able to turn whatever I am currently
 working on into publishable content without having to spend extra time on
-re-formatting my writing completely. It was thus pretty obvious that I would
-give a try to the built-in <a href="https://orgmode.org/manual/Publishing.html">org-publish</a> package for Emacs as it is exactly what I
-am looking for: automated and configurable exporting of Org projects to simple
-HTML files. There a few other projects which turn a collection of Org files into
-a website, such as <a href="https://github.com/bastibe/org-static-blog">org-static-blog</a>, but I figured I would like to have maximal
-control over the toolchain and keep external dependencies as low as possible.
+re-formatting my writing from the ground up. It was thus pretty obvious that I
+would give a try to the built-in <a href="https://orgmode.org/manual/Publishing.html">org-publish</a> package for Emacs as it is exactly
+what I am looking for: automated and configurable exporting of Org projects to
+HTML files, as plain as possible. There exist quite a few other projects which
+turn a collection of Org files into a website, such as <a href="https://gohugo.io/">Hugo</a> or <a href="https://github.com/bastibe/org-static-blog">org-static-blog</a>.
+But I figured I would like to retain maximal control over the exporting process
+and keep external dependencies as low as possible so I stuck to <i>org-publish</i>.
 </p>
 
 <p>
 Using git versioning gives me the opportunity to track and manage changes over
 time. Since we are dealing with a static website with exclusively public data,
-<a href="https://github.io">github.io</a> will handle the hosting for me. Whenever I work on a new item, I can
-pull the remote github repository, create a local branch and start editing. When
-the content is ready for publishing, the branch is merged into main, pushed to
-the remote github repository and <i>voilà</i>!
+<a href="https://github.io">github.io</a> will handle the hosting for me. Whenever I want to work on a new item,
+I can pull the remote github repository, create a local branch and start
+editing. When the content is ready for publishing, the branch is merged into
+main, pushed to the remote github repository and <i>voilà</i>!
 </p>
 </div>
 </div>
@@ -167,13 +171,13 @@ the remote github repository and <i>voilà</i>!
 <div class="outline-text-2" id="text-project-layout">
 <p>
 I ended up with something like the following directory structure for this
-project. The github repository containing all the source files can be found
-<a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
+project. The github repository containing all the up-to-date source files can be
+found <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-terminal">- ~/org/blog/
-  - files/
+  - static/
     - css/
     - fonts/
     - img/
@@ -195,26 +199,25 @@ project. The github repository containing all the source files can be found
 </div>
 
 <p>
-<b>src/</b> contains the standalone Org files that will be published to HTML. They
-are declaring as few exporting options as possible so that they can easily be
-used in other contexts or projects. Global exporting options will be defined in
-<b>publish-website.el</b> and page specific options provided via templates or
-directly in the files themselves. The <b>files/</b> and <b>templates/</b> directories host
-assets such as stylesheets, fonts, images, etc. that are specific to the HTML
-export.
+<b>src/</b> contains the Org files that will be published to HTML. These files are
+declaring as few exporting options as possible so that they can easily be used
+in other contexts or projects. Global exporting options will be defined in
+<b>publish-website.el</b> and page-specific options provided via <b>templates/</b> or, in
+rare cases, directly in the files themselves. The <b>static/</b> directory hosts
+assets such as stylesheets, fonts, images, etc. that will be exported "as is".
 </p>
 
 <p>
 The logic behind publishing is implemented in <b>publish-website.el</b> which is
-then called by a <b>Makefile</b> for convenience. It defines all the directories,
-files and exporting options to be fed into <i>org-publish</i>. I could have written
-<b>publish-website.el</b> in literate programming style and use it as source for this
-blog post, but that would have been a little bit too meta, even for me :)
+called by a <b>Makefile</b> for convenience. It defines all the directories, files
+and exporting options that will be fed into <i>org-publish</i>. I could have written
+my <b>publish-website.el</b> in literate programming style and use it as source for
+this blog post, but that would have been a little bit too meta, even for me :)
 </p>
 
 <p>
-Finally, <b>README.org</b> is just a symbolic link to <b>src/about.org</b>. Why? Because I
-can.
+Finally, <b>README.org</b> is just a symbolic link to <b>src/about.org</b>. Why? Because
+we can!
 </p>
 </div>
 </div>
@@ -226,17 +229,9 @@ can.
 <h3 id="source-files">Source files</h3>
 <div class="outline-text-3" id="text-source-files">
 <p>
-Global exporting options are defined in <b>publish-website.el</b> which can be
-overridden by the definitions in the single Org files. When several Org files
-share the same defaults, it can make sense to define them in an Org template
-file and use the <code>#+SETUPFILE: ../templates/mytemplate.org</code> directive in the
-relevant source files. <code>#+INCLUDE: &lt;path/to/file.org&gt;</code> can also be used, its
-content will then plainly be inserted in the source file before processing.
-</p>
-
-<p>
-This is for example the beginning of this post. I set the title, the date, I
-include a template and insert a preview. More on all this a little bit later.
+This is for example the beginning of <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org">this post</a>. It does not contain much beside
+a title, a date, a template and a table of content. There is also a custom
+<code>preview</code> block, but more on that a little bit later.
 </p>
 
 <div class="org-src-container">
@@ -245,8 +240,10 @@ include a template and insert a preview. More on all this a little bit later.
 </span><span class="org-org-meta-line">#+INCLUDE: ../../templates/post.org</span>
 
 <span class="org-org-block-begin-line">#+begin_preview
-</span>I describe yet-another-simple-publishing-setup for a static website using
-Emacs's <span class="org-org-link"><a href="https://orgmode.org/">Org mode</a></span>.
+</span>I describe <span class="org-italic">/yet-another-simple-publishing-setup/</span> for a static website using
+Emacs's <span class="org-org-link"><a href="https://orgmode.org/">Org mode</a></span>. While there are plenty of resources on the topic available
+already, I wanted to document my setup here for self-reference. Maybe someone
+will take away a tip or two.
 <span class="org-org-block-end-line">#+end_preview
 </span>
 <span class="org-org-block-begin-line">#+begin_src sh
@@ -255,6 +252,7 @@ skywhi@dreamland:~/blog$ make update &amp;&amp; make publish
 skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!
 </span></span><span class="org-org-block-end-line">#+end_src
 </span>
+<span class="org-bold">*Table of Contents:*</span>
 <span class="org-org-meta-line">#+TOC: headlines 3</span>
 
 <span class="org-org-level-1">* Rationale</span>
@@ -262,16 +260,16 @@ skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-com
 <span class="org-org-special-keyword">:CUSTOM_ID:</span> <span class="org-org-property-value">rationale</span>
 <span class="org-org-drawer">:END:</span>
 
-I figured it was finally the time to host some of my content online for sharing,
-fun, persistence, easy access and all the other usual suspects. Going into this
-adventure there were only a few requirements that I wanted my website to meet:
-[...]
+I figured the time had come to host some of my modest content online for
+sharing, fun, persistence, easy access and all the other usual suspects. Going
+into this adventure there were only a few requirements that I wanted my website
+to meet: [...]
 </pre>
 </div>
 
 <p>
-Appending a <code>CUSTOM_ID</code> property to headlines makes it possible to link to the
-specific headline in the table of contents and HTML.
+Appending a <code>CUSTOM_ID</code> property (<code>C-c C-x p</code>) to headings makes it possible to
+link to them in the HTML. <a href="#source-files">This example link</a> points to the present section.
 </p>
 </div>
 </div>
@@ -279,9 +277,14 @@ specific headline in the table of contents and HTML.
 <h3 id="templates">Templates</h3>
 <div class="outline-text-3" id="text-templates">
 <p>
-Template are used to group seveal Org rendering and exporting that are common to
-several files. For example, the template under <b>templates/post.org</b> looks like
-this:
+When several Org files share the same rendering and exporting options, it can
+make sense to regroup them in an Org template file and use the <code>#+SETUPFILE</code> or
+<code>#+INCLUDE</code> directive in the relevant source files.
+</p>
+
+<p>
+For example, the template under <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/templates/post.org">templates/post.org</a> will extract the <code>date</code>
+directive of the source file and add custom HTML to the post.
 </p>
 
 <div class="org-src-container">
@@ -292,18 +295,13 @@ this:
 </div>
 
 <p>
-The <i>date</i> tag of the post will be extracted and added to the HTML during
-publishing.
-</p>
-
-<p>
-Here is a template for the <a href="https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg">ReadTheOrg</a> theme by <a href="https://github.com/fniessen">Fabrice Niessen</a> that inserts HTML
-into any page published with it:
+Here is a template for the <a href="https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg">ReadTheOrg</a> theme by <a href="https://github.com/fniessen">Fabrice Niessen</a> that inserts the
+correct CSS styling into any page published with it:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 3: </span>templates/readtheorg.org</label><pre class="src src-org"><span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/readtheorg.css"/&gt;</span>
-<span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/files/css/readtheorg/htmlize.css"/&gt;</span>
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>templates/readtheorg.org</label><pre class="src src-org"><span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/static/css/readtheorg/readtheorg.css"/&gt;</span>
+<span class="org-org-meta-line">#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="/static/css/readtheorg/htmlize.css"/&gt;</span>
 <span class="org-org-meta-line">#+HTML_HEAD_EXTRA:</span>
 <span class="org-org-meta-line">#+OPTIONS: html-preamble:nil</span>
 <span class="org-org-meta-line">#+OPTIONS: html-postamble:nil</span>
@@ -315,13 +313,12 @@ into any page published with it:
 <h3 id="css">CSS styling</h3>
 <div class="outline-text-3" id="text-css">
 <p>
-The two files that are used are <b>files/css/style.css</b> and
-<b>files/css/htmlize.css</b>. In <b>style.css</b> are all the base styles for the pages
-defined. Since I am aiming for a small and flexible website I decided to write
-my own CSS manually (and I suck at it tbh). People who don't want to enjoy the
-same <del>painful</del> wonderful experience should try to look for pre-existing
-stylesheets and exporting options. <b>htmlize.css</b> is used to pretty source code
-blocks.
+The two files that are used are <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/style.css">style.css</a> and <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/htmlize.css">htmlize.css</a>. The first hosts all
+the base styles for the website while the second prettifies source code blocks
+by redefining various <code>.org-*</code> CSS classes. Since I am aiming for a small and
+flexible website I decided to write my own CSS manually (and I suck at it tbh).
+People who don't want to enjoy the same <del>painful</del> wonderful experience should
+try to look for pre-existing stylesheets and nice exporting options.
 </p>
 </div>
 </div>
@@ -348,10 +345,11 @@ tags.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 4: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Extract content between #+begin_preview and #+end_preview
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Preview block
 </span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-preview</span> (file)
-  <span class="org-doc">"The comments (begin/end_preview) in'</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">' have to be on their own lines,
-   preferably before and after paragraphs."</span>
+  <span class="org-doc">"Extract the content between #+begin_preview and #+end_preview blocks
+   in '</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">'. The block tags have to be on their own lines, preferably
+   before and after paragraphs."</span>
   (<span class="org-keyword">with-temp-buffer</span>
     (message file)
     (insert-file-contents file)
@@ -383,7 +381,7 @@ tags.
 </span>    (<span class="org-keyword">if</span> (= (length entry-title) 0)
         (format <span class="org-string">"*%s*"</span> entry)
       (format <span class="org-string">"{{{timestamp(%s)}}}: [[file:%s][%s]]\n
-%s"</span>
+%s {{{br}}}"</span>
               (format-time-string <span class="org-string">"%Y-%m-%d"</span> (org-publish-find-date entry project))
               entry
               entry-title
@@ -392,12 +390,15 @@ tags.
 
 <span class="org-comment-delimiter">;; </span><span class="org-comment">Exporting macros
 </span>(<span class="org-keyword">setq</span> org-export-global-macros
-      '((<span class="org-string">"timestamp"</span> . <span class="org-string">"@@html:&lt;span class=\"timestamp\"&gt;$1&lt;/span&gt;@@"</span>)))
+      '((<span class="org-string">"timestamp"</span> . <span class="org-string">"@@html:&lt;span class=\"timestamp\"&gt;$1&lt;/span&gt;@@"</span>)
+        (<span class="org-string">"br"</span> . <span class="org-string">"@@html:&lt;/br&gt;&lt;/br&gt;@@"</span>)))
 </pre>
 </div>
 
 <p>
-The corresponding publishing rules then look like this:
+The following rules publish the Org file and generate 2 index files:
+<b>posts/index.org</b> and <b>posts/index-no-preview.org</b>. The first one containing
+previews of all posts and the second one with just the post title.
 </p>
 
 <div class="org-src-container">
@@ -454,8 +455,8 @@ The corresponding publishing rules then look like this:
 </div>
 
 <p>
-The generated <b>./src/posts/index-no-description.org</b> is inserted into the
-homepage with:
+The generated <b>src/posts/index-no-description.org</b> is inserted into the homepage
+with <code>:lines "3-7"</code> in order to display only the last 5 most recent posts.
 </p>
 
 <div class="org-src-container">
@@ -500,12 +501,12 @@ Let's use <b>make</b> to avoid building and managing the website by hand.
 
 <p>
 Whenever I want to work on a new item, like adding a new file or editing an
-existing one, I switch to a new local branch. I then simply run <code>make</code>
-periodically while editing to visualize my changes. When I am done I merge the
-branch into my local main branch and run <code>make update</code> to verify what will be
-committed and then <code>make publish</code> to push the changes on the remote repository.
-Cherry on top, <code>make run</code> spawns a python web-server to view the website locally
-at <a href="http://localhost:12345">http://localhost:12345</a>.
+existing one, I switch to a new local branch in the git repository. I then
+simply run <code>make</code> periodically while editing to visualize my changes. When I am
+done, I merge the branch into my local main branch and run <code>make update</code> to
+verify what will be committed and then <code>make publish</code> to push the changes on the
+remote repository. Cherry on top, <code>make run</code> spawns a python web-server to view
+the website locally at <a href="http://localhost:12345">http://localhost:12345</a>.
 </p>
 </div>
 </div>
@@ -686,6 +687,13 @@ effective setup.</li>
 explanations and setup with Org-file pre-processing before publishing.</li>
 <li><a href="https://ryuslash.org/literate-build.html">A literate programming example</a> by <a href="https://ryuslash.org/">ryuslash</a>.</li>
 </ul>
+
+
+
+<p>
+<b>Edit</b> <span class="timestamp-wrapper"><span class="timestamp">[2026-01-27 Tue]</span></span>: Updated directory structure and rephrased some
+ sections.
+</p>
 </div>
 </div>
 </div>

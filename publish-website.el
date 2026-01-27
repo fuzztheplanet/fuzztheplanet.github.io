@@ -6,6 +6,7 @@
 (require 'ox-html)
 (require 'ox-rss)
 
+
 ;; Utility functions
 (defun skw-blog/get-root-directory ()
   "Return the blog's root directory (where this file is located)."
@@ -19,20 +20,6 @@
   (with-temp-buffer
     (insert-file-contents file)
     (buffer-string)))
-
-
-;; Extract content between #+begin_preview and #+end_preview
-(defun skw-blog/get-preview (file)
-  "The blocks begin_ and end_preview in 'file' have to be on their own lines,
-   preferably before and after paragraphs."
-  (with-temp-buffer
-    (message file)
-    (insert-file-contents file)
-    (goto-char (point-min))
-    (let ((beg (+ 1 (re-search-forward "^#\\+begin_preview$")))
-          (end (progn (re-search-forward "^#\\+end_preview$")
-                      (match-beginning 0))))
-      (replace-regexp-in-string "\n" " " (buffer-substring beg end)))))
 
 
 ;; Custom variables. Edit them please!
@@ -66,6 +53,12 @@
  "<link rel=\"icon\" href=\"/static/img/favicon.ico\" type=\"image/x-icon\">
 "
  )
+
+(defvar skw-blog/header
+  (skw-blog/get-file-content skw-blog/header-file))
+
+(defvar skw-blog/footer
+  (skw-blog/get-file-content skw-blog/footer-file))
 
 
 ;; Emacs and org-mode general options
@@ -101,12 +94,19 @@
                             (tagside "right")))
 
 
-;; Import header and footer from HTML templates
-(defvar skw-blog/header
-  (skw-blog/get-file-content skw-blog/header-file))
-
-(defvar skw-blog/footer
-  (skw-blog/get-file-content skw-blog/footer-file))
+;; Preview block
+(defun skw-blog/get-preview (file)
+  "Extract the content between #+begin_preview and #+end_preview blocks
+   in 'file'. The block tags have to be on their own lines, preferably
+   before and after paragraphs."
+  (with-temp-buffer
+    (message file)
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (let ((beg (+ 1 (re-search-forward "^#\\+begin_preview$")))
+          (end (progn (re-search-forward "^#\\+end_preview$")
+                      (match-beginning 0))))
+      (replace-regexp-in-string "\n" " " (buffer-substring beg end)))))
 
 
 ;; Format list of blog post for the sitemap / index
@@ -179,7 +179,7 @@ title of the RSS feed and 'list' the files to be included."
         ("website-src"
          :base-directory ,skw-blog/srcdir
          :base-extension "org"
-         :exclude ,(regexp-opt '("rss.org" "tlchtcc"))
+         :exclude ,(regexp-opt '("rss.org" "index-no-preview.org"))
 
          :recursive t
          :publishing-directory ,skw-blog/outdir
@@ -255,8 +255,7 @@ title of the RSS feed and 'list' the files to be included."
         ;; Attachment files
         ("website-files"
          :base-directory ,skw-blog/srcdir
-         :base-extension ".*"
-         :exclude "*.org"
+         :base-extension "css\\|txt\\|jpg\\|gif\\|png"
          :recursive t
          :publishing-directory ,skw-blog/outdir
          :publishing-function org-publish-attachment)
@@ -271,7 +270,7 @@ title of the RSS feed and 'list' the files to be included."
          :publishing-function org-publish-attachment)
 
         ("website" :components
-         ("website-src" "website-posts-index" "website-posts-index-preview" "website-rss"  "website-files" "website-static"))))
+         ("website-src" "website-posts-index" "website-posts-index-preview" "website-rss" "website-files" "website-static"))))
 
 
 (provide 'publish-website)
