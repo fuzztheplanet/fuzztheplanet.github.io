@@ -3,11 +3,11 @@
 
 I'm Skywhi and this is my personal website. I finally decided to jump onto the
 modern train and instead of managing my /~/notes/*.txt/ files locally they are
-now also hosted /"in the Cloud" (©)/. The opinions and views expressed on this
-website are solely my own as I don't always like to share :)
+now also +dumped+ hosted /"in the Cloud" (©)/. The opinions and views expressed
+on this website are solely my own because nobody else wanted them.
 
-The /Inconsolata/ fonts used are from the [[https://fonts.google.com/][Google Fonts]] project. The image for
-the [[https://www.flaticon.com/free-icon/rss_4945844][RSS button]] was made by [[https://www.flaticon.com/authors/laisa-islam-ani][Laisa Islam Ani]]. Some content is published with the
+The /Inconsolata/ fonts are from the [[https://fonts.google.com/][Google Fonts]] project. The image for the [[https://www.flaticon.com/free-icon/rss_4945844][RSS
+button]] was made by [[https://www.flaticon.com/authors/laisa-islam-ani][Laisa Islam Ani]]. Some content is published with the
 /ReadTheOrg/ theme from [[https://github.com/fniessen/org-html-themes][org-html-themes]] by [[https://github.com/fniessen][Fabrice Niessen]]. Many thanks to them
 for their great work!
 
@@ -20,7 +20,7 @@ You can learn more about how this static blog is generated with [[https://orgmod
 [[./posts/hello-world-from-org.org][blog post]] where I also link to setups that inspired this one. The sauce for all
 this madness is available [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]] on my [[https://github.com/fuzztheplanet][Github]].
 
-* me@www
+* mememe@www
 :PROPERTIES:
 :CUSTOM_ID: contact
 :END:
@@ -28,9 +28,9 @@ this madness is available [[https://github.com/fuzztheplanet/fuzztheplanet.githu
 Reach out by electronic post at *skywhi* {insert the weird '*@*' sign} *skywhi*
 (*dot* is good here) *net* anytime. Don't be afraid to use my GPG public key (in
 [[../static/other/skywhi.pubkey.asc][ASCII]] or [[../static/other/skywhi.pubkey.gpg][GPG]] format) in case you're into that stuff, you weirdo. Don't worry
-though, I am too :) I occasionally hang out on /irc.libera.chat/ and
+though, I am too :) If by any chance I hang out on /irc.libera.chat/ and
 /irc.hackerzvoice.net/ under the nickname /skywhi/ or /skw/, feel free to send
-me a friendly ping request there!
+me a friendly ping request there as well!
 
 I sometimes lurk on [[https://twitter.com/fuzztheplanet][Twitter]] and play the occasional CTF (Capture The Flag)
 challenge on [[https://www.root-me.org/skywhi][Root-Me]], [[https://app.hackthebox.com/users/736961][HackTheBox]] or [[https://www.cryptohack.org/user/skywhi][Cryptohack]].
