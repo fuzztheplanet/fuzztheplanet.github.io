@@ -2,9 +2,9 @@
 
 
 I'm Skywhi and this is my personal website. I finally decided to jump onto the
-modern train and instead of managing my /~/notes/*.txt/ files locally they are
-now also +dumped+ hosted /"in the Cloud" (©)/. The opinions and views expressed
-on this website are solely my own because nobody else wanted them.
+modern train; instead of managing my /~/notes/*.txt/ files locally they are now
++dumped+ hosted /"in the Cloud"/ (trademark pending). The opinions and views
+expressed on this website are solely my own because nobody else wanted them.
 
 The /Inconsolata/ fonts are from the [[https://fonts.google.com/][Google Fonts]] project. The image for the [[https://www.flaticon.com/free-icon/rss_4945844][RSS
 button]] was made by [[https://www.flaticon.com/authors/laisa-islam-ani][Laisa Islam Ani]]. Some content is published with the

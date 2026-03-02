@@ -1,17 +1,19 @@
 #+TITLE: Welcome to my little patch of internet!
 
-Where I live on a diet of salted caramel, questionable code and self-inflicted
-chaos - hunting bugs, taming ciphers, entertaining a love-hate relationship with
-Emacs, surviving life, surviving Emacs and many other curiosities while casually
-pretending I know what I’m doing in /#infosec/. Visitors be warned, this blog is
-not a polished magazine whatsoever; it’s merely a patchwork of rants,
-experiments and unfinished work, written in plain language.
+This is where, sustained almost exclusively by delicious salted caramel and
+suspicious-looking code, I spend my days hunting insects, sweet-talking pretty
+ciphers, dancing the carioca, pondering questionable life decisions and arguing
+with Emacs as if we were in a long-term relationship neither of us can leave.
+Visitors be warned, this blog is not a polished magazine whatsoever; it’s merely
+a patchwork of rants, experiments and unfinished work, written in plain
+language.
 
-The occasional [[./posts/][~/posts]] host punctual, one-of topics while [[./notes/][~/notes]] point toward
-more lengthy content that /might/ get updated over time (fingers crossed).
-Resources that were particularly interesting to me are kept under [[./links.org][~/links]].
-Information about this website and contact details can be found in the [[./about.org][~/about]]
-page. What is currently on my mind is on my [[./now.org][~/now]] page.
+[[./posts/][~/Posts]] host sporadic, one-off topics that showed up uninvited and refused to
+leave. The [[./notes/][~/Notes]] section contains longer pieces that /might/ get updated over
+time (no promises, but optimism is free). Particularly shiny resources are
+hoarded under [[./links.org][~/Links]] while information about this website and contact details
+can be found under [[./about.org][~/About]]. What Emacs allows me to share of my life resides on
+my [[./now.org][~/Now]] page.
 
 With this out of the way, I wish you happy reading!
 
