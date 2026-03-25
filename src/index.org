@@ -1,25 +1,25 @@
 #+TITLE: Welcome to my little patch of internet!
 
-This is where, sustained almost exclusively by delicious salted caramel and
-suspicious-looking code, I spend my days hunting insects, sweet-talking pretty
-ciphers, dancing the carioca, pondering questionable life decisions and arguing
-with Emacs as if we were in a long-term relationship neither of us can leave.
-Visitors be warned, this blog is not a polished magazine whatsoever; it’s merely
-a patchwork of rants, experiments and unfinished work, written in plain
-language.
+This is where I spend my days hunting insects, sweet-talking ciphers, dancing
+the carioca, pondering questionable life decisions and arguing with Emacs as if
+we were in a long-term relationship neither of us can leave. In the midst of all
+this chaos, I aim to remain a humble student of the zen of pwn - seeking
+glimpses of enlightenment through suspicious-looking code, elusive CTF flags and
+sticky salted caramel treats.
 
-[[./posts/][~/Posts]] host sporadic, one-off topics that showed up uninvited and refused to
-leave. The [[./notes/][~/Notes]] section contains longer pieces that /might/ get updated over
-time (no promises, but optimism is free). Particularly shiny resources are
-hoarded under [[./links.org][~/Links]] while information about this website and contact details
-can be found under [[./about.org][~/About]]. What Emacs allows me to share of my life resides on
-my [[./now.org][~/Now]] page.
+Visitors be warned, this blog is not a polished magazine whatsoever; it is
+merely a patchwork of rants, experiments and unfinished work, written in plain
+language. [[./posts/][posts]] hosts sporadic, one-off topics while the [[./notes/][notes]] section contains
+longer pieces that /might/ get updated over time (no promises, but optimism is
+free). Particularly shiny resources are hoarded under [[./links.org][links]]. Information about
+this website and contact details can be found under [[./about.org][about]]. What Emacs allows me
+to share of my life resides on my [[./now.org][now]] page.
 
 With this out of the way, I wish you happy reading!
 
-* Latest posts
+*Latest posts*
 
 #+INCLUDE: "./posts/index-no-preview.org" :lines "3-7"
 
-A list of all blog posts is available [[file:./posts/index.org][here]]. The elderly are welcome to use the
-[[./rss.xml][RSS feed]].
+A list of all blog posts is available [[file:./posts/index.org][here]]. The elderly are encouraged to use
+the [[./rss.xml][RSS feed]].

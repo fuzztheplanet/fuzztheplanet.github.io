@@ -19,8 +19,7 @@ the case at work where I use a company laptop, virtual machines and servers
 where I am not the sole administrator and would like my key material to remain
 somewhat separated.
 
-*Table of Contents:*
-#+TOC: headlines 6 local
+{{{toc(Contents:,6)}}}
 
 * Generating and storing the secret keys
 :PROPERTIES:

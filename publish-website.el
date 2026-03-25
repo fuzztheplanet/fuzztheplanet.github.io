@@ -140,6 +140,7 @@
 ;; Exporting macros
 (setq org-export-global-macros
       '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")
+        ("toc" . "*$1*\n#+TOC: headlines $2 local")
         ("br" . "@@html:</br></br>@@")))
 
 

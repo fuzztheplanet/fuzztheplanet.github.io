@@ -22,7 +22,6 @@
     --yellow2:     #fff8dc;
 }
 
-
 /* Inconsolata typefaces */
 @font-face {
     font-display: swap;
@@ -119,12 +118,10 @@ body {
     text-align: justify;
     max-width: 900px;
     margin: auto auto 2rem auto;
+    line-height: 1.6;
 }
 
-#content #table-of-contents h2 {
-    display: none;
-}
-
+/* Base heading style */
 #content h1,
 #content h2,
 #content h3,
@@ -133,41 +130,36 @@ body {
 #content h6 {
     font-weight: bold;
     color: var(--red-dark);
-    margin-top:    1rem;
-    margin-bottom: 0.5em;
+    line-height: 1.25;
+    margin-top: 1rem;
 }
 
-#content h1 {
-    font-size: 2.0rem;
-    padding-bottom: 0.5rem;
-}
-
-#content h2 {
-    font-size: 2.0rem;
-}
-
-#content h3 {
-    font-size: 1.60rem;
-}
-
-#content h4 {
-    font-size: 1.30rem;
-}
-
-#content .title {
+/* Article title (== <h1>)*/
+#content .title, #content h1 {
     text-align: center;
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: bold;
-    padding-top: 0;
+    margin-top: 0;
+    margin-bottom: 2rem;
 }
 
-#content .underline {
-    text-decoration: underline;
-}
+/* Section headings */
+#content h2 { font-size: 2rem; }
+#content h3 { font-size: 1.6rem; }
+#content h4 { font-size: 1.2rem; }
+#content h5 { font-size: 1rem; }
+#content h6 { font-size: 1rem; }
 
+/* Paragraphs */
 #content p {
-    margin: 1em 0;
-    line-height: 1.5;
+    margin: 1rem 0;
+    line-height: 1.65;
+}
+
+#content p + h2,
+#content p + h3,
+#content p + h4 {
+    margin-top: 1.5rem;
 }
 
 /* Lists */
@@ -225,13 +217,38 @@ body {
     padding: 0.5rem;
 }
 
-/* Blocks */
+/* Source blocks */
 #content pre {
-    border: 1pt solid var(--grey2);
+    margin: 0.5rem 0;
     white-space: pre;
     word-wrap: break-word;
-    padding: 0.5rem;
+    line-height: 1.4;
 }
+
+#content pre.src {
+    font-family: Lucida Console,monospace;
+    background-color: var(--black);
+    color: var(--white);
+    font-size: 80%;
+    padding: 0.5rem;
+    position: relative;
+    overflow: auto;
+}
+
+/* Display the source language on the top-right corner */
+#content pre.src:before {
+    display: block;
+    position: absolute;
+    background-color: var(--grey);
+    top: 0;
+    right: 0;
+    padding: 0 0.5em;
+    border-bottom-left-radius: 8px;
+    border: 0;
+    color: var(--white);
+    font-size: 80%;
+}
+
 
 #content .example {
     background-color:var(--beige);
@@ -253,9 +270,6 @@ body {
     margin-inline-start: 40px;
     margin-inline-end: 40px;
     background-color: var(--yellow2);
-    /* border-width: 0 0 0 2px; */
-    /* border-style: none none none solid; */
-    /* border-color: var(--yellow1); */
     border-left: 2px solid var(--yellow1);
 }
 
@@ -298,7 +312,11 @@ body {
     object-fit: contain;
 }
 
-/* Utility styles */
+/* Text decortation */
+#content .underline {
+    text-decoration: underline;
+}
+
 .blink {
     -webkit-animation-name: blinker;
     -webkit-animation-duration: 3s;
