@@ -5,7 +5,7 @@
   /Yet-another-GTD-post/ featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows.  {{{br}}}
 - {{{timestamp(2025-07-07)}}}: [[file:git-while-on-the-run.org][Using git while on-the-run]]
   
-  This post describes how to use a custom /git/ configuration, including SSH and GPG keys, on devices where there are already keys present and the user does not want to store their keys and configuration files persistently on the devices. This is achieved by storing the keys on a external drive, like a USB stick for example and leveraging environment variables to instruct /git/ to use different configs and keys.  {{{br}}}
+  This post describes how to use a custom /git/ configuration, including SSH and GPG keys, stored on a an external drive such as a USB stick. This is nothing fancy but comes in handy when the user does not want to store their keys persistently on the machine.  {{{br}}}
 - {{{timestamp(2025-05-25)}}}: [[file:hello-world-from-org.org][Hello World from Org]]
   
   I describe /yet-another-simple-publishing-setup/ for a static website using Emacs's [[https://orgmode.org/][Org mode]]. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two.  {{{br}}}

@@ -4,43 +4,42 @@
 
 #+begin_preview
 This post describes how to use a custom /git/ configuration, including SSH and
-GPG keys, on devices where there are already keys present and the user does not
-want to store their keys and configuration files persistently on the devices.
-This is achieved by storing the keys on a external drive, like a USB stick for
-example and leveraging environment variables to instruct /git/ to use different
-configs and keys.
+GPG keys, stored on a an external drive such as a USB stick. This is nothing
+fancy but comes in handy when the user does not want to store their keys
+persistently on the machine.
 #+end_preview
 
-The reason for this setup is that sometimes I find myself in situations where I
-would like to work on my personal /git/ repositories, yet I don't want to store
-my /git/ configuration, my SSH key for authentication or my GPG key for commit
-signing on the device that I'm currently working on. This is for example often
-the case at work where I use a company laptop, virtual machines and servers
-where I am not the sole administrator and would like my key material to remain
-somewhat separated.
+This setup originates from situations where I would like to work on my personal
+/git/ repositories, yet I don't want to store my /git/ configuration, my SSH key
+for authentication or my GPG key for signing commits on the device that I'm
+currently working with. This is for example often the case at work where I use a
+company laptop, virtual machines and servers on which I do not want my key
+material to persist on the system. This is of course intended for machines that
+are trusted enough to load key material onto. By no means I recommend plugin
+such a USB stick into non-trusted devices.
 
-{{{toc(Contents:,6)}}}
 
 * Generating and storing the secret keys
 :PROPERTIES:
 :CUSTOM_ID: gen-keys
 :END:
 
-If you haven't got working pairs of SSH and GPG keys already, I recommend having
-a look at the following resources to generate them according to best practices:
+If you haven't got working pairs of SSH and GPG keys already, I recommend
+looking up the best practices on generating them. The following resources are a
+good starting point:
 
 - GPG: [[https://help.riseup.net/en/security/message-security/openpgp/best-practices][Riseup]], [[https://blog.holtzweb.com/posts/gpg-key-creation-encryption-storage/][Marcus Holtz]] and [[https://mikeross.xyz/create-gpg-key-pair-with-subkeys/][Mike Ross]]
 - SSH: [[https://www.brandonchecketts.com/archives/ssh-ed25519-key-best-practices-for-2025][Brandon Checketts]]
 
-I store my /git/ configuration, SSH key, GPG key and configuration on USB
-sticks. All the devices are encrypted with [[https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup][LUKS]]. Here is how I structured the
-files on them:
+I store my /git/ configuration file, my SSH key used for /git/ authentication,
+my GPG subkey to sign commits on USB sticks. All the devices are encrypted with
+[[https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup][LUKS]] using a passphrase. Here is how I structured the files on them:
 
 #+begin_src shell
 /mnt/usb/
 ├── alias.sh
 ├── git/
-│   └── config*
+│   └── config
 ├── keys/
 │   ├── gpg/
 │   │   ├── public.asc
@@ -52,7 +51,7 @@ files on them:
 │       ├── skywhi_ed25519
 │       └── skywhi_ed25519.pub
 └── signing_keyring/
-    ├── gpg.conf*
+    ├── gpg.conf
     └── pubring.kbx
 #+end_src
 
@@ -64,47 +63,16 @@ under /master_keyring//.
 :CUSTOM_ID: new-device
 :END:
 
-
-The *alias.sh* file contains the following 2 functions:
-
-#+begin_src shell
-setupgit() {
-
-    KEY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
-
-    # If the variable is already defined, make a backup before updating it and export both
-    [[ ! -z ${GIT_CONFIG_GLOBAL+x} ]] && export BAK_GIT_CONFIG_GLOBAL=$GIT_CONFIG_GLOBAL
-    export GIT_CONFIG_GLOBAL="${KEY_DIR}/git/config"
-
-    [[ ! -z ${GIT_SSH_COMMAND+x} ]] && export BAK_GIT_SSH_COMMAND=$GIT_SSH_COMMAND
-    export GIT_SSH_COMMAND="ssh -i ${KEY_DIR}/keys/ssh/skywhi_ed25519"
-
-    [[ ! -z ${GNUPGHOME+x} ]] && export BAK_GNUPGHOME=$GNUPGHOME
-    export GNUPGHOME="${KEY_DIR}/signing_keyring"
-}
-
-
-unsetupgit() {
-
-    # If there is a backup, then restore the old value and export it
-    [[ ! -z ${BAK_GIT_CONFIG_GLOBAL+x} ]] \
-        && { export GIT_CONFIG_GLOBAL=${BAK_GIT_CONFIG_GLOBAL} ; export -n BAK_GIT_CONFIG_GLOBAL ; } \
-        || export -n GIT_CONFIG_GLOBAL
-
-    [[ ! -z ${BAK_GIT_SSH_COMMAND+x} ]] \
-        && { export GIT_SSH_COMMAND=${BAK_GIT_SSH_COMMAND} ; export -n BAK_GIT_SSH_COMMAND ; } \
-        || export -n GIT_SSH_COMMAND
-
-    [[ ! -z ${BAK_GNUPGHOME+x} ]] \
-        && { export GNUPGHOME=${BAK_GNUPGHOME} ; export -n BAK_GNUPGHOME ; } \
-        || export -n GNUPGHOME
-}
-#+end_src
-
 The usage of environment variables, as opposed to aliases, allows the settings
-to be propagated in subshells and other programs. This is handy when using
-/Makefiles/ or other scripts for example. The interesting variables that we will
-leverage are =GIT_CONFIG_GLOBAL= and =GIT_SSH_COMMAND= and =GNUPGHOME=.
+to be propagated in subshells and other programs such as =make= and custom
+scripts, throughout the shell session. The environment variables that we will
+set are =GIT_CONFIG_GLOBAL=, =GIT_SSH_COMMAND= and =GNUPGHOME=.
+
+- =GIT_CONFIG_GLOBAL= tells /git/ to use a custom configuration file,
+- =GIT_SSH_COMMAND= specifies the SSH command used by /git/ to authenticate to
+  remote repositories.
+- =GNUPGHOME= points towards a GPG keyring and configuration file used when
+  /git/ calls /gpg/ to sign commits.
 
 #+begin_src shell
 $ man git | grep -A1 'GIT_CONFIG_GLOBAL'
@@ -139,10 +107,44 @@ $ man gpg | grep -A1 'GNUPGHOME$'
               If set directory used instead of "~/.gnupg".
 #+end_src
 
-=GIT_CONFIG_GLOBAL= allows us to provide a custom /git/ configuration file,
-=GIT_SSH_COMMAND= the SSH command used by /git/ and =GNUPGHOME= our *gpg.conf*
-and signing key. =KEY_DIR= stores the directory of the USB stick, where the
-*alias.sh* file is located.
+These are and unset using 2 shell functions defined in //mnt/usb/alias.sh/:
+
+#+begin_src shell
+setupgit() {
+
+    local KEY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+
+    # If the variable is already defined, make a backup before updating it and
+    # export both.
+    [[ ! -z ${GIT_CONFIG_GLOBAL+x} ]] && export BAK_GIT_CONFIG_GLOBAL=$GIT_CONFIG_GLOBAL
+    export GIT_CONFIG_GLOBAL="${KEY_DIR}/git/config"
+
+    [[ ! -z ${GIT_SSH_COMMAND+x} ]] && export BAK_GIT_SSH_COMMAND=$GIT_SSH_COMMAND
+    export GIT_SSH_COMMAND="ssh -i ${KEY_DIR}/keys/ssh/skywhi_ed25519"
+
+    [[ ! -z ${GNUPGHOME+x} ]] && export BAK_GNUPGHOME=$GNUPGHOME
+    export GNUPGHOME="${KEY_DIR}/signing_keyring"
+}
+
+
+unsetupgit() {
+
+    # If there is a backup of the variable, then restore the old value and
+    # export it. Otherwise, clean the variable.
+    [[ ! -z ${BAK_GIT_CONFIG_GLOBAL+x} ]] \
+        && { export GIT_CONFIG_GLOBAL=${BAK_GIT_CONFIG_GLOBAL} ; export -n BAK_GIT_CONFIG_GLOBAL ; } \
+        || export -n GIT_CONFIG_GLOBAL
+
+    [[ ! -z ${BAK_GIT_SSH_COMMAND+x} ]] \
+        && { export GIT_SSH_COMMAND=${BAK_GIT_SSH_COMMAND} ; export -n BAK_GIT_SSH_COMMAND ; } \
+        || export -n GIT_SSH_COMMAND
+
+    [[ ! -z ${BAK_GNUPGHOME+x} ]] \
+        && { export GNUPGHOME=${BAK_GNUPGHOME} ; export -n BAK_GNUPGHOME ; } \
+        || export -n GNUPGHOME
+}
+#+end_src
+
 
 So when I need to do some /git/ operations, I use the following commands:
 
@@ -156,8 +158,8 @@ $ . /mnt/usb/alias.sh
 $ setupgit
 
 # Do some git things...
-$ git commit -m 'My commit'
-$ git push
+$ git commit -m 'My commit'   # Will be signed with my GPG key
+$ git push                    # And pushed with my SSH key
 
 # Restore the environment and unmount the usb stick
 $ unsetupgit

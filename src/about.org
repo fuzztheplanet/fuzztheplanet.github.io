@@ -32,5 +32,5 @@ though, I am too :) If by any chance I hang out on /irc.libera.chat/ and
 /irc.hackerzvoice.net/ under the nickname /skywhi/ or /skw/, feel free to send
 me a friendly ping request there as well!
 
-I sometimes lurk on [[https://twitter.com/fuzztheplanet][Twitter]] and play the occasional CTF (Capture The Flag)
-challenge on [[https://www.root-me.org/skywhi][Root-Me]], [[https://app.hackthebox.com/users/736961][HackTheBox]] or [[https://www.cryptohack.org/user/skywhi][Cryptohack]].
+I sometimes lurk on [[https://twitter.com/fuzztheplanet][Twitter]] and play the occasional CTF challenge on [[https://www.root-me.org/skywhi][Root-Me]] or
+[[https://www.cryptohack.org/user/skywhi][Cryptohack]].
