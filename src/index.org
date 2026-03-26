@@ -1,19 +1,18 @@
 #+TITLE: Welcome to my little patch of internet!
 
-This is where I spend my days hunting insects, sweet-talking ciphers, dancing
-the carioca, pondering questionable life decisions and arguing with Emacs as if
-we were in a long-term relationship neither of us can leave. In the midst of all
-this chaos, I aim to remain a humble student of the zen of pwn - seeking
-glimpses of enlightenment through suspicious-looking code, elusive CTF flags and
-sticky salted caramel treats.
+This is where I spend my days hunting insects, sweet-talking ciphers, pondering
+questionable life decisions and arguing with Emacs as if we were in a long-term
+relationship neither of us can leave. In the midst of all this chaos, I aim to
+remain a humble student of the zen of pwn - seeking glimpses of enlightenment
+through poorly-documented code, rare CTF treasures and salted caramel moments.
 
 Visitors be warned, this blog is not a polished magazine whatsoever; it is
 merely a patchwork of rants, experiments and unfinished work, written in plain
-language. [[./posts/][posts]] hosts sporadic, one-off topics while the [[./notes/][notes]] section contains
-longer pieces that /might/ get updated over time (no promises, but optimism is
-free). Particularly shiny resources are hoarded under [[./links.org][links]]. Information about
-this website and contact details can be found under [[./about.org][about]]. What Emacs allows me
-to share of my life resides on my [[./now.org][now]] page.
+language. [[./posts/][./posts]] hosts sporadic, one-off topics while the [[./notes/][./notes]] section
+contains longer pieces that /might/ get updated over time (no promises, but
+optimism is free). Particularly shiny resources are hoarded in [[./links.org][./links]]. Further
+information about this website and contact details can be found under [[./about.org][./about]].
+What Emacs allows me to share of my life resides on my [[./now.org][./now]] page.
 
 With this out of the way, I wish you happy reading!
 
