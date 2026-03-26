@@ -14,9 +14,12 @@ This setup originates from situations where I would like to work on my personal
 for authentication or my GPG key for signing commits on the device that I'm
 currently working with. This is for example often the case at work where I use a
 company laptop, virtual machines and servers on which I do not want my key
-material to persist on the system. This is of course intended for machines that
-are trusted enough to load key material onto. By no means I recommend plugin
-such a USB stick into non-trusted devices.
+material to persist on the system nor to conflict with the existing
+configuration.
+
+This is of course intended for machines that are trusted enough to load key
+material onto. By no means I recommend plugin such a USB stick into non-trusted
+devices.
 
 
 * Generating and storing the secret keys
@@ -24,7 +27,7 @@ such a USB stick into non-trusted devices.
 :CUSTOM_ID: gen-keys
 :END:
 
-If you haven't got working pairs of SSH and GPG keys already, I recommend
+For those who haven't got working pairs of SSH and GPG keys already, I recommend
 looking up the best practices on generating them. The following resources are a
 good starting point:
 
@@ -32,10 +35,10 @@ good starting point:
 - SSH: [[https://www.brandonchecketts.com/archives/ssh-ed25519-key-best-practices-for-2025][Brandon Checketts]]
 
 I store my /git/ configuration file, my SSH key used for /git/ authentication,
-my GPG subkey to sign commits on USB sticks. All the devices are encrypted with
-[[https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup][LUKS]] using a passphrase. Here is how I structured the files on them:
+my GPG subkey to sign commits on LUKS filesystems that are unlocked by using a
+passphrase. Here is how I structure the files on them:
 
-#+begin_src shell
+#+begin_src terminal
 /mnt/usb/
 ├── alias.sh
 ├── git/
@@ -55,18 +58,16 @@ my GPG subkey to sign commits on USB sticks. All the devices are encrypted with
     └── pubring.kbx
 #+end_src
 
-I also have another set of devices where my master GPG key is present as well
-under /master_keyring//.
-
 * Working on a new device
 :PROPERTIES:
 :CUSTOM_ID: new-device
 :END:
 
-The usage of environment variables, as opposed to aliases, allows the settings
-to be propagated in subshells and other programs such as =make= and custom
-scripts, throughout the shell session. The environment variables that we will
-set are =GIT_CONFIG_GLOBAL=, =GIT_SSH_COMMAND= and =GNUPGHOME=.
+The usage of environment variables, as opposed to aliases, will not only apply
+the new settings to /git/ but will also propagate them throughout the shell
+session to other programs such as =make= and custom scripts. The environment
+variables that we will set are =GIT_CONFIG_GLOBAL=, =GIT_SSH_COMMAND= and
+=GNUPGHOME=.
 
 - =GIT_CONFIG_GLOBAL= tells /git/ to use a custom configuration file,
 - =GIT_SSH_COMMAND= specifies the SSH command used by /git/ to authenticate to
@@ -107,7 +108,8 @@ $ man gpg | grep -A1 'GNUPGHOME$'
               If set directory used instead of "~/.gnupg".
 #+end_src
 
-These are and unset using 2 shell functions defined in //mnt/usb/alias.sh/:
+These environment variables are set and unset using shell functions defined in
+//mnt/usb/alias.sh/:
 
 #+begin_src shell
 setupgit() {
@@ -125,7 +127,6 @@ setupgit() {
     [[ ! -z ${GNUPGHOME+x} ]] && export BAK_GNUPGHOME=$GNUPGHOME
     export GNUPGHOME="${KEY_DIR}/signing_keyring"
 }
-
 
 unsetupgit() {
 
@@ -145,8 +146,8 @@ unsetupgit() {
 }
 #+end_src
 
-
-So when I need to do some /git/ operations, I use the following commands:
+So whenever I need to do some /git/ operations using the configuration files on
+the drive //dev/sdb/, I use the following commands:
 
 #+begin_src shell
 # Open and mount the LUKS-encrypted device /dev/sdb
@@ -161,7 +162,7 @@ $ setupgit
 $ git commit -m 'My commit'   # Will be signed with my GPG key
 $ git push                    # And pushed with my SSH key
 
-# Restore the environment and unmount the usb stick
+# Restore the environment and unmount the external drive
 $ unsetupgit
 $ sudo umount /mnt/usb
 $ sudo cryptsetup close cool-pendrive

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-03-26 Thu 02:32 -->
+<!-- 2026-03-26 Thu 03:04 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Using git while on-the-run</title>
@@ -36,7 +36,7 @@
 </div>
 </p>
 
-<div class="preview" id="orgfccd091">
+<div class="preview" id="org6868a49">
 <p>
 This post describes how to use a custom <i>git</i> configuration, including SSH and
 GPG keys, stored on a an external drive such as a USB stick. This is nothing
@@ -52,15 +52,20 @@ This setup originates from situations where I would like to work on my personal
 for authentication or my GPG key for signing commits on the device that I'm
 currently working with. This is for example often the case at work where I use a
 company laptop, virtual machines and servers on which I do not want my key
-material to persist on the system. This is of course intended for machines that
-are trusted enough to load key material onto. By no means I recommend plugin
-such a USB stick into non-trusted devices.
+material to persist on the system nor to conflict with the existing
+configuration.
+</p>
+
+<p>
+This is of course intended for machines that are trusted enough to load key
+material onto. By no means I recommend plugin such a USB stick into non-trusted
+devices.
 </p>
 <div id="outline-container-gen-keys" class="outline-2">
 <h2 id="gen-keys">Generating and storing the secret keys</h2>
 <div class="outline-text-2" id="text-gen-keys">
 <p>
-If you haven't got working pairs of SSH and GPG keys already, I recommend
+For those who haven't got working pairs of SSH and GPG keys already, I recommend
 looking up the best practices on generating them. The following resources are a
 good starting point:
 </p>
@@ -72,45 +77,41 @@ good starting point:
 
 <p>
 I store my <i>git</i> configuration file, my SSH key used for <i>git</i> authentication,
-my GPG subkey to sign commits on USB sticks. All the devices are encrypted with
-<a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> using a passphrase. Here is how I structured the files on them:
+my GPG subkey to sign commits on LUKS filesystems that are unlocked by using a
+passphrase. Here is how I structure the files on them:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell">/mnt/usb/
-&#9500;&#9472;&#9472; alias.sh
-&#9500;&#9472;&#9472; git/
-&#9474;&#160;&#160; &#9492;&#9472;&#9472; config
-&#9500;&#9472;&#9472; keys/
-&#9474;&#160;&#160; &#9500;&#9472;&#9472; gpg/
-&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; public.asc
-&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; public.gpg
-&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; revocation.asc
-&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; subkey.asc
-&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; subkey.gpg
-&#9474;&#160;&#160; &#9492;&#9472;&#9472; ssh/
-&#9474;&#160;&#160;     &#9500;&#9472;&#9472; skywhi_ed25519
-&#9474;&#160;&#160;     &#9492;&#9472;&#9472; skywhi_ed25519.pub
-&#9492;&#9472;&#9472; signing_keyring/
-    &#9500;&#9472;&#9472; gpg.conf
-    &#9492;&#9472;&#9472; pubring.kbx
+<pre class="src src-terminal">/mnt/usb/
+├── alias.sh
+├── git/
+│   └── config
+├── keys/
+│   ├── gpg/
+│   │   ├── public.asc
+│   │   ├── public.gpg
+│   │   ├── revocation.asc
+│   │   ├── subkey.asc
+│   │   └── subkey.gpg
+│   └── ssh/
+│       ├── skywhi_ed25519
+│       └── skywhi_ed25519.pub
+└── signing_keyring/
+    ├── gpg.conf
+    └── pubring.kbx
 </pre>
 </div>
-
-<p>
-I also have another set of devices where my master GPG key is present as well
-under <i>master_keyring/</i>.
-</p>
 </div>
 </div>
 <div id="outline-container-new-device" class="outline-2">
 <h2 id="new-device">Working on a new device</h2>
 <div class="outline-text-2" id="text-new-device">
 <p>
-The usage of environment variables, as opposed to aliases, allows the settings
-to be propagated in subshells and other programs such as <code>make</code> and custom
-scripts, throughout the shell session. The environment variables that we will
-set are <code>GIT_CONFIG_GLOBAL</code>, <code>GIT_SSH_COMMAND</code> and <code>GNUPGHOME</code>.
+The usage of environment variables, as opposed to aliases, will not only apply
+the new settings to <i>git</i> but will also propagate them throughout the shell
+session to other programs such as <code>make</code> and custom scripts. The environment
+variables that we will set are <code>GIT_CONFIG_GLOBAL</code>, <code>GIT_SSH_COMMAND</code> and
+<code>GNUPGHOME</code>.
 </p>
 
 <ul class="org-ul">
@@ -156,7 +157,8 @@ $ man gpg | grep -A1 <span class="org-string">'GNUPGHOME$'</span>
 </div>
 
 <p>
-These are and unset using 2 shell functions defined in <i>/mnt/usb/alias.sh</i>:
+These environment variables are set and unset using shell functions defined in
+<i>/mnt/usb/alias.sh</i>:
 </p>
 
 <div class="org-src-container">
@@ -175,7 +177,6 @@ These are and unset using 2 shell functions defined in <i>/mnt/usb/alias.sh</i>:
     [[ <span class="org-negation-char">!</span> -z ${<span class="org-variable-name">GNUPGHOME</span>+x} ]] &amp;&amp; <span class="org-builtin">export</span> <span class="org-variable-name">BAK_GNUPGHOME</span>=$<span class="org-variable-name">GNUPGHOME</span>
     <span class="org-builtin">export</span> <span class="org-variable-name">GNUPGHOME</span>=<span class="org-string">"${KEY_DIR}/signing_keyring"</span>
 }
-
 
 <span class="org-function-name">unsetupgit</span>() {
 
@@ -196,9 +197,9 @@ These are and unset using 2 shell functions defined in <i>/mnt/usb/alias.sh</i>:
 </pre>
 </div>
 
-
 <p>
-So when I need to do some <i>git</i> operations, I use the following commands:
+So whenever I need to do some <i>git</i> operations using the configuration files on
+the drive <i>/dev/sdb</i>, I use the following commands:
 </p>
 
 <div class="org-src-container">
@@ -214,7 +215,7 @@ $ setupgit
 </span>$ git commit -m <span class="org-string">'My commit'</span>   <span class="org-comment-delimiter"># </span><span class="org-comment">Will be signed with my GPG key
 </span>$ git push                    <span class="org-comment-delimiter"># </span><span class="org-comment">And pushed with my SSH key
 </span>
-<span class="org-comment-delimiter"># </span><span class="org-comment">Restore the environment and unmount the usb stick
+<span class="org-comment-delimiter"># </span><span class="org-comment">Restore the environment and unmount the external drive
 </span>$ unsetupgit
 $ sudo umount /mnt/usb
 $ sudo cryptsetup close cool-pendrive
