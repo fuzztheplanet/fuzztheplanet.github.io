@@ -1,1 +1,1 @@
-/home/mvi/org/perso/conf.org
+/home/skw/org/perso/conf.org
