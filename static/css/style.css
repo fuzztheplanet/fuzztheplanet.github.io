@@ -190,7 +190,7 @@ body {
     transform: rotate(-4deg) scale(1.04);
 }
 
-#preamble .banner h1 {
+#preamble .banner .prompt {
     margin: 0;
     padding: 0;
     color: var(--brand);

@@ -1,0 +1,32 @@
+#+TITLE: 404 - No such file or directory
+
+# This page is served for *any* missing path, at any depth, so its links must be
+# root-relative. Org would turn [[/posts/]] into file:///posts/, hence the raw
+# HTML snippets below.
+
+#+begin_src terminal
+$ ls -lisa /var/www/html/the/page/you/wanted.html
+ls: cannot access '/var/www/html/the/page/you/wanted.html': No such file or directory
+$ sudo !!
+[sudo] password for guest: ****************
+ls: cannot access '/var/www/html/the/page/you/wanted.html': No such file or directory
+$ # worth a try
+#+end_src
+
+Well. This is awkward.
+
+Whatever you were looking for has been moved, renamed, mistyped or sacrificed.
+The incident is now being thoroughly investigated, by which I mean it has been
+appended to a =TODO= list that is best described as write-only.
+
+In the meantime, here are some places that do exist:
+
+- @@html:<a href="/posts/">./posts</a>@@ - sporadic, one-off topics
+- @@html:<a href="/notes/">./notes</a>@@ - longer pieces that /might/ get updated
+- @@html:<a href="/links.html">./links</a>@@ - the shiny resources I hoard
+- @@html:<a href="/sitemap.html">./sitemap</a>@@ - everything, all at once
+- @@html:<a href="/">/</a>@@ - back to the beginning, no questions asked
+
+If you are quite certain that something used to live at this address and ought
+to still be around, do tell me: contact details are on the
+@@html:<a href="/about.html">./about</a>@@ page.
