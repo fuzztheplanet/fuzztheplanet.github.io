@@ -18,8 +18,6 @@
 .org-org-meta-line             { color: var(--blue-light); }
 .org-org-property-value        { color: var(--blue-light);}
 .org-org-special-keyword       { color: var(--blue-dark); }
-.org-php-function-call         { color: var(--azure); }
-.org-php-string                { color: var(--green-light); }
 .org-sh-quoted-exec            { color: var(--green-dark); }
 .org-string                    { color: var(--green-light); }
 .org-type                      { color: var(--blue-light); }

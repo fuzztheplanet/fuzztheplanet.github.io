@@ -121,7 +121,7 @@
 
  org-html-table-use-header-tags-for-first-column nil
 
- org-html-mathjax-options '((path "/static/js/mathjax/es5/tex-mml-chtml.js")
+ org-html-mathjax-options '((path "/static/js/mathjax/tex-mml-chtml.js")
                             (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
                             (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
                             (tagside "right")))
@@ -131,15 +131,20 @@
 (defun skw-blog/get-preview (file)
   "Extract the content between #+begin_preview and #+end_preview blocks
    in 'file'. The block tags have to be on their own lines, preferably
-   before and after paragraphs."
+   before and after paragraphs. Return an empty string when 'file' has
+   no such block."
   (with-temp-buffer
     (message file)
     (insert-file-contents file)
     (goto-char (point-min))
-    (let ((beg (+ 1 (re-search-forward "^#\\+begin_preview$")))
-          (end (progn (re-search-forward "^#\\+end_preview$")
-                      (match-beginning 0))))
-      (replace-regexp-in-string "\n" " " (buffer-substring beg end)))))
+    (let* ((beg (and (re-search-forward "^#\\+begin_preview$" nil t)
+                     (+ 1 (point))))
+           (end (and beg
+                     (re-search-forward "^#\\+end_preview$" nil t)
+                     (match-beginning 0))))
+      (if end
+          (replace-regexp-in-string "\n" " " (buffer-substring beg end))
+        ""))))
 
 
 ;; Format list of blog post for the sitemap / index
@@ -154,22 +159,15 @@
               entry-title))))
 
 
-;; Neither posts-index project publishes anything itself:
-;;   - "website-posts-index" generates index-no-preview.org, which is only ever
-;;     #+INCLUDE'd into the homepage, never a page of its own;
-;;   - "website-posts-index-preview" generates posts/index.org, which
-;;     "website-src" already exports along with the posts themselves.
-;; Left to its default, org-publish would export each of those base files with
-;; org-html-publish-to-html -- every post a second time -- and it publishes the
-;; sitemap it just generated regardless of :exclude. Hence this no-op function.
+;; org-publish always exports the sitemap it just generated, :exclude or not.
+;; Both index projects only want the Org file, so they publish nothing.
 (defun skw-blog/publish-nothing (_plist _filename _dir)
   "Publish nothing.  Used by projects that only exist to generate a sitemap."
   nil)
 
 
-;; Build the homepage's "Latest posts" list, capped at the N most recent posts.
-;; Keeping the cap here means index.org can #+INCLUDE the whole list instead of
-;; a hard-coded line range.
+;; Latest posts for the homepage. The cap lives here so index.org can include
+;; the whole file instead of guessing line numbers.
 (defun skw-blog/format-latest-posts (title list)
   "Format the 'skw-blog/latest-posts-count' first entries of 'list' as a
 sitemap titled 'title'."
@@ -194,8 +192,7 @@ sitemap titled 'title'."
               preview))))
 
 
-;; Wrap tables so wide ones scroll inside their own container instead of
-;; forcing the whole page sideways on narrow screens.
+;; Wide tables used to drag the whole page sideways. Now only the table scrolls.
 (defun skw-blog/wrap-table-in-scroll-container (table backend info)
   "Wrap an exported HTML 'table' in a horizontally scrollable container."
   (if (org-export-derived-backend-p backend 'html)
@@ -216,7 +213,13 @@ sitemap titled 'title'."
 (defun skw-blog/publish-to-rss (plist filename dir)
   "Publish 'plist' when 'filename' corresponds to RSS feed Org-file to 'dir'."
   (if (equal skw-blog/rss-filename (file-name-nondirectory filename))
-      (org-rss-publish-to-rss plist filename dir)))
+      ;; Not `org-rss-publish-to-rss': it stamps a random :ID: on every headline
+      ;; of rss.org and writes it back, so a plain "make all" dirties the source
+      ;; tree for nothing -- <guid> is the permalink here anyway.
+      (org-publish-org-to 'rss filename
+                          (concat "." (or (plist-get plist :rss-extension)
+                                          org-rss-extension))
+                          plist dir)))
 
 (defun skw-blog/format-rss-feed (title list)
   "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
@@ -244,103 +247,89 @@ title of the RSS feed and 'list' the files to be included."
       `(
         ;; Main Org-mode sources
         ("website-src"
+         :auto-sitemap t
          :base-directory ,skw-blog/srcdir
          :base-extension "org"
          :exclude ,(regexp-opt '("rss.org" "index-no-preview.org"))
-
-         :recursive t
+         :html-head ,(concat skw-blog/main-css skw-blog/favicon skw-blog/rss-link)
+         :html-postamble ,skw-blog/footer
+         :html-preamble skw-blog/html-preamble
          :publishing-directory ,skw-blog/outdir
          :publishing-function org-html-publish-to-html
+         :recursive t
+         :sitemap-title ,skw-blog/main-sitemap-title)
 
-         :auto-sitemap t
-         :sitemap-title ,skw-blog/main-sitemap-title
-
-         :html-preamble skw-blog/html-preamble
-         :html-postamble ,skw-blog/footer
-         :html-head ,(concat skw-blog/main-css skw-blog/favicon skw-blog/rss-link))
-
-        ;; Bare list of the latest blog posts. Only generates an Org file that
-        ;; the homepage includes; it is never published as a page of its own.
+        ;; Bare list of recent posts, included by the homepage. Never a page of its own.
         ("website-posts-index"
+         :auto-sitemap t
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
          :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
          :publishing-directory ,(concat skw-blog/outdir "posts")
          :publishing-function skw-blog/publish-nothing
-
-         :auto-sitemap t
-         :sitemap-title "Latest posts"
          :sitemap-filename "index-no-preview.org"
-         :sitemap-function skw-blog/format-latest-posts
          :sitemap-format-entry skw-blog/org-format-blog-post
-         :sitemap-sort-files anti-chronologically)
+         :sitemap-function skw-blog/format-latest-posts
+         :sitemap-sort-files anti-chronologically
+         :sitemap-title "Latest posts")
 
-        ;; Index of all blog posts with preview. Like the project above it only
-        ;; generates an Org file; "website-src" is what exports it to HTML.
+        ;; Full post list with previews. website-src is what turns it into a page.
         ("website-posts-index-preview"
+         :auto-sitemap t
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
          :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
          :publishing-directory ,(concat skw-blog/outdir "posts")
          :publishing-function skw-blog/publish-nothing
-
-         :auto-sitemap t
-         :sitemap-title "Posts"
          :sitemap-filename "index.org"
          :sitemap-format-entry skw-blog/org-format-blog-post-with-preview
-         :sitemap-sort-files anti-chronologically)
+         :sitemap-sort-files anti-chronologically
+         :sitemap-title "Posts")
 
         ;; RSS feed
         ("website-rss"
+         :author ,skw-blog/author
+         :auto-sitemap t
          :base-directory ,(concat skw-blog/srcdir "posts")
          :base-extension "org"
-         :recursive nil
+         :description ,skw-blog/rss-description
+         :email ,skw-blog/email
          :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
+         :html-link-home ,(concat skw-blog/upstream-url "/posts/")
+         :html-link-org-files-as-html t
+         :html-link-use-abs-url t
          :publishing-directory ,skw-blog/outdir
          :publishing-function skw-blog/publish-to-rss
-
-         :with-author t
-         :author ,skw-blog/author
-         :email ,skw-blog/email
-
-         :description ,skw-blog/rss-description
+         :recursive nil
          :rss-extension "xml"
-         ;; The feed is published at the site root, not under /posts/, so the
-         ;; self-referencing <atom:link> cannot be derived from :html-link-home.
          :rss-feed-url ,(concat skw-blog/upstream-url "/rss.xml")
          :rss-image-url ,(concat skw-blog/upstream-url "/static/img/profile.jpg")
-         :html-link-home ,(concat skw-blog/upstream-url "/posts/")
-         :html-link-use-abs-url t
-         :html-link-org-files-as-html t
-
-         :auto-sitemap t
          :sitemap-filename ,skw-blog/rss-filename
-         :sitemap-title ,skw-blog/rss-feedname
-         :sitemap-sort-files anti-chronologically
+         :sitemap-format-entry skw-blog/format-rss-feed-entry
          :sitemap-function skw-blog/format-rss-feed
-         :sitemap-format-entry skw-blog/format-rss-feed-entry)
+         :sitemap-sort-files anti-chronologically
+         :sitemap-title ,skw-blog/rss-feedname
+         :with-author t)
 
         ;; Attachment files
         ("website-files"
          :base-directory ,skw-blog/srcdir
          :base-extension "css\\|txt\\|jpg\\|gif\\|png"
-         :recursive t
          :publishing-directory ,skw-blog/outdir
-         :publishing-function org-publish-attachment)
+         :publishing-function org-publish-attachment
+         :recursive t)
 
         ;; Static files
         ("website-static"
          :base-directory ,(concat skw-blog/rootdir "static")
          :base-extension ".*"
          :exclude "*.org"
-         :recursive t
          :publishing-directory ,(concat skw-blog/outdir "static")
-         :publishing-function org-publish-attachment)
+         :publishing-function org-publish-attachment
+         :recursive t)
 
-        ;; The index projects come first: they regenerate posts/index.org and
-        ;; posts/index-no-preview.org, which "website-src" then exports and
-        ;; #+INCLUDE's into the homepage. Running them the other way around
-        ;; publishes the post lists one build behind.
+        ;; Indexes first: website-src exports the homepage that includes their output.
+        ;; Swap the order and every new post lands on the homepage one build late.
         ("website" :components
          ("website-posts-index" "website-posts-index-preview" "website-src" "website-rss" "website-files" "website-static"))))
 
