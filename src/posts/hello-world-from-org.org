@@ -83,7 +83,6 @@ found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
     - header.html
     - footer.html
     - post.org
-    - readthedocs.org
   - Makefile
   - publish-website.el
   - README.org
@@ -128,7 +127,7 @@ a title, a date, a template and a table of content. There is also a custom
 I describe /yet-another-simple-publishing-setup/ for a static website using
 Emacs's [[https://orgmode.org/][Org mode]]. While there are plenty of resources on the topic available
 already, I wanted to document my setup here for self-reference. Maybe someone
-will take away a tip or two.
+will take away an idea or two.
 ,#+end_preview
 
 ,#+begin_src sh
@@ -137,8 +136,7 @@ skywhi@dreamland:~/blog$ make update && make publish
 skywhi@dreamland:~/blog$ # make blogging great again!
 ,#+end_src
 
-,*Table of Contents:*
-,#+TOC: headlines 3
+,{{{toc(Contents:,6)}}}
 
 ,* Rationale
 :PROPERTIES:
@@ -154,6 +152,10 @@ to meet: [...]
 Appending a =CUSTOM_ID= property (=C-c C-x p=) to headings makes it possible to
 link to them in the HTML. [[#source-files][This example link]] points to the present section.
 
+The =toc= macro above is my own; it expands to a bold caption followed by a
+=#+TOC= keyword so that every page declares its table of content the same way.
+It is defined along with the other macros [[#publish-website][further down]].
+
 *** Templates
 :PROPERTIES:
 :CUSTOM_ID: templates
@@ -168,21 +170,9 @@ directive of the source file and add custom HTML to the post.
 
 #+caption: templates/post.org
 #+begin_src org
-@@html:<div class="post-date">@@
+@@html:<span class="post-date">@@
 /First published: {{{date(%d %b %Y)}}}/
-@@html:</div>@@
-#+end_src
-
-Here is a template for the [[https://github.com/fniessen/org-html-themes?tab=readme-ov-file#readtheorg][ReadTheOrg]] theme by [[https://github.com/fniessen][Fabrice Niessen]] that inserts the
-correct CSS styling into any page published with it:
-
-#+caption: templates/readtheorg.org
-#+begin_src org
-,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/static/css/readtheorg/readtheorg.css"/>
-,#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/static/css/readtheorg/htmlize.css"/>
-,#+HTML_HEAD_EXTRA:
-,#+OPTIONS: html-preamble:nil
-,#+OPTIONS: html-postamble:nil
+@@html:</span>@@
 #+end_src
 
 *** CSS styling
@@ -255,7 +245,7 @@ tags.
     (if (= (length entry-title) 0)
         (format "*%s*" entry)
       (format "{{{timestamp(%s)}}}: [[file:%s][%s]]\n
-%s {{{br}}}"
+%s"
               (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
               entry
               entry-title
@@ -265,19 +255,98 @@ tags.
 ;; Exporting macros
 (setq org-export-global-macros
       '(("timestamp" . "@@html:<span class=\"timestamp\">$1</span>@@")
-        ("br" . "@@html:</br></br>@@")))
+        ("toc" . "*$1*\n#+TOC: headlines $2 local")))
 #+end_src
 
-The following rules publish the Org file and generate 2 index files:
-*posts/index.org* and *posts/index-no-preview.org*. The first one containing
-previews of all posts and the second one with just the post title.
+The site header lives in *templates/header.html* and is injected as the HTML
+preamble. Rather than serving the same markup everywhere, a small function marks
+the navigation entry matching the page being exported with =aria-current= so
+that the current section can be styled (and announced by screen readers).
+
+The =<head>= of every page also advertises the RSS feed, which lets readers
+subscribe from any page instead of having to find the feed by hand.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+;; Feed autodiscovery, so readers can find the feed from any page
+(setq skw-blog/rss-link
+      (concat "<link rel=\"alternate\" type=\"application/rss+xml\" title=\""
+              skw-blog/rss-feedname "\" href=\"/rss.xml\">\n"))
+
+
+(defun skw-blog/nav-href-for (input-file)
+  "Return the header nav href matching 'input-file', or nil when none does."
+  (let ((f (or input-file "")))
+    (cond ((string-match-p "/posts/" f)        "/posts/")
+          ((string-match-p "/notes/" f)        "/notes/")
+          ((string-match-p "links\\.org\\'" f) "/links.html")
+          ((string-match-p "now\\.org\\'" f)   "/now.html")
+          ((string-match-p "about\\.org\\'" f) "/about.html"))))
+
+
+(defun skw-blog/html-preamble (info)
+  "Return the site header, marking the nav entry for the page being exported."
+  (let ((href (skw-blog/nav-href-for (plist-get info :input-file))))
+    (if (null href)
+        skw-blog/header
+      (replace-regexp-in-string
+       (concat "<a href=\"" (regexp-quote href) "\"")
+       (concat "<a href=\"" href "\" aria-current=\"page\"")
+       skw-blog/header t t))))
+#+end_src
+
+Wide tables used to drag the whole page sideways on narrow screens. An export
+filter wraps every exported table in its own scrollable container, so only the
+table scrolls. The =tabindex= makes that container reachable with the keyboard.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/wrap-table-in-scroll-container (table backend info)
+  "Wrap an exported HTML 'table' in a horizontally scrollable container."
+  (if (org-export-derived-backend-p backend 'html)
+      (format "<div class=\"table-scroll\" tabindex=\"0\">\n%s</div>\n" table)
+    table))
+
+(add-to-list 'org-export-filter-table-functions
+             #'skw-blog/wrap-table-in-scroll-container)
+#+end_src
+
+The following rules publish the Org files and generate 2 index files:
+*posts/index.org* and *posts/index-no-preview.org*. The first one contains
+previews of all posts and is published as the */posts/* page. The second one is
+a bare list of the most recent posts which is only ever included into the
+homepage, so its project uses a publishing function that writes nothing:
+/org-publish/ always exports the sitemap it just generated, no matter what
+=:exclude= says, and without this it would leave behind a stray page that
+nothing links to.
+
+Both index projects use it. The second one generates *posts/index.org*, which
+does become a page -- but *website-src* walks *src/* recursively and already
+exports it, along with the posts themselves. Leaving the publishing function
+at its default would export every post a second time, to the exact same path.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/publish-nothing (_plist _filename _dir)
+  "Publish nothing.  Used by projects that only exist to generate a sitemap."
+  nil)
+
+
+;; Build the homepage's "Latest posts" list, capped at the N most recent posts.
+(defun skw-blog/format-latest-posts (title list)
+  "Format the 'skw-blog/latest-posts-count' first entries of 'list' as a
+sitemap titled 'title'."
+  (let ((entries (seq-take (cdr list) skw-blog/latest-posts-count)))
+    (concat "#+TITLE: " title "\n\n"
+            (org-list-to-org (cons (car list) entries)))))
+#+end_src
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
 ("website-src"
  :base-directory ,skw-blog/srcdir
  :base-extension "org"
- :exclude ,(regexp-opt '("rss.org"))
+ :exclude ,(regexp-opt '("rss.org" "index-no-preview.org"))
 
  :recursive t
  :publishing-directory ,skw-blog/outdir
@@ -286,24 +355,23 @@ previews of all posts and the second one with just the post title.
  :auto-sitemap t
  :sitemap-title ,skw-blog/main-sitemap-title
 
- :html-preamble ,skw-blog/header
+ :html-preamble skw-blog/html-preamble
  :html-postamble ,skw-blog/footer
- :html-head ,(concat skw-blog/main-css skw-blog/favicon))
+ :html-head ,(concat skw-blog/main-css skw-blog/favicon skw-blog/rss-link))
 
-;; Index of all blog posts
+;; Bare list of the latest blog posts. Only generates an Org file that
+;; the homepage includes; it is never published as a page of its own.
 ("website-posts-index"
  :base-directory ,(concat skw-blog/srcdir "posts")
  :base-extension "org"
  :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
  :publishing-directory ,(concat skw-blog/outdir "posts")
-
- :html-preamble ,skw-blog/header
- :html-postamble ,skw-blog/footer
- :html-head ,(concat skw-blog/main-css skw-blog/favicon)
+ :publishing-function skw-blog/publish-nothing
 
  :auto-sitemap t
- :sitemap-title "Posts (without preview)"
+ :sitemap-title "Latest posts"
  :sitemap-filename "index-no-preview.org"
+ :sitemap-function skw-blog/format-latest-posts
  :sitemap-format-entry skw-blog/org-format-blog-post
  :sitemap-sort-files anti-chronologically)
 
@@ -313,10 +381,7 @@ previews of all posts and the second one with just the post title.
  :base-extension "org"
  :exclude ,(regexp-opt '("rss.org" "index.org" "index-no-preview.org"))
  :publishing-directory ,(concat skw-blog/outdir "posts")
-
- :html-preamble ,skw-blog/header
- :html-postamble ,skw-blog/footer
- :html-head ,(concat skw-blog/main-css skw-blog/favicon)
+ :publishing-function skw-blog/publish-nothing
 
  :auto-sitemap t
  :sitemap-title "Posts"
@@ -325,12 +390,26 @@ previews of all posts and the second one with just the post title.
  :sitemap-sort-files anti-chronologically)
 #+end_src
 
-The generated *src/posts/index-no-description.org* is inserted into the homepage
-with =:lines "3-7"= in order to display only the last 5 most recent posts.
+The generated *src/posts/index-no-preview.org* is inserted into the homepage.
+The cap lives in =skw-blog/latest-posts-count= rather than in the =#+INCLUDE=
+itself, so the list can grow or its titles wrap without the homepage silently
+truncating them.
 
 #+caption: src/index.org
 #+begin_src org
-,#+INCLUDE: "./posts/index-no-description.org" :lines "3-7"
+,#+INCLUDE: "./posts/index-no-preview.org" :lines "3-"
+#+end_src
+
+Order matters in the =:components= list: the two index projects have to run
+/before/ *website-src*, since that is what exports the homepage including the
+list they generate. The other way around, every freshly added post shows up on
+the homepage one build late.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+("website" :components
+ ("website-posts-index" "website-posts-index-preview" "website-src"
+  "website-rss" "website-files" "website-static"))
 #+end_src
 
 ***** Makefile
@@ -412,20 +491,24 @@ y = x^2+1
 
 I install and update regularly /MathJax/ via the *Makefile* and then enable it
 in *publish-website.el* via the =org-html-mathjax-options= variable. Since I
-want to be able to view the website offline, I opted for a local install.
+want to be able to view the website offline, I opted for a local install. Only
+a shallow clone is needed, as the repository history is thrown away immediately
+afterwards.
 
 #+caption: Makefile
 #+begin_src makefile
+MATHJAX_DIR='static/js/mathjax'
+
 mathjax:
-    rm -rf files/js/mathjax
-    git clone https://github.com/mathjax/MathJax.git files/js/mathjax
-    rm -rf files/js/mathjax/.git
+    rm -rf $(MATHJAX_DIR)
+    git clone --depth 1 https://github.com/mathjax/MathJax.git $(MATHJAX_DIR)
+    rm -rf $(MATHJAX_DIR)/.git
 #+end_src
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
 (setq org-html-mathjax-options
-      '((path "/files/js/mathjax/es5/tex-mml-chtml.js")
+      '((path "/static/js/mathjax/es5/tex-mml-chtml.js")
         (scale 1.0) (align "center") (font "mathjax-modern") (overflow "overflow")
         (tags "ams") (indent "0em") (multlinewidth "85%") (tagindent ".8em")
         (tagside "right")))
@@ -488,8 +571,12 @@ These functions are then called inside a new publishing rule.
  :author ,skw-blog/author
  :email ,skw-blog/email
 
+ :description ,skw-blog/rss-description
  :rss-extension "xml"
- :rss-image-url ,(concat skw-blog/upstream-url "/files/img/profile.jpg")
+ ;; The feed is published at the site root, not under /posts/, so the
+ ;; self-referencing <atom:link> cannot be derived from :html-link-home.
+ :rss-feed-url ,(concat skw-blog/upstream-url "/rss.xml")
+ :rss-image-url ,(concat skw-blog/upstream-url "/static/img/profile.jpg")
  :html-link-home ,(concat skw-blog/upstream-url "/posts/")
  :html-link-use-abs-url t
  :html-link-org-files-as-html t

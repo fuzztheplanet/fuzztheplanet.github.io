@@ -2,24 +2,24 @@
    Raw colour palette (also consumed by htmlize.css for syntax highlighting)
    ========================================================================== */
 :root {
-    --azure:       #00ffff;
+    --azure:       #13ecec;
     --beige:       #ffddbb;
     --black:       #373737;
     --blue-dark2:  #1c31c9;
     --blue-dark:   #729fcf;
-    --blue-light:  #a0ffff;
-    --green-dark:  #00cf12;
-    --green-light: #b8ff60;
+    --blue-light:  #a7f8f8;
+    --green-dark:  #10c01f;
+    --green-light: #b7f36c;
     --grey2:       #93a1a1;
     --grey3:       #dddddd;
     --grey4:       #f2f2f2;
     --grey:        #b3b3b3;
-    --orange:      #ff9900;
+    --orange:      #ec9513;
     --red-dark:    #662222;
-    --red:         #ff4040;
+    --red:         #f47777;
     --white-back:  #fffff0;
     --white:       #ffffff;
-    --yellow:      #ffff50;
+    --yellow:      #f2f25d;
     --yellow1:     #ffe466;
     --yellow2:     #fff8dc;
 }
@@ -97,14 +97,16 @@
 @font-face {
     font-display: swap;
     font-family: Inconsolata;
-    src: url(../fonts/Inconsolata-Regular.ttf);
+    src: url(../fonts/Inconsolata-Regular.woff2) format('woff2'),
+         url(../fonts/Inconsolata-Regular.ttf) format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-display: swap;
     font-family: Inconsolata;
-    src: url(../fonts/Inconsolata-Bold.ttf);
+    src: url(../fonts/Inconsolata-Bold.woff2) format('woff2'),
+         url(../fonts/Inconsolata-Bold.ttf) format('truetype');
     font-weight: bold;
 }
 
@@ -124,6 +126,9 @@ html {
     background-color: var(--bg);
     color: var(--text);
     margin: 0 auto;
+    /* Caps the measure at every viewport size. Because the unit is em, it
+       tracks the font-size bump below and needs no second value. */
+    max-width: 43em;
     padding: 1.5rem 1.25rem;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
@@ -131,8 +136,7 @@ html {
 
 @media (min-width: 768px) {
     html {
-        font-size: 118%;
-        max-width: 46em;
+        font-size: 114%;
         padding: 2.5rem 1.5rem;
     }
 }
@@ -165,6 +169,31 @@ body {
     margin: 0 auto 1.75rem auto;
     padding-bottom: 0.25rem;
     border-bottom: 2px solid var(--rule-strong);
+}
+
+#preamble .skip-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+#preamble .skip-link:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    background-color: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    color: var(--link);
+    text-decoration: none;
 }
 
 #preamble .banner a {
@@ -201,7 +230,7 @@ body {
     line-height: 1.2;
 }
 
-#preamble header nav {
+#preamble nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -210,7 +239,7 @@ body {
     line-height: 1.35;
 }
 
-#preamble header nav a {
+#preamble nav a {
     margin: 0;
     padding: 0.05rem 0.15rem;
     color: var(--text-muted);
@@ -219,29 +248,30 @@ body {
     transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-#preamble header nav a:hover,
-#preamble header nav a:focus-visible {
+#preamble nav a:hover,
+#preamble nav a:focus-visible {
     color: var(--link-hover);
     border-bottom-color: var(--link-hover);
+}
+
+#preamble nav a[aria-current="page"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
 }
 
 /* ==========================================================================
    Main content
    ========================================================================== */
 #content {
-    text-align: justify;
+    text-align: left;
     hyphens: auto;
-    max-width: 900px;
+    text-wrap: pretty;
     margin: auto auto 2.5rem auto;
     line-height: 1.65;
 }
 
 @media (max-width: 767px) {
-    #content {
-        text-align: left;
-    }
-
-    #preamble header nav {
+    #preamble nav {
         justify-content: center;
         gap: 0.3rem 0.8rem;
     }
@@ -448,12 +478,17 @@ body {
     background-color: var(--table-hover);
 }
 
-@media (max-width: 640px) {
-    #content table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+/* Wide tables scroll inside their container rather than the page.
+   The wrapper is added by an export filter in publish-website.el. */
+#content .table-scroll {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+#content .table-scroll table {
+    margin: 0;
+    width: auto;
+    min-width: 100%;
 }
 
 /* ==========================================================================
@@ -526,7 +561,6 @@ body {
     font-family: var(--mono);
     color: var(--inline-fg);
     background-color: var(--inline-bg);
-    border: 1px solid var(--rule);
     border-radius: 4px;
     padding: 0.05em 0.35em;
     font-size: 0.88em;
@@ -560,8 +594,8 @@ body {
    Images
    ========================================================================== */
 #content .figure img {
-    max-height: 100% !important;
-    max-width: 100% !important;
+    max-height: 100%;
+    max-width: 100%;
     height: auto;
     border-radius: var(--radius);
     border: 1px solid var(--rule);
@@ -592,7 +626,7 @@ body {
 
 /* "First published:" */
 #content .post-date {
-    width: 100%;
+    display: block;
     text-align: right;
     color: var(--text-muted);
     font-size: 0.9rem;

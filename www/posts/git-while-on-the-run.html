@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-08-19 Wed 10:16 -->
+<!-- 2026-08-20 Thu 08:35 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Using git while on-the-run</title>
@@ -9,37 +9,37 @@
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
 <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+<link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
 </head>
 <body>
-<div id="preamble" class="status">
-<header>
-    <div class="banner">
-        <a href="/">
-            <div class="logo" style="background-image:url(/static/img/profile.jpg)"></div>
-            <p class="prompt">skywhi@www:/var/log$ <span class="blink">_</span></p>
-        </a>
-    </div>
-    <nav>
-        <a href="/posts/" title="Posts">./posts</a>
-        <a href="/notes/" title="Notes">./notes</a>
-        <a href="/links.html" title="Links">./links</a>
-        <a href="/now.html" title="Now">./now</a>
-        <a href="/about.html" title="About">./about</a>
-    </nav>
-</header>
+<header id="preamble" class="status">
+<a class="skip-link" href="#content">Skip to content</a>
+<div class="banner">
+    <a href="/">
+        <div class="logo" style="background-image:url(/static/img/profile.jpg)"></div>
+        <p class="prompt">skywhi@www:/var/log$ <span class="blink">_</span></p>
+    </a>
 </div>
-<div id="content" class="content">
+<nav>
+    <a href="/posts/" aria-current="page" title="Posts">./posts</a>
+    <a href="/notes/" title="Notes">./notes</a>
+    <a href="/links.html" title="Links">./links</a>
+    <a href="/now.html" title="Now">./now</a>
+    <a href="/about.html" title="About">./about</a>
+</nav>
+</header>
+<main id="content" class="content">
 <h1 class="title">Using git while on-the-run</h1>
 <p>
-<div class="post-date">
+<span class="post-date">
 <i>First published: 07 Jul 2025</i>
-</div>
+</span>
 </p>
 
-<div class="preview" id="org6ff5b3a">
+<div class="preview" id="org5fb364e">
 <p>
 This post describes how to use a custom <i>git</i> configuration, including SSH and
-GPG keys, stored on a an external drive such as a USB stick. This is nothing
+GPG keys, stored on an external drive such as a USB stick. This is nothing
 fancy but comes in handy when the user does not want to store their keys
 persistently on the machine.
 </p>
@@ -223,11 +223,11 @@ $ sudo cryptsetup close cool-pendrive
 </div>
 </div>
 </div>
-</div>
-<div id="postamble" class="status">
+</main>
+<footer id="postamble" class="status">
 <p>
-    <a href="#">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/static/img/rss.png" height="16" width="16" alt="RSS feed"></a>
+    <a href="#preamble">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/static/img/rss.png" height="16" width="16" alt="RSS feed"></a>
 </p>
-</div>
+</footer>
 </body>
 </html>

@@ -2,4 +2,4 @@
 
 [[./archlinux-install.org][Installation notes]] for [[https://archlinux.org/][ArchLinux]]-based workstations.
 
-A list of [[.//windows-tools.org][pentesting tools for Windows]].
+A list of [[./windows-tools.org][pentesting tools for Windows]].

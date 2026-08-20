@@ -4,7 +4,7 @@
 
 #+begin_preview
 This post describes how to use a custom /git/ configuration, including SSH and
-GPG keys, stored on a an external drive such as a USB stick. This is nothing
+GPG keys, stored on an external drive such as a USB stick. This is nothing
 fancy but comes in handy when the user does not want to store their keys
 persistently on the machine.
 #+end_preview

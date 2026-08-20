@@ -280,6 +280,9 @@ Tools:
 - [[https://github.com/jhaddix][Jason Haddix]]'s [[https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056][all.txt]] DNS wordlist
 
 *** Web
+:PROPERTIES:
+:CUSTOM_ID: sec-web
+:END:
 ***** JavaScript and browser security
 
 - [[https://zon8.re/posts/javascript-engine-fuzzing-and-exploitation-reading-list/][JavaScript Engine Fuzzing and Exploitation Reading List]] by [[https://zon8.re/][Zon8 Research]].
@@ -296,7 +299,7 @@ Tools:
 ***** Pentesting / offensive security
 
 - [[https://riccardoancarani.github.io/2019-10-04-lateral-movement-megaprimer/][Lateral Movement Megaprimer]].
-- [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%2520and%2520Resources/Active%2520Directory%2520Attack.md][Attacking Active Directory (PayloadAllTheThings)]] by [[https://github.com/swisskyrepo][Swisskey]].
+- [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md][Attacking Active Directory (PayloadAllTheThings)]] by [[https://github.com/swisskyrepo][Swisskey]].
 - [[https://hunter2.gitbook.io/darthsidious][Darth Sidious' Gitbook]]: Lab setup and classic exploitation techniques.
 - [[https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html][How to Attack Kerberos 101]]: blog post by [[https://m0chan.github.io][m0chan]].
 - [[https://github.com/Ignitetechnologies/Credential-Dumping][Credentials Dumping Cheatsheets]]: Links to various detailed posts about
