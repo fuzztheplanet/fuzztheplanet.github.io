@@ -5,6 +5,7 @@
 (require 'ox-publish)
 (require 'ox-html)
 (require 'ox-rss)
+(require 'htmlize)
 
 
 ;; Utility functions
@@ -35,11 +36,6 @@
  ;; the summary card, and profile.jpg is 138x138, under the 144px floor below
  ;; which several platforms drop the image entirely.
  skw-blog/og-image (concat skw-blog/upstream-url "/static/img/og-image.jpg")
-
- ;; Pages that exist but should stay out of the sitemaps: the feed and the
- ;; homepage's include file are not pages at all, and the 404 is served for
- ;; every unknown path rather than visited on purpose.
- skw-blog/unlisted-pages '("rss.org" "index-no-preview.org" "404.org")
 
  ;; Location of custom directories and files
  skw-blog/rootdir      (skw-blog/get-root-directory)
@@ -158,6 +154,10 @@
  org-html-html5-fancy nil
  org-html-htmlize-output-type 'css
 
+ ;; Keep the tabs of the source code blocks intact
+ org-export-use-babel nil
+ htmlize-untabify nil
+
  org-html-table-use-header-tags-for-first-column nil
 
  org-html-mathjax-options `((path ,(concat skw-blog/mathjax-dir "/tex-mml-chtml.js"))
@@ -274,9 +274,9 @@ rot silently."
              #'skw-blog/add-heading-anchor)
 
 
-;; Page metadata. Org emits a title and, given a '#+DESCRIPTION', a description;
-;; it emits neither a canonical URL nor any link-preview tag, so a page shared
-;; anywhere used to render as a bare URL with no blurb and no image.
+;; Page metadata. Org emits a title but neither a canonical URL nor any
+;; link-preview tag, so a page shared anywhere used to render as a bare URL
+;; with no blurb and no image.
 (defun skw-blog/page-path (input-file)
   "Return the site-root-relative path at which 'input-file' is served."
   (let* ((relative (file-relative-name (expand-file-name input-file)
@@ -303,9 +303,7 @@ description contains one."
          (url (and path (concat skw-blog/upstream-url path)))
          (title (skw-blog/attribute-value
                  (org-element-interpret-data (plist-get info :title))))
-         (description (skw-blog/attribute-value
-                       (or (org-string-nw-p (plist-get info :description))
-                           skw-blog/rss-description)))
+         (description (skw-blog/attribute-value skw-blog/rss-description))
          ;; Posts and notes are articles; the homepage and the standing pages
          ;; around them are not.
          (type (if (and path (string-match-p "\\`/\\(posts\\|notes\\)/." path))
@@ -374,7 +372,7 @@ description contains one."
                           plist dir)))
 
 (defun skw-blog/format-rss-feed (title list)
-  "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
+  "Generate a sitemap of posts that will be exported as an RSS feed. 'title' is
 title of the RSS feed and 'list' the files to be included."
   (concat "#+TITLE: " title "\n\n" (org-list-to-subtree list)))
 
@@ -394,77 +392,13 @@ title of the RSS feed and 'list' the files to be included."
 %s" title link pubdate preview)))
 
 
-;; robots.txt and sitemap.xml. Org publishes neither, so crawlers had no
-;; machine-readable index of the site and no pointer to the feed.
-(defun skw-blog/page-date (file)
-  "Return the date to advertise for 'file', as a YYYY-MM-DD string.
-Prefer the '#+DATE' keyword and fall back to the modification time, which is
-what the pages carrying no date of their own -- the notes -- end up using."
-  (or (with-temp-buffer
-        (insert-file-contents file)
-        (goto-char (point-min))
-        (when (re-search-forward
-               "^#\\+DATE:[ \t]*[<[]\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)"
-               nil t)
-          (match-string 1)))
-      (format-time-string "%Y-%m-%d"
-                          (file-attribute-modification-time
-                           (file-attributes file)))))
-
-
-(defun skw-blog/listed-pages ()
-  "Return the source files of every page that belongs in a sitemap."
-  (sort (seq-remove
-         (lambda (file)
-           (member (file-name-nondirectory file) skw-blog/unlisted-pages))
-         (directory-files-recursively skw-blog/srcdir "\\.org\\'"))
-        #'string<))
-
-
-(defun skw-blog/generate-seo-files (project-plist)
-  "Write robots.txt and sitemap.xml at the root of the published site."
-  (let ((outdir (plist-get project-plist :publishing-directory)))
-    (with-temp-file (expand-file-name "sitemap.xml" outdir)
-      (insert "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-              "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
-      (dolist (file (skw-blog/listed-pages))
-        (insert (format "  <url>\n    <loc>%s%s</loc>\n    <lastmod>%s</lastmod>\n  </url>\n"
-                        skw-blog/upstream-url
-                        (skw-blog/page-path file)
-                        (skw-blog/page-date file))))
-      (insert "</urlset>\n"))
-    (with-temp-file (expand-file-name "robots.txt" outdir)
-      (insert "User-agent: *\n"
-              "Allow: /\n"
-              "\n"
-              "Sitemap: " skw-blog/upstream-url "/sitemap.xml\n"))))
-
-
-;; Generated index pages have no source file to carry a '#+DESCRIPTION', yet
-;; they still need a blurb for search results and link previews.
-(defun skw-blog/with-description (org description)
-  "Insert a '#+DESCRIPTION' keyword for 'description' into generated 'org'."
-  (replace-regexp-in-string "\\`\\(#\\+TITLE:.*\n\\)"
-                            (concat "\\1#+DESCRIPTION: " description "\n")
-                            org t))
-
-
 (defun skw-blog/format-main-sitemap (title list)
   "Format the site-wide sitemap, leaving the 404 page out of 'list'.
 That page answers every unknown path, so listing it as a destination of its
 own only invites visitors and crawlers to walk into it."
-  (skw-blog/with-description
-   (replace-regexp-in-string
-    "^[ \t]*-[ \t]*\\[\\[file:404\\.org\\]\\[[^]]*\\]\\][ \t]*\n" ""
-    (org-publish-sitemap-default title list))
-   "Every page on this website, in one list."))
-
-
-(defun skw-blog/format-posts-index (title list)
-  "Format the full post listing named 'title' from 'list'."
-  (skw-blog/with-description
-   (org-publish-sitemap-default title list)
-   skw-blog/rss-description))
+  (replace-regexp-in-string
+   "^[ \t]*-[ \t]*\\[\\[file:404\\.org\\]\\[[^]]*\\]\\][ \t]*\n" ""
+   (org-publish-sitemap-default title list)))
 
 
 ;; Publishing rules
@@ -483,8 +417,7 @@ own only invites visitors and crawlers to walk into it."
          :publishing-function org-html-publish-to-html
          :recursive t
          :sitemap-function skw-blog/format-main-sitemap
-         :sitemap-title ,skw-blog/main-sitemap-title
-         :completion-function skw-blog/generate-seo-files)
+         :sitemap-title ,skw-blog/main-sitemap-title)
 
         ;; Bare list of recent posts, included by the homepage. Never a page of its own.
         ("website-posts-index"
@@ -510,7 +443,6 @@ own only invites visitors and crawlers to walk into it."
          :publishing-function skw-blog/publish-nothing
          :sitemap-filename "index.org"
          :sitemap-format-entry skw-blog/org-format-blog-post-with-preview
-         :sitemap-function skw-blog/format-posts-index
          :sitemap-sort-files anti-chronologically
          :sitemap-title "Posts")
 
@@ -551,7 +483,7 @@ own only invites visitors and crawlers to walk into it."
         ("website-static"
          :base-directory ,(concat skw-blog/rootdir "static")
          :base-extension ".*"
-         :exclude "*.org"
+         :exclude "\\.org\\'"
          :publishing-directory ,(concat skw-blog/outdir "static")
          :publishing-function org-publish-attachment
          :recursive t)

@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
-<meta name="description" content="Yet another simple publishing setup for a static website built with Emacs's Org mode, documented end to end for self-reference." />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
@@ -48,7 +47,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Skywhi's Blog">
 <meta property="og:title" content="Hello World from Org">
-<meta property="og:description" content="Yet another simple publishing setup for a static website built with Emacs's Org mode, documented end to end for self-reference.">
+<meta property="og:description" content="Sporadic posts about Emacs, security and other rabbit holes.">
 <meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
 <meta name="twitter:card" content="summary">
 </head>
@@ -78,7 +77,7 @@
 </p>
 
 
-<div class="preview" id="orgef3fa6d">
+<div class="preview" id="org0021c3f">
 <p>
 I describe <i>yet-another-simple-publishing-setup</i> for a static website using
 Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available
@@ -89,9 +88,9 @@ will take away an idea or two.
 </div>
 
 <div class="org-src-container">
-<pre class="src src-sh">skywhi@dreamland:~/blog$ echo <span class="org-string">"Hello World Wild Web!"</span> &gt; src/posts/hello.org
-skywhi@dreamland:~/blog$ make update &amp;&amp; make publish
-skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span class="org-comment">make blogging great again!</span>
+<pre class="src src-sh">skywhi@dreamland:~/org/blog$ echo <span class="org-string">"Hello World Wild Web!"</span> &gt; src/posts/hello.org
+skywhi@dreamland:~/org/blog$ make update &amp;&amp; make publish
+skywhi@dreamland:~/org/blog$ <span class="org-comment-delimiter"># </span><span class="org-comment">make blogging great again!</span>
 </pre>
 </div>
 
@@ -120,6 +119,8 @@ skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span clas
 <ul>
 <li><a href="#mathjax">MathJax</a></li>
 <li><a href="#rss">RSS feed</a></li>
+<li><a href="#heading-anchors">Heading permalinks</a></li>
+<li><a href="#page-metadata">Link previews and canonical URLs</a></li>
 </ul>
 </li>
 <li><a href="#resources">Resources</a></li>
@@ -184,8 +185,8 @@ project. The github repository containing all the up-to-date source files can be
 found <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a>.
 </p>
 
-<div class="org-src-container">
-<pre class="src src-terminal">- ~/org/blog/
+<pre class="example" id="org5983e26">
+- ~/org/blog/
   - .github/
     - workflows/
       - static.yml
@@ -206,6 +207,7 @@ found <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a
       - index.org
       - a-note-i-keep-poking-at.org
     - posts/
+      - files/
       - hello.org
       - super-dupa-post.org
   - templates/
@@ -219,16 +221,16 @@ found <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io">here</a
   - publish-website.el
   - README.org
 </pre>
-</div>
 
 <p>
-<b>src/</b> contains the Org files that will be published to HTML. These files are
-declaring as few exporting options as possible so that they can easily be used
-in other contexts or projects. Global exporting options will be defined in
+<b>src/</b> contains the Org files that will be published to HTML. These files
+declare as few exporting options as possible so that they can easily be used in
+other contexts or projects. Global exporting options will be defined in
 <b>publish-website.el</b> and page-specific options provided via <b>templates/</b> or, in
 rare cases, directly in the files themselves. The <b>static/</b> directory hosts
 assets such as stylesheets, fonts, images, etc. that will be exported "as is".
-<b>www/</b> contains the complete exported website.
+<b>www/</b> contains the complete exported website and &#x2013; this one matters &#x2013; it is
+committed along with the sources, for reasons explained in the <a href="#deployment">deployment section</a>.
 </p>
 
 <p>
@@ -253,7 +255,7 @@ we can!
 <h3 id="source-files">Source files<a class="heading-anchor" href="#source-files" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-source-files">
 <p>
-This is for example the beginning of <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org">this post</a>. It does not contain much beside
+This is for example the beginning of <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org">this post</a>. It does not contain much besides
 a title, a date, a template and a table of content. There is also a custom
 <code>preview</code> block, but more on that a little bit later.
 </p>
@@ -271,9 +273,9 @@ will take away an idea or two.
 <span class="org-org-block-end-line">#+end_preview
 </span>
 <span class="org-org-block-begin-line">#+begin_src sh
-</span><span class="org-org-block">skywhi@dreamland:~/blog$ echo </span><span class="org-org-block"><span class="org-string">"Hello World Wild Web!"</span></span><span class="org-org-block"> &gt; src/posts/hello.org
-skywhi@dreamland:~/blog$ make update &amp;&amp; make publish
-skywhi@dreamland:~/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!
+</span><span class="org-org-block">skywhi@dreamland:~/org/blog$ echo </span><span class="org-org-block"><span class="org-string">"Hello World Wild Web!"</span></span><span class="org-org-block"> &gt; src/posts/hello.org
+skywhi@dreamland:~/org/blog$ make update &amp;&amp; make publish
+skywhi@dreamland:~/org/blog$ </span><span class="org-org-block"><span class="org-comment-delimiter"># </span></span><span class="org-org-block"><span class="org-comment">make blogging great again!
 </span></span><span class="org-org-block-end-line">#+end_src
 </span>
 <span class="org-org-macro">{{{toc(Contents:,6)}}}</span>
@@ -292,7 +294,9 @@ to meet: [...]
 
 <p>
 Appending a <code>CUSTOM_ID</code> property (<code>C-c C-x p</code>) to headings makes it possible to
-link to them in the HTML. <a href="#source-files">This example link</a> points to the present section.
+link to them in the HTML. <a href="#source-files">This example link</a> points to the present section. Headings
+carrying one also render a clickable <code>#</code> so that the link can be grabbed from
+the page itself, see <a href="#heading-anchors">further down</a>.
 </p>
 
 <p>
@@ -354,12 +358,14 @@ into <i>org-publish</i> which will take care of producing the corresponding webs
 </p>
 
 <p>
-The file is pretty simple and self-explanatory. I mostly added the following
-functions to generate a "preview" of each post, which will be visible in the
-<a href="./index.html">list of all posts</a>, as well as include a formatted timestamp of when the post was
-first added. A custom macro is used to format the timestamp. The content of the
-"preview" is written in between the custom <code>#+begin_preview</code> and <code>#+end_preview</code>
-tags.
+The file has grown to a bit under 600 lines, but most of it is plain
+configuration and publishing rules; only a handful of functions really need a
+word of explanation, and those are the ones reproduced along the way. I started
+with the two below. They generate a "preview" of each post, visible in the
+<a href="./index.html">list of all posts</a>, and prepend a formatted timestamp of when the post was first
+added &#x2013; a custom macro takes care of the formatting. The content of the
+"preview" is whatever sits between the custom <code>#+begin_preview</code> and
+<code>#+end_preview</code> tags.
 </p>
 
 <div class="org-src-container">
@@ -425,16 +431,23 @@ empty string.
 </p>
 
 <p>
-The site header lives in <b>templates/header.html</b> and is injected as the HTML
-preamble. Rather than serving the same markup everywhere, a small function marks
-the navigation entry matching the page being exported with <code>aria-current</code> so
-that the current section can be styled (and announced by screen readers).
+The site header lives in <b>templates/header.html</b>, whose path is held by
+<code>skw-blog/header-file</code>. It is read once into <code>skw-blog/header</code> and injected as
+the HTML preamble. Rather than serving the same markup everywhere, a small
+function marks the navigation entry matching the page being exported with
+<code>aria-current</code> so that the current section can be styled (and announced by
+screen readers).
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 4: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> skw-blog/rss-link
-      (concat <span class="org-string">"&lt;link rel=\"alternate\" type=\"application/rss+xml\" title=\""</span>
-              skw-blog/rss-feedname <span class="org-string">"\" href=\"/rss.xml\"&gt;\n"</span>))
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/get-file-content</span> (file)
+  <span class="org-doc">"Return the content of '</span><span class="org-doc"><span class="org-constant">file</span></span><span class="org-doc">' as a string"</span>
+  (<span class="org-keyword">with-temp-buffer</span>
+    (insert-file-contents file)
+    (buffer-string)))
+
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">skw-blog/header</span>
+  (skw-blog/get-file-content skw-blog/header-file))
 
 (<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/nav-href-for</span> (input-file)
   <span class="org-doc">"Return the header nav href matching '</span><span class="org-doc"><span class="org-constant">input-file</span></span><span class="org-doc">', or nil when none does."</span>
@@ -509,6 +522,7 @@ sitemap titled '</span><span class="org-doc"><span class="org-constant">title</s
  <span class="org-builtin">:publishing-directory</span> ,skw-blog/outdir
  <span class="org-builtin">:publishing-function</span> org-html-publish-to-html
  <span class="org-builtin">:recursive</span> t
+ <span class="org-builtin">:sitemap-function</span> skw-blog/format-main-sitemap
  <span class="org-builtin">:sitemap-title</span> ,skw-blog/main-sitemap-title)
 
 <span class="org-comment-delimiter">;; </span><span class="org-comment">Bare list of recent posts, included by the homepage. Never a page of its own.
@@ -541,12 +555,28 @@ sitemap titled '</span><span class="org-doc"><span class="org-constant">title</s
 </div>
 
 <p>
+The site-wide sitemap gets a <code>:sitemap-function</code> of its own for one small
+touch-up: it drops the 404 page from the listing.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/format-main-sitemap</span> (title list)
+  <span class="org-doc">"Format the site-wide sitemap, leaving the 404 page out of '</span><span class="org-doc"><span class="org-constant">list</span></span><span class="org-doc">'.
+That page answers every unknown path, so listing it as a destination of its
+own only invites visitors and crawlers to walk into it."</span>
+  (replace-regexp-in-string
+   <span class="org-string">"^[ \t]*-[ \t]*\\[\\[</span><span class="org-string"><span class="org-constant">file:404\\.org\\</span></span><span class="org-string">]\\[[</span><span class="org-string"><span class="org-negation-char">^</span></span><span class="org-string">]]*\\]\\][ \t]*\n"</span> <span class="org-string">""</span>
+   (org-publish-sitemap-default title list)))
+</pre>
+</div>
+
+<p>
 The generated <b>src/posts/index-no-preview.org</b> is inserted into the main
 <b>src/index.org</b> file like this:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 8: </span>src/index.org</label><pre class="src src-org"><span class="org-org-meta-line">#+INCLUDE: "./posts/index-no-preview.org" :lines "3-"</span>
+<label class="org-src-name"><span class="listing-number">Listing 9: </span>src/index.org</label><pre class="src src-org"><span class="org-org-meta-line">#+INCLUDE: "./posts/index-no-preview.org" :lines "3-"</span>
 </pre>
 </div>
 
@@ -560,7 +590,7 @@ sources under <b>src/</b>, while <b>website-static</b> takes care of everything 
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 9: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Attachment files
+<label class="org-src-name"><span class="listing-number">Listing 10: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Attachment files
 </span>(<span class="org-string">"website-files"</span>
  <span class="org-builtin">:base-directory</span> ,skw-blog/srcdir
  <span class="org-builtin">:base-extension</span> <span class="org-string">"css</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">txt</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">jpg</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">gif</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">png"</span>
@@ -572,7 +602,7 @@ sources under <b>src/</b>, while <b>website-static</b> takes care of everything 
 </span>(<span class="org-string">"website-static"</span>
  <span class="org-builtin">:base-directory</span> ,(concat skw-blog/rootdir <span class="org-string">"static"</span>)
  <span class="org-builtin">:base-extension</span> <span class="org-string">".*"</span>
- <span class="org-builtin">:exclude</span> <span class="org-string">"*.org"</span>
+ <span class="org-builtin">:exclude</span> <span class="org-string">"\\.org\\'"</span>
  <span class="org-builtin">:publishing-directory</span> ,(concat skw-blog/outdir <span class="org-string">"static"</span>)
  <span class="org-builtin">:publishing-function</span> org-publish-attachment
  <span class="org-builtin">:recursive</span> t)
@@ -587,7 +617,7 @@ the homepage one build late.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 10: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website"</span> <span class="org-builtin">:components</span>
+<label class="org-src-name"><span class="listing-number">Listing 11: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website"</span> <span class="org-builtin">:components</span>
  (<span class="org-string">"website-posts-index"</span> <span class="org-string">"website-posts-index-preview"</span> <span class="org-string">"website-src"</span>
   <span class="org-string">"website-rss"</span> <span class="org-string">"website-files"</span> <span class="org-string">"website-static"</span>))
 </pre>
@@ -602,27 +632,27 @@ Let's use <b>make</b> to avoid building and managing the website by hand.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 11: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">OUT_DIR</span>=<span class="org-string">'www'</span>
+<label class="org-src-name"><span class="listing-number">Listing 12: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">OUT_DIR</span>=<span class="org-string">'www'</span>
 <span class="org-variable-name">PUBLISH_FILE</span>=<span class="org-string">'publish-website.el'</span>
 <span class="org-variable-name">PUBLISH_FUNC</span>=<span class="org-string">'(org-publish "website")'</span>
 <span class="org-variable-name">WS_CMD</span>=python -m http.server 12345 --bind localhost --directory $(<span class="org-variable-name">OUT_DIR</span>)
 
 <span class="org-makefile-targets">all</span>:
-    rm -rf .cache www
-    emacs -Q --batch --load $(<span class="org-variable-name">PUBLISH_FILE</span>) --eval $(<span class="org-variable-name">PUBLISH_FUNC</span>)
-    rm -rf .cache
+        rm -rf .cache www
+        emacs -Q --batch --load $(<span class="org-variable-name">PUBLISH_FILE</span>) --eval $(<span class="org-variable-name">PUBLISH_FUNC</span>)
+        rm -rf .cache
 
 <span class="org-makefile-targets">publish</span>:
-    git commit
-    git push -u origin main
+        git commit
+        git push -u origin main
 
 <span class="org-makefile-targets">update</span>:
-    make all
-    git add .
-    git status
+        make all
+        git add .
+        git status
 
 <span class="org-makefile-targets">run</span>:
-    $(<span class="org-variable-name">WS_CMD</span>)
+        $(<span class="org-variable-name">WS_CMD</span>)
 
 <span class="org-makefile-targets">.PHONY</span>: all mathjax publish update run
 </pre>
@@ -645,14 +675,19 @@ the website locally at <a href="http://localhost:12345">http://localhost:12345</
 <p>
 Once a commit is pushed, the GitHub Actions workflow takes over: it checks the
 repository out and hands the <b>www/</b> directory to GitHub Pages as a deployment
-artifact..
+artifact.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 12: </span>.github/workflows/static.yml</label><pre class="src src-yaml"><span class="org-constant">on</span>:
+<label class="org-src-name"><span class="listing-number">Listing 13: </span>.github/workflows/static.yml</label><pre class="src src-yaml"><span class="org-constant">on</span>:
   <span class="org-variable-name">push</span>:
     <span class="org-variable-name">branches</span>: [<span class="org-string">"main"</span>]
   <span class="org-variable-name">workflow_dispatch</span>:
+
+<span class="org-variable-name">permissions</span>:
+  <span class="org-variable-name">contents</span>: read
+  <span class="org-variable-name">pages</span>: write
+  <span class="org-variable-name">id-token</span>: write
 
 <span class="org-variable-name">jobs</span>:
   <span class="org-variable-name">deploy</span>:
@@ -676,6 +711,21 @@ artifact..
 </div>
 
 <p>
+Note what this workflow does <i>not</i> do: there is no Emacs, no <code>make</code>, no build
+step of any kind. It deploys a plain checkout, which is why <b>www/</b> has to be
+committed along with the sources &#x2013; gitignoring the build output, the first
+instinct for a generated directory, deploys an empty site. That choice has one
+consequence worth knowing about: Org stamps every exported page with a build
+date comment, which alone made all of them show up as modified after each
+rebuild, so <code>org-export-time-stamp-file</code> is set to <code>nil</code> in <b>publish-website.el</b>.
+</p>
+
+<p>
+The <code>permissions:</code> block is not optional either: without <code>pages: write</code> and
+<code>id-token: write</code>, <code>actions/deploy-pages</code> fails outright.
+</p>
+
+<p>
 The last piece worth mentioning is the <b>CNAME</b> file sitting at the root of the
 repository. It contains a single line &#x2013; the domain name &#x2013; which is how Pages
 knows to serve the site as <a href="https://www.skywhi.net">www.skywhi.net</a> instead of the default <i>github.io</i>
@@ -694,8 +744,8 @@ address. The matching DNS records live at my registrar.
 <div class="outline-text-3" id="text-mathjax">
 <p>
 <a href="https://www.mathjax.org/">MathJax</a>' <a href="https://orgmode.org/manual/Math-formatting-in-HTML-export.html">Org mode support</a> lets me export to HTML math formulas written in LaTeX.
-Here are a couple of examples using inline code blocks and "proper" LaTeX
-syntax.
+Here are a couple of examples using the inline <code>$...$</code> and <code>\( ... \)</code>
+delimiters as well as "proper" LaTeX environments.
 </p>
 
 <div class="org-src-container">
@@ -740,25 +790,28 @@ Upstream ships around 20 MB: several output formats, Node entry points and a
 speech locale for every supported language. A page here loads a small fraction
 of that, so the target below pulls the release straight from the npm registry
 (which, unlike a shallow clone of the default branch, is pinned to a version)
-and keeps only the pieces that are actually served.
+and keeps only the pieces that are actually served. The font package has a
+version of its own, <code>MATHJAX_FONT_VERSION</code>, which merely follows
+<code>MATHJAX_VERSION</code> for now: the two are released separately upstream and nothing
+guarantees they stay in step.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 13: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">MATHJAX_DIR</span>=static/js/mathjax
+<label class="org-src-name"><span class="listing-number">Listing 14: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">MATHJAX_DIR</span>=static/js/mathjax
 <span class="org-variable-name">MATHJAX_VERSION</span>=4.1.3
 <span class="org-variable-name">MATHJAX_FONT</span>=mathjax-modern
+<span class="org-variable-name">MATHJAX_FONT_VERSION</span>=$(<span class="org-variable-name">MATHJAX_VERSION</span>)
 <span class="org-variable-name">NPM</span>=https://registry.npmjs.org
 <span class="org-variable-name">TMP</span>=$(<span class="org-variable-name">MATHJAX_DIR</span>).tmp
 
 <span class="org-makefile-targets">mathjax</span>:
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Only download and serve the MathJax components needed.
-</span>    <span class="org-comment-delimiter"># </span><span class="org-comment">See the source file for the full code.
-</span>    rm -rf $(<span class="org-variable-name">MATHJAX_DIR</span>) $(<span class="org-variable-name">TMP</span>)
-    mkdir -p $(<span class="org-variable-name">TMP</span>)/mathjax $(<span class="org-variable-name">TMP</span>)/font
-    curl -fsSL $(<span class="org-variable-name">NPM</span>)/mathjax/-/mathjax-$(<span class="org-variable-name">MATHJAX_VERSION</span>).tgz \
-        | tar xz -C $(<span class="org-variable-name">TMP</span>)/mathjax --strip-components=1
-    curl -fsSL $(<span class="org-variable-name">NPM</span>)/@mathjax/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font/-/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font-$(<span class="org-variable-name">MATHJAX_VERSION</span>).tgz \
-        | tar xz -C $(<span class="org-variable-name">TMP</span>)/font --strip-components=1
+        rm -rf $(<span class="org-variable-name">MATHJAX_DIR</span>) $(<span class="org-variable-name">TMP</span>)
+        mkdir -p $(<span class="org-variable-name">TMP</span>)/mathjax $(<span class="org-variable-name">TMP</span>)/font
+        curl -fsSL $(<span class="org-variable-name">NPM</span>)/mathjax/-/mathjax-$(<span class="org-variable-name">MATHJAX_VERSION</span>).tgz \
+            | tar xz -C $(<span class="org-variable-name">TMP</span>)/mathjax --strip-components=1
+        curl -fsSL $(<span class="org-variable-name">NPM</span>)/@mathjax/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font/-/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font-$(<span class="org-variable-name">MATHJAX_FONT_VERSION</span>).tgz \
+            | tar xz -C $(<span class="org-variable-name">TMP</span>)/font --strip-components=1
+<span class="org-comment-delimiter"># </span><span class="org-comment">[...] the rest of the target keeps only the files that are actually served.</span>
 </pre>
 </div>
 
@@ -771,7 +824,7 @@ copy too. Org's stock MathJax template has no <code>loader</code> section, so I 
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 14: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">MathJax resolves its font package against '</span><span class="org-comment"><span class="org-constant">loader.paths.fonts</span></span><span class="org-comment">', which
+<label class="org-src-name"><span class="listing-number">Listing 15: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">MathJax resolves its font package against '</span><span class="org-comment"><span class="org-constant">loader.paths.fonts</span></span><span class="org-comment">', which
 </span><span class="org-comment-delimiter">;; </span><span class="org-comment">defaults to cdn.jsdelivr.net. The fonts are vendored (see the '</span><span class="org-comment"><span class="org-constant">mathjax</span></span><span class="org-comment">'
 </span><span class="org-comment-delimiter">;; </span><span class="org-comment">target in the Makefile), so that path has to be pointed at the local copy:
 </span><span class="org-comment-delimiter">;; </span><span class="org-comment">without it, every page carrying math quietly pulls ~1 MB of woff2 from a
@@ -804,7 +857,7 @@ copy too. Org's stock MathJax template has no <code>loader</code> section, so I 
 <h3 id="rss">RSS feed<a class="heading-anchor" href="#rss" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-rss">
 <p>
-Generating a RSS to track when new posts are published is actually not that
+Generating an RSS feed to track when new posts are published is actually not that
 complicated with <a href="https://github.com/emacsmirror/ox-rss">ox-rss</a>. Here are a couple of helper functions to generate a
 "sitemap" file named <b>rss.org</b> which will list all the entries under
 <b>src/posts/</b> excluding the previously generated indexes. This file is then
@@ -813,7 +866,7 @@ converted to XML. The description field of each item is the content of the
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 15: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation
+<label class="org-src-name"><span class="listing-number">Listing 16: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">RSS feed generation
 </span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/publish-to-rss</span> (plist filename dir)
   <span class="org-doc">"Publish '</span><span class="org-doc"><span class="org-constant">plist</span></span><span class="org-doc">' when '</span><span class="org-doc"><span class="org-constant">filename</span></span><span class="org-doc">' corresponds to RSS feed Org-file to '</span><span class="org-doc"><span class="org-constant">dir</span></span><span class="org-doc">'."</span>
   (<span class="org-keyword">if</span> (equal skw-blog/rss-filename (file-name-nondirectory filename))
@@ -826,7 +879,7 @@ converted to XML. The description field of each item is the content of the
                           plist dir)))
 
 (<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/format-rss-feed</span> (title list)
-  <span class="org-doc">"Generate a sitemap of posts that will be exported as a RSS feed. '</span><span class="org-doc"><span class="org-constant">title</span></span><span class="org-doc">' is
+  <span class="org-doc">"Generate a sitemap of posts that will be exported as an RSS feed. '</span><span class="org-doc"><span class="org-constant">title</span></span><span class="org-doc">' is
 title of the RSS feed and '</span><span class="org-doc"><span class="org-constant">list</span></span><span class="org-doc">' the files to be included."</span>
   (concat <span class="org-string">"#+TITLE: "</span> title <span class="org-string">"\n\n"</span> (org-list-to-subtree list)))
 
@@ -864,7 +917,7 @@ These functions are then called inside a new publishing rule.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 16: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website-rss"</span>
+<label class="org-src-name"><span class="listing-number">Listing 17: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-string">"website-rss"</span>
  <span class="org-builtin">:author</span> ,skw-blog/author
  <span class="org-builtin">:auto-sitemap</span> t
  <span class="org-builtin">:base-directory</span> ,(concat skw-blog/srcdir <span class="org-string">"posts"</span>)
@@ -897,6 +950,178 @@ cannot work out the self-referencing <code>&lt;atom:link&gt;</code> from <code>:
 own &#x2013; it has to be spelled out, or readers end up subscribing to an address
 that does not exist.
 </p>
+
+<p>
+A feed nobody can find is not much use, so every exported page advertises it in
+its <code>&lt;head&gt;</code> with a <code>&lt;link rel</code>"alternate"&gt;= tag &#x2013; the autodiscovery bit that
+lets a browser or a feed reader pick the feed up from any page of the site.
+That tag is <code>skw-blog/rss-link</code>, which <b>website-src</b> concatenates into its
+<code>:html-head</code> next to the stylesheets and the favicon.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 18: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Feed autodiscovery, so readers can find the feed from any page
+</span>(<span class="org-keyword">setq</span> skw-blog/rss-link
+      (concat <span class="org-string">"&lt;link rel=\"alternate\" type=\"application/rss+xml\" title=\""</span>
+              skw-blog/rss-feedname <span class="org-string">"\" href=\"/rss.xml\"&gt;\n"</span>))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-heading-anchors" class="outline-3">
+<h3 id="heading-anchors">Heading permalinks<a class="heading-anchor" href="#heading-anchors" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-heading-anchors">
+<p>
+Headings are made linkable via an anchor tag <code>#</code> with an org export filter.
+First we need a way to detect if the export is for pure HTML content:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 19: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/html-page-backend-p</span> (backend)
+  <span class="org-doc">"Return non-nil when '</span><span class="org-doc"><span class="org-constant">backend</span></span><span class="org-doc">' exports whole HTML pages rather than feed items."</span>
+  (<span class="org-keyword">and</span> (org-export-derived-backend-p backend 'html)
+       (not (org-export-derived-backend-p backend 'rss))))
+</pre>
+</div>
+
+<p>
+Only headings carrying a <code>CUSTOM_ID</code> get an anchor. Org derives every other id
+from a counter that shifts as soon as the document changes, so such a link would
+rot silently, hence the <code>org[0-9a-f]+</code> test below to detect generated IDs.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 20: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/add-heading-anchor</span> (headline backend info)
+  <span class="org-doc">"Append a permalink anchor to the heading that opens '</span><span class="org-doc"><span class="org-constant">headline</span></span><span class="org-doc">'.
+Only headings carrying a CUSTOM_ID get one: Org derives every other id from
+a counter that shifts as soon as the document changes, so such a link would
+rot silently."</span>
+  (<span class="org-keyword">if</span> (not (skw-blog/html-page-backend-p backend))
+      headline
+    (<span class="org-keyword">save-match-data</span>
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">Children are filtered before their parent, so the first heading tag in
+</span>      <span class="org-comment-delimiter">;; </span><span class="org-comment">'</span><span class="org-comment"><span class="org-constant">headline</span></span><span class="org-comment">' is always the one this call is responsible for.
+</span>      (<span class="org-keyword">if</span> (not (string-match <span class="org-string">"&lt;h</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">(</span></span><span class="org-string">[1-6]</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">)</span></span><span class="org-string"> id=\"</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">(</span></span><span class="org-string">[</span><span class="org-string"><span class="org-negation-char">^</span></span><span class="org-string">\"]+</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">)</span></span><span class="org-string">\"&gt;"</span> headline))
+          headline
+        (<span class="org-keyword">let</span> ((level (match-string 1 headline))
+              (id (match-string 2 headline))
+              (from (match-end 0)))
+          (<span class="org-keyword">if</span> (string-match-p <span class="org-string">"\\`org[0-9a-f]+\\'"</span> id)
+              headline
+            (<span class="org-keyword">let</span> ((close (string-match (concat <span class="org-string">"&lt;/h"</span> level <span class="org-string">"&gt;"</span>) headline from)))
+              (<span class="org-keyword">if</span> (null close)
+                  headline
+                (concat (substring headline 0 close)
+                        (format (concat <span class="org-string">"&lt;a class=\"heading-anchor\" href=\"#%s\""</span>
+                                        <span class="org-string">" aria-label=\"Permalink to this section\"&gt;#&lt;/a&gt;"</span>)
+                                id)
+                        (substring headline close))))))))))
+
+(add-to-list 'org-export-filter-headline-functions
+             #'skw-blog/add-heading-anchor)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-page-metadata" class="outline-3">
+<h3 id="page-metadata">Link previews and canonical URLs<a class="heading-anchor" href="#page-metadata" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-page-metadata">
+<p>
+Org gives each page a <code>&lt;title&gt;</code> but nothing else: no canonical URL, and none of
+the <a href="https://ogp.me/">Open Graph</a> properties that messaging apps, forums and social platforms read
+to build a link preview. A page shared anywhere therefore rendered as a bare
+URL, with no blurb and no image.
+</p>
+
+<p>
+A filter on the final output injects the missing tags right before <code>&lt;/head&gt;</code>.
+The path a page is served at is derived from its source file, so nothing has to
+be declared by hand &#x2013; <code>index.org</code> files become directory URLs, everything else
+keeps its name.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 21: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/page-path</span> (input-file)
+  <span class="org-doc">"Return the site-root-relative path at which '</span><span class="org-doc"><span class="org-constant">input-file</span></span><span class="org-doc">' is served."</span>
+  (<span class="org-keyword">let*</span> ((relative (file-relative-name (expand-file-name input-file)
+                                       skw-blog/srcdir))
+         (html (concat (file-name-sans-extension relative) <span class="org-string">".html"</span>)))
+    (<span class="org-keyword">cond</span> ((equal html <span class="org-string">"index.html"</span>) <span class="org-string">"/"</span>)
+          ((string-suffix-p <span class="org-string">"/index.html"</span> html)
+           (concat <span class="org-string">"/"</span> (file-name-directory html)))
+          (t (concat <span class="org-string">"/"</span> html)))))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/attribute-value</span> (string)
+  <span class="org-doc">"Return '</span><span class="org-doc"><span class="org-constant">string</span></span><span class="org-doc">' escaped for use as an HTML attribute value.
+'</span><span class="org-doc"><span class="org-constant">org-html-encode-plain-text</span></span><span class="org-doc">' leaves double quotes alone, which is fine for
+text nodes and silently breaks an attribute the first time a title or a
+description contains one."</span>
+  (replace-regexp-in-string <span class="org-string">"\""</span> <span class="org-string">"&amp;quot;"</span> (org-html-encode-plain-text string) t t))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/page-metadata</span> (info)
+  <span class="org-doc">"Return the canonical, Open Graph and Twitter tags for the page in '</span><span class="org-doc"><span class="org-constant">info</span></span><span class="org-doc">'."</span>
+  (<span class="org-keyword">let*</span> ((input (plist-get info <span class="org-builtin">:input-file</span>))
+         (path (<span class="org-keyword">and</span> input (skw-blog/page-path input)))
+         (url (<span class="org-keyword">and</span> path (concat skw-blog/upstream-url path)))
+         (title (skw-blog/attribute-value
+                 (org-element-interpret-data (plist-get info <span class="org-builtin">:title</span>))))
+         (description (skw-blog/attribute-value skw-blog/rss-description))
+         <span class="org-comment-delimiter">;; </span><span class="org-comment">Posts and notes are articles; the homepage and the standing pages
+</span>         <span class="org-comment-delimiter">;; </span><span class="org-comment">around them are not.
+</span>         (type (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> path (string-match-p <span class="org-string">"\\`/</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">(</span></span><span class="org-string">posts</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">notes</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">)</span></span><span class="org-string">/."</span> path))
+                   <span class="org-string">"article"</span>
+                 <span class="org-string">"website"</span>))
+         (tags '()))
+    (<span class="org-keyword">when</span> url
+      (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;link rel=\"canonical\" href=\"%s\"&gt;"</span> url) tags)
+      (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:url\" content=\"%s\"&gt;"</span> url) tags))
+    (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:type\" content=\"%s\"&gt;"</span> type) tags)
+    (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:site_name\" content=\"%s\"&gt;"</span>
+                  (skw-blog/attribute-value skw-blog/site-name))
+          tags)
+    (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:title\" content=\"%s\"&gt;"</span> title) tags)
+    (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:description\" content=\"%s\"&gt;"</span> description) tags)
+    (<span class="org-keyword">push</span> (format <span class="org-string">"&lt;meta property=\"og:image\" content=\"%s\"&gt;"</span> skw-blog/og-image) tags)
+    (<span class="org-keyword">push</span> <span class="org-string">"&lt;meta name=\"twitter:card\" content=\"summary\"&gt;"</span> tags)
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">The 404 is served for every unknown path. Indexing it would scatter
+</span>    <span class="org-comment-delimiter">;; </span><span class="org-comment">"No such file or directory" across search results.
+</span>    (<span class="org-keyword">when</span> (<span class="org-keyword">and</span> input (equal (file-name-nondirectory input) <span class="org-string">"404.org"</span>))
+      (<span class="org-keyword">push</span> <span class="org-string">"&lt;meta name=\"robots\" content=\"noindex\"&gt;"</span> tags))
+    (concat (mapconcat #'identity (nreverse tags) <span class="org-string">"\n"</span>) <span class="org-string">"\n"</span>)))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/insert-page-metadata</span> (output backend info)
+  <span class="org-doc">"Insert the tags built by '</span><span class="org-doc"><span class="org-constant">skw-blog/page-metadata</span></span><span class="org-doc">' into '</span><span class="org-doc"><span class="org-constant">output</span></span><span class="org-doc">'s head."</span>
+  (<span class="org-keyword">if</span> (not (skw-blog/html-page-backend-p backend))
+      output
+    (<span class="org-keyword">save-match-data</span>
+      (<span class="org-keyword">if</span> (not (string-match <span class="org-string">"&lt;/head&gt;"</span> output))
+          output
+        (replace-match (concat (skw-blog/page-metadata info) <span class="org-string">"&lt;/head&gt;"</span>)
+                       t t output)))))
+
+(add-to-list 'org-export-filter-final-output-functions
+             #'skw-blog/insert-page-metadata)
+</pre>
+</div>
+
+<p>
+The 404 gets a <code>noindex</code>, since it is served for every unknown path and having
+"No such file or directory" scattered across search results helps nobody. And
+the preview image is a variable of its own:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 22: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">Shown when a page is shared on a platform that renders a link preview.
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">A 256x256 crop of the same picture as the favicon: the square shape suits
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">the summary card, and profile.jpg is 138x138, under the 144px floor below
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">which several platforms drop the image entirely.
+</span>(<span class="org-keyword">setq</span> skw-blog/og-image
+      (concat skw-blog/upstream-url <span class="org-string">"/static/img/og-image.jpg"</span>))
+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -934,6 +1159,11 @@ explanation and setup, with Org-file pre-processing before publishing.</li>
 <p>
 <b>Edit</b> <span class="timestamp-wrapper"><span class="timestamp">[2026-08-20 Thu]</span></span>: Update a lot of elements (sitemaps / indexes, RSS,
  build instructions, Github workflow, etc.).
+</p>
+
+<p>
+<b>Edit</b> <span class="timestamp-wrapper"><span class="timestamp">[2026-08-21 Fri]</span></span>: Document the SEO files, the page metadata and the
+ heading anchors, and resync the excerpts with the source files.
 </p>
 </div>
 </div>

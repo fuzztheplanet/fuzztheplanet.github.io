@@ -1,5 +1,4 @@
 #+TITLE: About this place
-#+DESCRIPTION: Who runs this website, how it is built and licensed, and how to reach me -- GPG key and fingerprint included.
 
 
 * Disclaimer

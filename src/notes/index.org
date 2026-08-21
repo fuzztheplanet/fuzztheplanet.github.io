@@ -1,5 +1,4 @@
 #+TITLE: Various notes
-#+DESCRIPTION: Longer notes that get revisited over time: installing ArchLinux on a workstation, and pentesting tools for Windows.
 
 [[./archlinux-install.org][Installation notes]] for [[https://archlinux.org/][ArchLinux]]-based workstations.
 

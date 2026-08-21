@@ -1,5 +1,4 @@
 #+TITLE: Bookmarks
-#+DESCRIPTION: A collection of bookmarks I keep coming back to, covering programming, offensive and defensive security, system administration and more.
 
 This page lists the resources that were particularly useful to me. Covered
 topics include programming, offensive and defensive information security, system

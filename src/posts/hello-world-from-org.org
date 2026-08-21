@@ -1,5 +1,4 @@
 #+TITLE: Hello World from Org
-#+DESCRIPTION: Yet another simple publishing setup for a static website built with Emacs's Org mode, documented end to end for self-reference.
 #+DATE: [2025-05-25 Sun]
 #+INCLUDE: ../../templates/post.org
 
@@ -12,9 +11,9 @@ will take away an idea or two.
 #+end_preview
 
 #+begin_src sh
-skywhi@dreamland:~/blog$ echo "Hello World Wild Web!" > src/posts/hello.org
-skywhi@dreamland:~/blog$ make update && make publish
-skywhi@dreamland:~/blog$ # make blogging great again!
+skywhi@dreamland:~/org/blog$ echo "Hello World Wild Web!" > src/posts/hello.org
+skywhi@dreamland:~/org/blog$ make update && make publish
+skywhi@dreamland:~/org/blog$ # make blogging great again!
 #+end_src
 
 {{{toc(Contents:,6)}}}
@@ -69,7 +68,7 @@ I ended up with something like the following directory structure for this
 project. The github repository containing all the up-to-date source files can be
 found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
 
-#+begin_src terminal
+#+begin_example
 - ~/org/blog/
   - .github/
     - workflows/
@@ -91,6 +90,7 @@ found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
       - index.org
       - a-note-i-keep-poking-at.org
     - posts/
+      - files/
       - hello.org
       - super-dupa-post.org
   - templates/
@@ -103,15 +103,16 @@ found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
   - Makefile
   - publish-website.el
   - README.org
-#+end_src
+#+end_example
 
-*src/* contains the Org files that will be published to HTML. These files are
-declaring as few exporting options as possible so that they can easily be used
-in other contexts or projects. Global exporting options will be defined in
+*src/* contains the Org files that will be published to HTML. These files
+declare as few exporting options as possible so that they can easily be used in
+other contexts or projects. Global exporting options will be defined in
 *publish-website.el* and page-specific options provided via *templates/* or, in
 rare cases, directly in the files themselves. The *static/* directory hosts
 assets such as stylesheets, fonts, images, etc. that will be exported "as is".
-*www/* contains the complete exported website.
+*www/* contains the complete exported website and -- this one matters -- it is
+committed along with the sources, for reasons explained in the [[#deployment][deployment section]].
 
 The logic behind publishing is implemented in *publish-website.el* which is
 called by a *Makefile* for convenience. It defines all the directories, files
@@ -131,7 +132,7 @@ we can!
 :CUSTOM_ID: source-files
 :END:
 
-This is for example the beginning of [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org][this post]]. It does not contain much beside
+This is for example the beginning of [[https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org][this post]]. It does not contain much besides
 a title, a date, a template and a table of content. There is also a custom
 =preview= block, but more on that a little bit later.
 
@@ -149,9 +150,9 @@ will take away an idea or two.
 ,#+end_preview
 
 ,#+begin_src sh
-skywhi@dreamland:~/blog$ echo "Hello World Wild Web!" > src/posts/hello.org
-skywhi@dreamland:~/blog$ make update && make publish
-skywhi@dreamland:~/blog$ # make blogging great again!
+skywhi@dreamland:~/org/blog$ echo "Hello World Wild Web!" > src/posts/hello.org
+skywhi@dreamland:~/org/blog$ make update && make publish
+skywhi@dreamland:~/org/blog$ # make blogging great again!
 ,#+end_src
 
 {{{toc(Contents:,6)}}}
@@ -168,7 +169,9 @@ to meet: [...]
 #+end_src
 
 Appending a =CUSTOM_ID= property (=C-c C-x p=) to headings makes it possible to
-link to them in the HTML. [[#source-files][This example link]] points to the present section.
+link to them in the HTML. [[#source-files][This example link]] points to the present section. Headings
+carrying one also render a clickable =#= so that the link can be grabbed from
+the page itself, see [[#heading-anchors][further down]].
 
 The =toc= macro above expands to a bold caption followed by a =#+TOC= keyword so
 that every page declares its table of content the same way. It is defined along
@@ -221,12 +224,14 @@ It was hyped for long enough, here is the [[https://github.com/fuzztheplanet/fuz
 defines common settings and build instructions for the project. We feed them
 into /org-publish/ which will take care of producing the corresponding website.
 
-The file is pretty simple and self-explanatory. I mostly added the following
-functions to generate a "preview" of each post, which will be visible in the
-[[./index.org][list of all posts]], as well as include a formatted timestamp of when the post was
-first added. A custom macro is used to format the timestamp. The content of the
-"preview" is written in between the custom =#+begin_preview= and =#+end_preview=
-tags.
+The file has grown to a bit under 600 lines, but most of it is plain
+configuration and publishing rules; only a handful of functions really need a
+word of explanation, and those are the ones reproduced along the way. I started
+with the two below. They generate a "preview" of each post, visible in the
+[[./index.org][list of all posts]], and prepend a formatted timestamp of when the post was first
+added -- a custom macro takes care of the formatting. The content of the
+"preview" is whatever sits between the custom =#+begin_preview= and
+=#+end_preview= tags.
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
@@ -288,16 +293,23 @@ The =preview= block itself is optional. When a file does not have one, both
 searches are allowed to fail and =skw-blog/get-preview= simply hands back an
 empty string.
 
-The site header lives in *templates/header.html* and is injected as the HTML
-preamble. Rather than serving the same markup everywhere, a small function marks
-the navigation entry matching the page being exported with =aria-current= so
-that the current section can be styled (and announced by screen readers).
+The site header lives in *templates/header.html*, whose path is held by
+=skw-blog/header-file=. It is read once into =skw-blog/header= and injected as
+the HTML preamble. Rather than serving the same markup everywhere, a small
+function marks the navigation entry matching the page being exported with
+=aria-current= so that the current section can be styled (and announced by
+screen readers).
 
 #+caption: publish-website.el
 #+begin_src emacs-lisp
-(setq skw-blog/rss-link
-      (concat "<link rel=\"alternate\" type=\"application/rss+xml\" title=\""
-              skw-blog/rss-feedname "\" href=\"/rss.xml\">\n"))
+(defun skw-blog/get-file-content (file)
+  "Return the content of 'file' as a string"
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
+
+(defvar skw-blog/header
+  (skw-blog/get-file-content skw-blog/header-file))
 
 (defun skw-blog/nav-href-for (input-file)
   "Return the header nav href matching 'input-file', or nil when none does."
@@ -368,6 +380,7 @@ sitemap titled 'title'."
  :publishing-directory ,skw-blog/outdir
  :publishing-function org-html-publish-to-html
  :recursive t
+ :sitemap-function skw-blog/format-main-sitemap
  :sitemap-title ,skw-blog/main-sitemap-title)
 
 ;; Bare list of recent posts, included by the homepage. Never a page of its own.
@@ -396,6 +409,20 @@ sitemap titled 'title'."
  :sitemap-format-entry skw-blog/org-format-blog-post-with-preview
  :sitemap-sort-files anti-chronologically
  :sitemap-title "Posts")
+#+end_src
+
+The site-wide sitemap gets a =:sitemap-function= of its own for one small
+touch-up: it drops the 404 page from the listing.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/format-main-sitemap (title list)
+  "Format the site-wide sitemap, leaving the 404 page out of 'list'.
+That page answers every unknown path, so listing it as a destination of its
+own only invites visitors and crawlers to walk into it."
+  (replace-regexp-in-string
+   "^[ \t]*-[ \t]*\\[\\[file:404\\.org\\]\\[[^]]*\\]\\][ \t]*\n" ""
+   (org-publish-sitemap-default title list)))
 #+end_src
 
 The generated *src/posts/index-no-preview.org* is inserted into the main
@@ -427,7 +454,7 @@ sources under *src/*, while *website-static* takes care of everything under
 ("website-static"
  :base-directory ,(concat skw-blog/rootdir "static")
  :base-extension ".*"
- :exclude "*.org"
+ :exclude "\\.org\\'"
  :publishing-directory ,(concat skw-blog/outdir "static")
  :publishing-function org-publish-attachment
  :recursive t)
@@ -460,21 +487,21 @@ PUBLISH_FUNC='(org-publish "website")'
 WS_CMD=python -m http.server 12345 --bind localhost --directory $(OUT_DIR)
 
 all:
-    rm -rf .cache www
-    emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
-    rm -rf .cache
+        rm -rf .cache www
+        emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
+        rm -rf .cache
 
 publish:
-    git commit
-    git push -u origin main
+        git commit
+        git push -u origin main
 
 update:
-    make all
-    git add .
-    git status
+        make all
+        git add .
+        git status
 
 run:
-    $(WS_CMD)
+        $(WS_CMD)
 
 .PHONY: all mathjax publish update run
 #+end_src
@@ -494,7 +521,7 @@ the website locally at http://localhost:12345.
 
 Once a commit is pushed, the GitHub Actions workflow takes over: it checks the
 repository out and hands the *www/* directory to GitHub Pages as a deployment
-artifact..
+artifact.
 
 #+caption: .github/workflows/static.yml
 #+begin_src yaml
@@ -502,6 +529,11 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
@@ -523,6 +555,17 @@ jobs:
         uses: actions/deploy-pages@v4
 #+end_src
 
+Note what this workflow does /not/ do: there is no Emacs, no =make=, no build
+step of any kind. It deploys a plain checkout, which is why *www/* has to be
+committed along with the sources -- gitignoring the build output, the first
+instinct for a generated directory, deploys an empty site. That choice has one
+consequence worth knowing about: Org stamps every exported page with a build
+date comment, which alone made all of them show up as modified after each
+rebuild, so =org-export-time-stamp-file= is set to =nil= in *publish-website.el*.
+
+The =permissions:= block is not optional either: without =pages: write= and
+=id-token: write=, =actions/deploy-pages= fails outright.
+
 The last piece worth mentioning is the *CNAME* file sitting at the root of the
 repository. It contains a single line -- the domain name -- which is how Pages
 knows to serve the site as [[https://www.skywhi.net][www.skywhi.net]] instead of the default /github.io/
@@ -538,8 +581,8 @@ address. The matching DNS records live at my registrar.
 :END:
 
 [[https://www.mathjax.org/][MathJax]]' [[https://orgmode.org/manual/Math-formatting-in-HTML-export.html][Org mode support]] lets me export to HTML math formulas written in LaTeX.
-Here are a couple of examples using inline code blocks and "proper" LaTeX
-syntax.
+Here are a couple of examples using the inline =$...$= and =\( ... \)=
+delimiters as well as "proper" LaTeX environments.
 
 #+begin_src org
 If $a^2=b$ and \( b=2 \), then the solution must be either $$ a=+\sqrt{2} $$ or
@@ -573,25 +616,28 @@ Upstream ships around 20 MB: several output formats, Node entry points and a
 speech locale for every supported language. A page here loads a small fraction
 of that, so the target below pulls the release straight from the npm registry
 (which, unlike a shallow clone of the default branch, is pinned to a version)
-and keeps only the pieces that are actually served.
+and keeps only the pieces that are actually served. The font package has a
+version of its own, =MATHJAX_FONT_VERSION=, which merely follows
+=MATHJAX_VERSION= for now: the two are released separately upstream and nothing
+guarantees they stay in step.
 
 #+caption: Makefile
 #+begin_src makefile
 MATHJAX_DIR=static/js/mathjax
 MATHJAX_VERSION=4.1.3
 MATHJAX_FONT=mathjax-modern
+MATHJAX_FONT_VERSION=$(MATHJAX_VERSION)
 NPM=https://registry.npmjs.org
 TMP=$(MATHJAX_DIR).tmp
 
 mathjax:
-    # Only download and serve the MathJax components needed.
-    # See the source file for the full code.
-    rm -rf $(MATHJAX_DIR) $(TMP)
-    mkdir -p $(TMP)/mathjax $(TMP)/font
-    curl -fsSL $(NPM)/mathjax/-/mathjax-$(MATHJAX_VERSION).tgz \
-        | tar xz -C $(TMP)/mathjax --strip-components=1
-    curl -fsSL $(NPM)/@mathjax/$(MATHJAX_FONT)-font/-/$(MATHJAX_FONT)-font-$(MATHJAX_VERSION).tgz \
-        | tar xz -C $(TMP)/font --strip-components=1
+        rm -rf $(MATHJAX_DIR) $(TMP)
+        mkdir -p $(TMP)/mathjax $(TMP)/font
+        curl -fsSL $(NPM)/mathjax/-/mathjax-$(MATHJAX_VERSION).tgz \
+            | tar xz -C $(TMP)/mathjax --strip-components=1
+        curl -fsSL $(NPM)/@mathjax/$(MATHJAX_FONT)-font/-/$(MATHJAX_FONT)-font-$(MATHJAX_FONT_VERSION).tgz \
+            | tar xz -C $(TMP)/font --strip-components=1
+# [...] the rest of the target keeps only the files that are actually served.
 #+end_src
 
 Since version 4, /MathJax/ no longer bundles its fonts: it resolves the font
@@ -634,7 +680,7 @@ copy too. Org's stock MathJax template has no =loader= section, so I inject one:
 :CUSTOM_ID: rss
 :END:
 
-Generating a RSS to track when new posts are published is actually not that
+Generating an RSS feed to track when new posts are published is actually not that
 complicated with [[https://github.com/emacsmirror/ox-rss][ox-rss]]. Here are a couple of helper functions to generate a
 "sitemap" file named *rss.org* which will list all the entries under
 *src/posts/* excluding the previously generated indexes. This file is then
@@ -656,7 +702,7 @@ converted to XML. The description field of each item is the content of the
                           plist dir)))
 
 (defun skw-blog/format-rss-feed (title list)
-  "Generate a sitemap of posts that will be exported as a RSS feed. 'title' is
+  "Generate a sitemap of posts that will be exported as an RSS feed. 'title' is
 title of the RSS feed and 'list' the files to be included."
   (concat "#+TITLE: " title "\n\n" (org-list-to-subtree list)))
 
@@ -721,6 +767,168 @@ cannot work out the self-referencing =<atom:link>= from =:html-link-home= on its
 own -- it has to be spelled out, or readers end up subscribing to an address
 that does not exist.
 
+A feed nobody can find is not much use, so every exported page advertises it in
+its =<head>= with a =<link rel="alternate">= tag -- the autodiscovery bit that
+lets a browser or a feed reader pick the feed up from any page of the site.
+That tag is =skw-blog/rss-link=, which *website-src* concatenates into its
+=:html-head= next to the stylesheets and the favicon.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+;; Feed autodiscovery, so readers can find the feed from any page
+(setq skw-blog/rss-link
+      (concat "<link rel=\"alternate\" type=\"application/rss+xml\" title=\""
+              skw-blog/rss-feedname "\" href=\"/rss.xml\">\n"))
+#+end_src
+
+*** Heading permalinks
+:PROPERTIES:
+:CUSTOM_ID: heading-anchors
+:END:
+
+Headings are made linkable via an anchor tag =#= with an org export filter.
+First we need a way to detect if the export is for pure HTML content:
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/html-page-backend-p (backend)
+  "Return non-nil when 'backend' exports whole HTML pages rather than feed items."
+  (and (org-export-derived-backend-p backend 'html)
+       (not (org-export-derived-backend-p backend 'rss))))
+#+end_src
+
+Only headings carrying a =CUSTOM_ID= get an anchor. Org derives every other id
+from a counter that shifts as soon as the document changes, so such a link would
+rot silently, hence the =org[0-9a-f]+= test below to detect generated IDs.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/add-heading-anchor (headline backend info)
+  "Append a permalink anchor to the heading that opens 'headline'.
+Only headings carrying a CUSTOM_ID get one: Org derives every other id from
+a counter that shifts as soon as the document changes, so such a link would
+rot silently."
+  (if (not (skw-blog/html-page-backend-p backend))
+      headline
+    (save-match-data
+      ;; Children are filtered before their parent, so the first heading tag in
+      ;; 'headline' is always the one this call is responsible for.
+      (if (not (string-match "<h\\([1-6]\\) id=\"\\([^\"]+\\)\">" headline))
+          headline
+        (let ((level (match-string 1 headline))
+              (id (match-string 2 headline))
+              (from (match-end 0)))
+          (if (string-match-p "\\`org[0-9a-f]+\\'" id)
+              headline
+            (let ((close (string-match (concat "</h" level ">") headline from)))
+              (if (null close)
+                  headline
+                (concat (substring headline 0 close)
+                        (format (concat "<a class=\"heading-anchor\" href=\"#%s\""
+                                        " aria-label=\"Permalink to this section\">#</a>")
+                                id)
+                        (substring headline close))))))))))
+
+(add-to-list 'org-export-filter-headline-functions
+             #'skw-blog/add-heading-anchor)
+#+end_src
+
+*** Link previews and canonical URLs
+:PROPERTIES:
+:CUSTOM_ID: page-metadata
+:END:
+
+Org gives each page a =<title>= but nothing else: no canonical URL, and none of
+the [[https://ogp.me/][Open Graph]] properties that messaging apps, forums and social platforms read
+to build a link preview. A page shared anywhere therefore rendered as a bare
+URL, with no blurb and no image.
+
+A filter on the final output injects the missing tags right before =</head>=.
+The path a page is served at is derived from its source file, so nothing has to
+be declared by hand -- =index.org= files become directory URLs, everything else
+keeps its name.
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+(defun skw-blog/page-path (input-file)
+  "Return the site-root-relative path at which 'input-file' is served."
+  (let* ((relative (file-relative-name (expand-file-name input-file)
+                                       skw-blog/srcdir))
+         (html (concat (file-name-sans-extension relative) ".html")))
+    (cond ((equal html "index.html") "/")
+          ((string-suffix-p "/index.html" html)
+           (concat "/" (file-name-directory html)))
+          (t (concat "/" html)))))
+
+
+(defun skw-blog/attribute-value (string)
+  "Return 'string' escaped for use as an HTML attribute value.
+'org-html-encode-plain-text' leaves double quotes alone, which is fine for
+text nodes and silently breaks an attribute the first time a title or a
+description contains one."
+  (replace-regexp-in-string "\"" "&quot;" (org-html-encode-plain-text string) t t))
+
+
+(defun skw-blog/page-metadata (info)
+  "Return the canonical, Open Graph and Twitter tags for the page in 'info'."
+  (let* ((input (plist-get info :input-file))
+         (path (and input (skw-blog/page-path input)))
+         (url (and path (concat skw-blog/upstream-url path)))
+         (title (skw-blog/attribute-value
+                 (org-element-interpret-data (plist-get info :title))))
+         (description (skw-blog/attribute-value skw-blog/rss-description))
+         ;; Posts and notes are articles; the homepage and the standing pages
+         ;; around them are not.
+         (type (if (and path (string-match-p "\\`/\\(posts\\|notes\\)/." path))
+                   "article"
+                 "website"))
+         (tags '()))
+    (when url
+      (push (format "<link rel=\"canonical\" href=\"%s\">" url) tags)
+      (push (format "<meta property=\"og:url\" content=\"%s\">" url) tags))
+    (push (format "<meta property=\"og:type\" content=\"%s\">" type) tags)
+    (push (format "<meta property=\"og:site_name\" content=\"%s\">"
+                  (skw-blog/attribute-value skw-blog/site-name))
+          tags)
+    (push (format "<meta property=\"og:title\" content=\"%s\">" title) tags)
+    (push (format "<meta property=\"og:description\" content=\"%s\">" description) tags)
+    (push (format "<meta property=\"og:image\" content=\"%s\">" skw-blog/og-image) tags)
+    (push "<meta name=\"twitter:card\" content=\"summary\">" tags)
+    ;; The 404 is served for every unknown path. Indexing it would scatter
+    ;; "No such file or directory" across search results.
+    (when (and input (equal (file-name-nondirectory input) "404.org"))
+      (push "<meta name=\"robots\" content=\"noindex\">" tags))
+    (concat (mapconcat #'identity (nreverse tags) "\n") "\n")))
+
+
+(defun skw-blog/insert-page-metadata (output backend info)
+  "Insert the tags built by 'skw-blog/page-metadata' into 'output's head."
+  (if (not (skw-blog/html-page-backend-p backend))
+      output
+    (save-match-data
+      (if (not (string-match "</head>" output))
+          output
+        (replace-match (concat (skw-blog/page-metadata info) "</head>")
+                       t t output)))))
+
+(add-to-list 'org-export-filter-final-output-functions
+             #'skw-blog/insert-page-metadata)
+#+end_src
+
+The 404 gets a =noindex=, since it is served for every unknown path and having
+"No such file or directory" scattered across search results helps nobody. And
+the preview image is a variable of its own:
+
+#+caption: publish-website.el
+#+begin_src emacs-lisp
+;; Shown when a page is shared on a platform that renders a link preview.
+;; A 256x256 crop of the same picture as the favicon: the square shape suits
+;; the summary card, and profile.jpg is 138x138, under the 144px floor below
+;; which several platforms drop the image entirely.
+(setq skw-blog/og-image
+      (concat skw-blog/upstream-url "/static/img/og-image.jpg"))
+#+end_src
+
 * Resources
 :PROPERTIES:
 :CUSTOM_ID: resources
@@ -748,3 +956,6 @@ this adventure. I highly recommend that you check them out:
 
 *Edit* [2026-08-20 Thu]: Update a lot of elements (sitemaps / indexes, RSS,
  build instructions, Github workflow, etc.).
+
+*Edit* [2026-08-21 Fri]: Document the SEO files, the page metadata and the
+ heading anchors, and resync the excerpts with the source files.
