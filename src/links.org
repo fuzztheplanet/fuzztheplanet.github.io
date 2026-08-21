@@ -93,6 +93,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: prog-general
 :END:
 ***** Resources
+:PROPERTIES:
+:CUSTOM_ID: prog-general-resources
+:END:
 
 - [[https://missing.csail.mit.edu][The Missing Semester of Your CS Education]]: Great text and video resources
   about essential tools and techniques such as command line usage, shell
@@ -101,6 +104,9 @@ administration and more. May you find something useful to you as well!
   programming patterns.
 
 ***** Tools
+:PROPERTIES:
+:CUSTOM_ID: prog-general-tools
+:END:
 
 - [[https://github.com/dockcross/dockcross][dockcross]]: Cross compiling toolchains in Docker images.
 - [[https://github.com/dockbuild/dockbuild][dockbuild]]: Compiling environments in Docker images.
@@ -155,6 +161,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-general
 :END:
 ***** Multi-topic resources
+:PROPERTIES:
+:CUSTOM_ID: sec-general-multi-topic
+:END:
 
 - [[https://book.hacktricks.wiki/en/index.html][Hacktricks]].
 - [[https://www.thehacker.recipes/][The Hacker Recipes]].
@@ -168,6 +177,9 @@ administration and more. May you find something useful to you as well!
 - [[https://talkback.sh/][Talkback.sh]]: AI-powered infosec resource aggregator.
 
 ***** CTF & learning platforms
+:PROPERTIES:
+:CUSTOM_ID: sec-general-ctf
+:END:
 
 - [[https://ctftime.org/][CTFtime]]: Lists all major CTF events and teams.
 - [[https://www.root-me.org][Root-Me]]: Plenty of challenges from various
@@ -179,9 +191,15 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-appsec
 :END:
 ***** PHP
+:PROPERTIES:
+:CUSTOM_ID: sec-appsec-php
+:END:
 
 - [[https://phpsecurity.readthedocs.io/en/latest/index.html][Survive The Deep End: PHP Security]]:
 ***** Tools
+:PROPERTIES:
+:CUSTOM_ID: sec-appsec-tools
+:END:
 
 - [[http://frama-c.com][Frama-C]]: Static analysis and formal proof for C programs.
 - [[http://krakatoa.lri.fr][Krakatoa and Jessie]]: Front-ends to the [[http://why.lri.fr][Why]] platform for deductive program
@@ -207,6 +225,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-linux
 :END:
 ***** Post exploitation & privilege escalation
+:PROPERTIES:
+:CUSTOM_ID: sec-linux-postex
+:END:
 
 - [[https://www.contextis.com/us/blog/linux-privilege-escalation-via-dynamically-linked-shared-object-library][Linux Privilege Escalation via Dynamically Linked Shared Object Library]].
 - [[https://gtfobins.github.io][GTFOBins]]: Common exploitable UNIX binaries and ways to take advantage of
@@ -218,11 +239,17 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-mobile
 :END:
 ***** General resources
+:PROPERTIES:
+:CUSTOM_ID: sec-mobile-general
+:END:
 
 - [[https://www2.owasp.org/www-project-mobile-security-testing-guide][OWASP Mobile Security Testing Guide]]: Comprehensive guide for both Android
   and iOS with testing guide, verification standard and checklist.
 
 ***** Multi-platform tools
+:PROPERTIES:
+:CUSTOM_ID: sec-mobile-tools
+:END:
 
 - [[https://github.com/dpnishant/appmon/wiki][AppMon]]: Automated framework for monitoring and tempering system API calls
   for macOS, iOS and Android.
@@ -231,12 +258,18 @@ administration and more. May you find something useful to you as well!
   and Android.
 
 ***** Android
+:PROPERTIES:
+:CUSTOM_ID: sec-mobile-android
+:END:
 
 - [[https://mobisec.reyammer.io][MOBISEC course on Android security]]: Includes videos, slides and
   challenges by [[https://reyammer.io][Yanick Fratantonio]].
 - [[https://github.com/ashishb/android-security-awesome][Android-Security-Awesome]]: Collection of Android-related pentest tools.
 
 ***** iOS
+:PROPERTIES:
+:CUSTOM_ID: sec-mobile-ios
+:END:
 
 - [[https://www.allysonomalley.com/2018/08/10/ios-pentesting-tools-part-1-app-decryption-and-class-dump][iOS Pentesting Tools]]: Series of 4 blog posts introducing the process of
   testing iOS applications by [[https://www.allysonomalley.com][Allyson O'Malley]].
@@ -246,18 +279,27 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-recon
 :END:
 ***** General resources
+:PROPERTIES:
+:CUSTOM_ID: sec-recon-general
+:END:
 
 - [[https://www.shodan.io][Shodan]]: In-depth search for any internet connected machine.
 - [[https://community.turgensec.com/shodan-pentesting-guide/][Shodan Pentesting Guide]] by [[https://www.turgensec.com/][Turgensec]].
 - [[https://www.onyphe.io][Onyphe]]: Cyber Defense Search Engine.
 
 ***** Google dorks
+:PROPERTIES:
+:CUSTOM_ID: sec-recon-dorks
+:END:
 
 - [[https://resources.bishopfox.com/resources/tools/google-hacking-diggity][Google Hacking Diggity Project]]: Search engine hacking.
 - [[https://www.exploit-db.com/google-hacking-database][Google Hacking Database]]: Collection useful Google dorks from exploit-db.
 - [[https://www.sans.org/security-resources/GoogleCheatSheet.pdf][SANS Google Dork Cheatsheet]] (PDF).
 
 ***** Nmap
+:PROPERTIES:
+:CUSTOM_ID: sec-recon-nmap
+:END:
 
 - [[https://github.com/vdjagilev/nmap-formatter][nmap-formatter]]: convert nmap's output to HTML, CSV, JSON, Markdown, Dot,
   SQLite, Excel, D2.
@@ -267,6 +309,9 @@ administration and more. May you find something useful to you as well!
   output.
 
 ***** Subdomain enumeration
+:PROPERTIES:
+:CUSTOM_ID: sec-recon-subdomains
+:END:
 
 Guides:
 - [[https://appsecco.com/books/subdomain-enumeration/][The Art of Subdomain Enumeration]] gitbook by [[https://appsecco.com/][Appsecco]]
@@ -284,10 +329,16 @@ Tools:
 :CUSTOM_ID: sec-web
 :END:
 ***** JavaScript and browser security
+:PROPERTIES:
+:CUSTOM_ID: sec-web-js
+:END:
 
 - [[https://zon8.re/posts/javascript-engine-fuzzing-and-exploitation-reading-list/][JavaScript Engine Fuzzing and Exploitation Reading List]] by [[https://zon8.re/][Zon8 Research]].
 
 ***** XSS
+:PROPERTIES:
+:CUSTOM_ID: sec-web-xss
+:END:
 
 - [[https://portswigger.net/web-security/cross-site-scripting/cheat-sheet][XSS Cheatsheet]] by [[https://portswigger.net][portswigger.net]].
 - [[https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting][XSS tips and tricks]] by [[https://book.hacktricks.xyz/][Hacktricks]].
@@ -297,6 +348,9 @@ Tools:
 :CUSTOM_ID: sec-windows
 :END:
 ***** Pentesting / offensive security
+:PROPERTIES:
+:CUSTOM_ID: sec-windows-pentest
+:END:
 
 - [[https://riccardoancarani.github.io/2019-10-04-lateral-movement-megaprimer/][Lateral Movement Megaprimer]].
 - [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md][Attacking Active Directory (PayloadAllTheThings)]] by [[https://github.com/swisskyrepo][Swisskey]].

@@ -1,6 +1,7 @@
 (require 'package)
 (package-initialize)
 
+(require 'subr-x)
 (require 'org)
 (require 'ox-publish)
 (require 'ox-html)
@@ -120,6 +121,14 @@
      template t t)))
 
 
+;; Org advertises itself in every page with a <meta name="generator"> tag.
+;; Keep the default tags (author, description, keywords) and drop that one.
+(defun skw-blog/html-meta-tags (info)
+  "Return the tags of 'org-html-meta-tags-default' minus the generator one."
+  (seq-remove (lambda (tag) (equal (cadr tag) "generator"))
+              (org-html-meta-tags-default info)))
+
+
 ;; Emacs and org-mode general options
 ;; (might redefine them later in templates or on a per-file basis)
 (setq
@@ -140,7 +149,6 @@
  org-export-headline-levels 3
  org-export-with-section-numbers nil
  org-export-with-sub-superscripts nil
- org-export-with-toc nil
  org-export-with-broken-links t
 
  org-html-divs '((preamble  "header" "preamble")
@@ -149,6 +157,7 @@
 
  org-html-doctype "html5"
  org-html-head nil
+ org-html-meta-tags #'skw-blog/html-meta-tags
  org-html-head-include-default-style nil
  org-html-head-include-scripts nil
  org-html-html5-fancy nil
@@ -176,7 +185,6 @@
    before and after paragraphs. Return an empty string when 'file' has
    no such block."
   (with-temp-buffer
-    (message file)
     (insert-file-contents file)
     (goto-char (point-min))
     (let* ((beg (and (re-search-forward "^#\\+begin_preview$" nil t)
@@ -185,7 +193,8 @@
                      (re-search-forward "^#\\+end_preview$" nil t)
                      (match-beginning 0))))
       (if end
-          (replace-regexp-in-string "\n" " " (buffer-substring beg end))
+          (string-trim
+           (replace-regexp-in-string "\n" " " (buffer-substring beg end)))
         ""))))
 
 
@@ -360,16 +369,43 @@ description contains one."
 
 
 ;; RSS feed generation
+(defun skw-blog/fix-rss-feed (rss-file)
+  "Rewrite 'rss-file' in place to fix two ox-rss habits.
+The channel <pubDate> and <lastBuildDate> default to the build time, which
+dirtied the committed rss.xml on every rebuild even when no post changed;
+both become the newest item's date instead. And <guid> carries the item's
+permalink, so its isPermaLink attribute should say so."
+  (with-temp-file rss-file
+    (insert-file-contents rss-file)
+    ;; Occurrence #1 of <pubDate> is the channel's own, occurrence #2 belongs
+    ;; to the first -- newest -- item. An empty feed keeps the build time.
+    (goto-char (point-min))
+    (when (re-search-forward "<pubDate>\\(.*\\)</pubDate>" nil t 2)
+      (let ((latest (match-string 1)))
+        (goto-char (point-min))
+        (re-search-forward "<pubDate>.*</pubDate>")
+        (replace-match (concat "<pubDate>" latest "</pubDate>") t t)
+        (goto-char (point-min))
+        (when (re-search-forward "<lastBuildDate>.*</lastBuildDate>" nil t)
+          (replace-match (concat "<lastBuildDate>" latest "</lastBuildDate>")
+                         t t))))
+    (goto-char (point-min))
+    (while (search-forward "<guid isPermaLink=\"false\">" nil t)
+      (replace-match "<guid isPermaLink=\"true\">" t t))))
+
 (defun skw-blog/publish-to-rss (plist filename dir)
   "Publish 'plist' when 'filename' corresponds to RSS feed Org-file to 'dir'."
   (if (equal skw-blog/rss-filename (file-name-nondirectory filename))
       ;; Not `org-rss-publish-to-rss': it stamps a random :ID: on every headline
       ;; of rss.org and writes it back, so a plain "make all" dirties the source
       ;; tree for nothing -- <guid> is the permalink here anyway.
-      (org-publish-org-to 'rss filename
-                          (concat "." (or (plist-get plist :rss-extension)
-                                          org-rss-extension))
-                          plist dir)))
+      (let ((output (org-publish-org-to 'rss filename
+                                        (concat "." (or (plist-get plist :rss-extension)
+                                                        org-rss-extension))
+                                        plist dir)))
+        (when output
+          (skw-blog/fix-rss-feed output))
+        output)))
 
 (defun skw-blog/format-rss-feed (title list)
   "Generate a sitemap of posts that will be exported as an RSS feed. 'title' is

@@ -14,8 +14,8 @@
   <link>https://www.skywhi.net/posts/</link>
   <description><![CDATA[Sporadic posts about Emacs, security and other rabbit holes.]]></description>
   <language>en</language>
-  <pubDate>Fri, 21 Aug 2026 17:12:34 +0200</pubDate>
-  <lastBuildDate>Fri, 21 Aug 2026 17:12:34 +0200</lastBuildDate>
+  <pubDate>Wed, 03 Dec 2025 00:00:00 +0100</pubDate>
+  <lastBuildDate>Wed, 03 Dec 2025 00:00:00 +0100</lastBuildDate>
   <generator>Emacs 30.2 Org-mode 9.7.11</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
@@ -28,11 +28,11 @@
     <title>Getting Things Done with Org</title>
     <link>https://www.skywhi.net/posts/gtd-with-org.html</link>
     <author>skywhi@skywhi.net (Skywhi)</author>
-    <guid isPermaLink="false">https://www.skywhi.net/posts/gtd-with-org.html</guid>
+    <guid isPermaLink="true">https://www.skywhi.net/posts/gtd-with-org.html</guid>
     <pubDate>Wed, 03 Dec 2025 00:00:00 +0100</pubDate>
 
     <description><![CDATA[<p>
-    <i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows. 
+    <i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows.
     </p>
     ]]></description>
   </item>
@@ -40,11 +40,11 @@
     <title>Using git while on-the-run</title>
     <link>https://www.skywhi.net/posts/git-while-on-the-run.html</link>
     <author>skywhi@skywhi.net (Skywhi)</author>
-    <guid isPermaLink="false">https://www.skywhi.net/posts/git-while-on-the-run.html</guid>
+    <guid isPermaLink="true">https://www.skywhi.net/posts/git-while-on-the-run.html</guid>
     <pubDate>Mon, 07 Jul 2025 00:00:00 +0200</pubDate>
 
     <description><![CDATA[<p>
-    This post describes how to use a custom <i>git</i> configuration, including SSH and GPG keys, stored on an external drive such as a USB stick. This is nothing fancy but comes in handy when the user does not want to store their keys persistently on the machine. 
+    This post describes how to use a custom <i>git</i> configuration, including SSH and GPG keys, stored on an external drive such as a USB stick. This is nothing fancy but comes in handy when the user does not want to store their keys persistently on the machine.
     </p>
     ]]></description>
   </item>
@@ -52,11 +52,11 @@
     <title>Hello World from Org</title>
     <link>https://www.skywhi.net/posts/hello-world-from-org.html</link>
     <author>skywhi@skywhi.net (Skywhi)</author>
-    <guid isPermaLink="false">https://www.skywhi.net/posts/hello-world-from-org.html</guid>
+    <guid isPermaLink="true">https://www.skywhi.net/posts/hello-world-from-org.html</guid>
     <pubDate>Sun, 25 May 2025 00:00:00 +0200</pubDate>
 
     <description><![CDATA[<p>
-    I describe <i>yet-another-simple-publishing-setup</i> for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two. </p>
+    I describe <i>yet-another-simple-publishing-setup</i> for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two.</p>
     ]]></description>
   </item>
 </channel>

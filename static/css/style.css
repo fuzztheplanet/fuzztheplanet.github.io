@@ -1,5 +1,10 @@
 /* ==========================================================================
    Raw colour palette (also consumed by htmlize.css for syntax highlighting)
+
+   These values never change with the theme: dark mode only redefines the
+   semantic tokens below. Anything reading a raw colour directly -- as
+   htmlize.css does -- must therefore work in both themes; that holds today
+   because syntax highlighting sits on --code-bg, which stays dark in both.
    ========================================================================== */
 :root {
     --azure:       #13ecec;
@@ -97,16 +102,14 @@
 @font-face {
     font-display: swap;
     font-family: Inconsolata;
-    src: url(../fonts/Inconsolata-Regular.woff2) format('woff2'),
-         url(../fonts/Inconsolata-Regular.ttf) format('truetype');
+    src: url(../fonts/Inconsolata-Regular.woff2) format('woff2');
     font-weight: normal;
 }
 
 @font-face {
     font-display: swap;
     font-family: Inconsolata;
-    src: url(../fonts/Inconsolata-Bold.woff2) format('woff2'),
-         url(../fonts/Inconsolata-Bold.ttf) format('truetype');
+    src: url(../fonts/Inconsolata-Bold.woff2) format('woff2');
     font-weight: bold;
 }
 
@@ -209,9 +212,7 @@ body {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    object-fit: cover;
     transition: transform 0.2s ease;
 }
 

@@ -9,7 +9,7 @@
 .org-makefile-targets          { color: var(--azure); }
 .org-org-block-begin-line      { color: var(--orange); }
 .org-org-block-end-line        { color: var(--orange); }
-.org-org-document-info         { color: var(--blue-dark);; }
+.org-org-document-info         { color: var(--blue-dark); }
 .org-org-document-info-keyword { color: var(--blue-light); }
 .org-org-document-title        { color: var(--blue-dark); }
 .org-org-drawer                { color: var(--blue-dark); }

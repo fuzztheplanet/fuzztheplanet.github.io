@@ -17,8 +17,11 @@ my [[./now.org][./now]] page.
 With this out of the way, I wish you happy reading!
 
 * Latest posts
+:PROPERTIES:
+:CUSTOM_ID: latest-posts
+:END:
 
 #+INCLUDE: "./posts/index-no-preview.org" :lines "3-"
 
-A list of all blog posts is available [[file:./posts/index.org][here]]. The elderly are encouraged to use
-the [[./rss.xml][RSS feed]].
+A [[file:./posts/index.org][full list of all blog posts]] is also available. The elderly are encouraged to
+use the [[./rss.xml][RSS feed]].
