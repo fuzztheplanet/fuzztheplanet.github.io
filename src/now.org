@@ -1,4 +1,5 @@
 #+TITLE: Now
+#+DESCRIPTION: What I am currently working on, thinking about and spending my time on, updated whenever the picture changes.
 
 This is my [[https://nownownow.com/about][now]] page (inspired by [[https://sive.rs][Derek Siver]]'s [[https://sive.rs/nowff][/now movement]] and [[https://breakpoint.purrfect.fr/][cym13]]'s [[https://breakpoint.purrfect.fr/soc.html][Stream
 of Consciousness]]). Here you will find a brief overview of my current activities

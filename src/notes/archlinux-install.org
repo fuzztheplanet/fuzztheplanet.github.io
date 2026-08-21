@@ -1,4 +1,5 @@
 #+TITLE: ArchLinux installation
+#+DESCRIPTION: Personal notes for installing ArchLinux on a workstation, booting a single LUKS-encrypted system partition holding LVM volumes through GRUB.
 
 Below are some quickly-written notes on installing ArchLinux for a standard
 workstation (desktop, laptop or VM). The setup is quite simple: GRUB will boot a

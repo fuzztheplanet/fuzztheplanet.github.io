@@ -1,4 +1,5 @@
 #+TITLE: Using git while on-the-run
+#+DESCRIPTION: How to keep a git configuration, an SSH key and a GPG signing key on a USB stick, so none of it has to persist on the machine you are working from.
 #+DATE: [2025-07-07 Mon]
 #+INCLUDE: ../../templates/post.org
 

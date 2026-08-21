@@ -341,6 +341,38 @@ body {
 #content h5 { font-size: 1rem; }
 #content h6 { font-size: 1rem; color: var(--text-muted); }
 
+/* Permalink anchors, added by an export filter in publish-website.el to every
+   heading that has a CUSTOM_ID. They hold their space at all times so that
+   revealing one cannot reflow the heading. */
+#content .heading-anchor {
+    margin-left: 0.35em;
+    color: var(--text-muted);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+#content h2:hover .heading-anchor,
+#content h3:hover .heading-anchor,
+#content h4:hover .heading-anchor,
+#content h5:hover .heading-anchor,
+#content h6:hover .heading-anchor,
+#content .heading-anchor:focus-visible {
+    opacity: 1;
+}
+
+#content .heading-anchor:hover,
+#content .heading-anchor:focus-visible {
+    color: var(--link-hover);
+}
+
+/* Without a pointer there is no hover to reveal them, so keep them visible. */
+@media (hover: none) {
+    #content .heading-anchor {
+        opacity: 0.55;
+    }
+}
+
 /* Paragraphs */
 #content p {
     margin: 1rem 0;
@@ -509,7 +541,7 @@ body {
     font-family: var(--mono);
     background-color: var(--code-bg);
     color: var(--code-fg);
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     padding: 1.7rem 1rem 1rem 1rem;
     border-radius: var(--radius);
     border: 1px solid color-mix(in srgb, var(--code-fg) 12%, transparent);
@@ -547,7 +579,7 @@ body {
 
 #content .example {
     font-family: var(--mono);
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     background-color: var(--bg-soft);
     border: 1px solid var(--rule);
     border-left: 3px solid var(--quote-border);
@@ -723,7 +755,8 @@ body {
    ========================================================================== */
 @media print {
     #preamble nav,
-    #postamble {
+    #postamble,
+    #content .heading-anchor {
         display: none;
     }
 

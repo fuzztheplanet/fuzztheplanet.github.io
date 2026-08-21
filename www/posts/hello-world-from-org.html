@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-08-20 Thu 22:32 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hello World from Org</title>
+<meta name="description" content="Yet another simple publishing setup for a static website built with Emacs's Org mode, documented end to end for self-reference." />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
@@ -12,6 +12,7 @@
 <link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
 <script>
   window.MathJax = {
+    loader: {paths: {fonts: '/static/js/mathjax/fonts'}},
     tex: {
       ams: {
         multlineWidth: '85%'
@@ -42,6 +43,14 @@
   async
   src="/static/js/mathjax/tex-mml-chtml.js">
 </script>
+<link rel="canonical" href="https://www.skywhi.net/posts/hello-world-from-org.html">
+<meta property="og:url" content="https://www.skywhi.net/posts/hello-world-from-org.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Skywhi's Blog">
+<meta property="og:title" content="Hello World from Org">
+<meta property="og:description" content="Yet another simple publishing setup for a static website built with Emacs's Org mode, documented end to end for self-reference.">
+<meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
+<meta name="twitter:card" content="summary">
 </head>
 <body>
 <header id="preamble" class="status">
@@ -69,7 +78,7 @@
 </p>
 
 
-<div class="preview" id="orgf323e9b">
+<div class="preview" id="orgef3fa6d">
 <p>
 I describe <i>yet-another-simple-publishing-setup</i> for a static website using
 Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available
@@ -117,7 +126,7 @@ skywhi@dreamland:~/blog$ <span class="org-comment-delimiter"># </span><span clas
 </ul>
 </div>
 <div id="outline-container-rationale" class="outline-2">
-<h2 id="rationale">Rationale</h2>
+<h2 id="rationale">Rationale<a class="heading-anchor" href="#rationale" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-rationale">
 <p>
 I figured the time had come to host some of my modest content online for
@@ -167,7 +176,7 @@ More on the deployment part <a href="#deployment">further down</a>.
 </div>
 </div>
 <div id="outline-container-project-layout" class="outline-2">
-<h2 id="project-layout">Project layout</h2>
+<h2 id="project-layout">Project layout<a class="heading-anchor" href="#project-layout" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-project-layout">
 <p>
 I ended up with something like the following directory structure for this
@@ -237,11 +246,11 @@ we can!
 </div>
 </div>
 <div id="outline-container-first-page" class="outline-2">
-<h2 id="first-page">To the first page!</h2>
+<h2 id="first-page">To the first page!<a class="heading-anchor" href="#first-page" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-first-page">
 </div>
 <div id="outline-container-source-files" class="outline-3">
-<h3 id="source-files">Source files</h3>
+<h3 id="source-files">Source files<a class="heading-anchor" href="#source-files" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-source-files">
 <p>
 This is for example the beginning of <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/src/posts/hello-world-from-org.org">this post</a>. It does not contain much beside
@@ -294,7 +303,7 @@ with the other macros <a href="#publish-website">further down</a>.
 </div>
 </div>
 <div id="outline-container-templates" class="outline-3">
-<h3 id="templates">Templates</h3>
+<h3 id="templates">Templates<a class="heading-anchor" href="#templates" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-templates">
 <p>
 When several Org files share the same rendering and exporting options, it can
@@ -316,7 +325,7 @@ directive of the source file and add custom HTML to the post.
 </div>
 </div>
 <div id="outline-container-css" class="outline-3">
-<h3 id="css">CSS styling</h3>
+<h3 id="css">CSS styling<a class="heading-anchor" href="#css" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-css">
 <p>
 The two files that are used are <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/style.css">style.css</a> and <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/static/css/htmlize.css">htmlize.css</a>. The first hosts all
@@ -332,11 +341,11 @@ org-compatible ones are available out there.
 </div>
 </div>
 <div id="outline-container-publishing" class="outline-3">
-<h3 id="publishing">Building and publishing</h3>
+<h3 id="publishing">Building and publishing<a class="heading-anchor" href="#publishing" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-publishing">
 </div>
 <div id="outline-container-publish-website" class="outline-4">
-<h4 id="publish-website">publish-website.el</h4>
+<h4 id="publish-website">publish-website.el<a class="heading-anchor" href="#publish-website" aria-label="Permalink to this section">#</a></h4>
 <div class="outline-text-4" id="text-publish-website">
 <p>
 It was hyped for long enough, here is the <a href="https://github.com/fuzztheplanet/fuzztheplanet.github.io/blob/main/publish-website.el">publish-website.el</a> file. This file
@@ -586,7 +595,7 @@ the homepage one build late.
 </div>
 </div>
 <div id="outline-container-makefile" class="outline-4">
-<h4 id="makefile">Makefile</h4>
+<h4 id="makefile">Makefile<a class="heading-anchor" href="#makefile" aria-label="Permalink to this section">#</a></h4>
 <div class="outline-text-4" id="text-makefile">
 <p>
 Let's use <b>make</b> to avoid building and managing the website by hand.
@@ -631,7 +640,7 @@ the website locally at <a href="http://localhost:12345">http://localhost:12345</
 </div>
 </div>
 <div id="outline-container-deployment" class="outline-4">
-<h4 id="deployment">Deployment</h4>
+<h4 id="deployment">Deployment<a class="heading-anchor" href="#deployment" aria-label="Permalink to this section">#</a></h4>
 <div class="outline-text-4" id="text-deployment">
 <p>
 Once a commit is pushed, the GitHub Actions workflow takes over: it checks the
@@ -677,11 +686,11 @@ address. The matching DNS records live at my registrar.
 </div>
 </div>
 <div id="outline-container-more-functionalities" class="outline-2">
-<h2 id="more-functionalities">A few more functionalities</h2>
+<h2 id="more-functionalities">A few more functionalities<a class="heading-anchor" href="#more-functionalities" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-more-functionalities">
 </div>
 <div id="outline-container-mathjax" class="outline-3">
-<h3 id="mathjax">MathJax</h3>
+<h3 id="mathjax">MathJax<a class="heading-anchor" href="#mathjax" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-mathjax">
 <p>
 <a href="https://www.mathjax.org/">MathJax</a>' <a href="https://orgmode.org/manual/Math-formatting-in-HTML-export.html">Org mode support</a> lets me export to HTML math formulas written in LaTeX.
@@ -721,35 +730,78 @@ y = x^2+1
 <p>
 I install and update regularly <i>MathJax</i> via the <b>Makefile</b> and then enable it
 in <b>publish-website.el</b> via the <code>org-html-mathjax-options</code> variable. Since I
-want to be able to view the website offline, I opted for a local install. Only
-a shallow clone is needed, as the repository history is thrown away immediately
-afterwards.
+want to be able to view the website offline &#x2013; and since I would rather not
+have my visitors fetch anything from a third party &#x2013; I opted for a local
+install.
+</p>
+
+<p>
+Upstream ships around 20 MB: several output formats, Node entry points and a
+speech locale for every supported language. A page here loads a small fraction
+of that, so the target below pulls the release straight from the npm registry
+(which, unlike a shallow clone of the default branch, is pinned to a version)
+and keeps only the pieces that are actually served.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 13: </span>Makefile</label><pre class="src src-makefile"><span class="org-comment-delimiter"># </span><span class="org-comment">Must stay in sync with org-html-mathjax-options in publish-website.el, which
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">loads MathJax from /static/js/mathjax/.
-</span><span class="org-variable-name">MATHJAX_DIR</span>=<span class="org-string">'static/js/mathjax'</span>
+<label class="org-src-name"><span class="listing-number">Listing 13: </span>Makefile</label><pre class="src src-makefile"><span class="org-variable-name">MATHJAX_DIR</span>=static/js/mathjax
+<span class="org-variable-name">MATHJAX_VERSION</span>=4.1.3
+<span class="org-variable-name">MATHJAX_FONT</span>=mathjax-modern
+<span class="org-variable-name">NPM</span>=https://registry.npmjs.org
+<span class="org-variable-name">TMP</span>=$(<span class="org-variable-name">MATHJAX_DIR</span>).tmp
 
 <span class="org-makefile-targets">mathjax</span>:
-    rm -rf $(<span class="org-variable-name">MATHJAX_DIR</span>)
-    <span class="org-makefile-targets">git clone --depth 1 https</span>://github.com/mathjax/MathJax.git $(<span class="org-variable-name">MATHJAX_DIR</span>)
-    rm -rf $(<span class="org-variable-name">MATHJAX_DIR</span>)/.git
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Only download and serve the MathJax components needed.
+</span>    <span class="org-comment-delimiter"># </span><span class="org-comment">See the source file for the full code.
+</span>    rm -rf $(<span class="org-variable-name">MATHJAX_DIR</span>) $(<span class="org-variable-name">TMP</span>)
+    mkdir -p $(<span class="org-variable-name">TMP</span>)/mathjax $(<span class="org-variable-name">TMP</span>)/font
+    curl -fsSL $(<span class="org-variable-name">NPM</span>)/mathjax/-/mathjax-$(<span class="org-variable-name">MATHJAX_VERSION</span>).tgz \
+        | tar xz -C $(<span class="org-variable-name">TMP</span>)/mathjax --strip-components=1
+    curl -fsSL $(<span class="org-variable-name">NPM</span>)/@mathjax/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font/-/$(<span class="org-variable-name">MATHJAX_FONT</span>)-font-$(<span class="org-variable-name">MATHJAX_VERSION</span>).tgz \
+        | tar xz -C $(<span class="org-variable-name">TMP</span>)/font --strip-components=1
 </pre>
 </div>
 
+<p>
+Since version 4, <i>MathJax</i> no longer bundles its fonts: it resolves the font
+package against <code>loader.paths.fonts</code>, which defaults to a <b>jsdelivr</b> CDN.
+Vendoring the JavaScript is therefore not enough &#x2013; the browser will still reach
+out for roughly a megabyte of <i>woff2</i> unless that path is pointed at the local
+copy too. Org's stock MathJax template has no <code>loader</code> section, so I inject one:
+</p>
+
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 14: </span>publish-website.el</label><pre class="src src-emacs-lisp">(<span class="org-keyword">setq</span> org-html-mathjax-options
-      '((path <span class="org-string">"/static/js/mathjax/es5/tex-mml-chtml.js"</span>)
+<label class="org-src-name"><span class="listing-number">Listing 14: </span>publish-website.el</label><pre class="src src-emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">MathJax resolves its font package against '</span><span class="org-comment"><span class="org-constant">loader.paths.fonts</span></span><span class="org-comment">', which
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">defaults to cdn.jsdelivr.net. The fonts are vendored (see the '</span><span class="org-comment"><span class="org-constant">mathjax</span></span><span class="org-comment">'
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">target in the Makefile), so that path has to be pointed at the local copy:
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">without it, every page carrying math quietly pulls ~1 MB of woff2 from a
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">third party -- on a site that otherwise makes no external request at all.
+</span><span class="org-comment-delimiter">;; </span><span class="org-comment">Org's stock template has no '</span><span class="org-comment"><span class="org-constant">loader</span></span><span class="org-comment">' section, hence the injection.
+</span>(<span class="org-keyword">defun</span> <span class="org-function-name">skw-blog/mathjax-template-with-local-fonts</span> (template)
+  <span class="org-doc">"Return '</span><span class="org-doc"><span class="org-constant">template</span></span><span class="org-doc">' with a loader path pointing MathJax at the vendored fonts."</span>
+  (<span class="org-keyword">let</span> ((anchor <span class="org-string">"window.MathJax = {"</span>))
+    (<span class="org-keyword">unless</span> (string-match-p (regexp-quote anchor) template)
+      (<span class="org-warning">error</span> <span class="org-string">"MathJax template changed upstream: cannot inject the local font path"</span>))
+    (replace-regexp-in-string
+     (regexp-quote anchor)
+     (concat anchor <span class="org-string">"\n    loader: {paths: {fonts: '"</span>
+             skw-blog/mathjax-dir <span class="org-string">"/fonts'}},"</span>)
+     template t t)))
+
+(<span class="org-keyword">setq</span> org-html-mathjax-options
+      `((path ,(concat skw-blog/mathjax-dir <span class="org-string">"/tex-mml-chtml.js"</span>))
         (scale 1.0) (align <span class="org-string">"center"</span>) (font <span class="org-string">"mathjax-modern"</span>) (overflow <span class="org-string">"overflow"</span>)
         (tags <span class="org-string">"ams"</span>) (indent <span class="org-string">"0em"</span>) (multlinewidth <span class="org-string">"85%"</span>) (tagindent <span class="org-string">".8em"</span>)
-        (tagside <span class="org-string">"right"</span>)))
+        (tagside <span class="org-string">"right"</span>))
+
+      org-html-mathjax-template
+      (skw-blog/mathjax-template-with-local-fonts org-html-mathjax-template))
 </pre>
 </div>
 </div>
 </div>
 <div id="outline-container-rss" class="outline-3">
-<h3 id="rss">RSS feed</h3>
+<h3 id="rss">RSS feed<a class="heading-anchor" href="#rss" aria-label="Permalink to this section">#</a></h3>
 <div class="outline-text-3" id="text-rss">
 <p>
 Generating a RSS to track when new posts are published is actually not that
@@ -849,7 +901,7 @@ that does not exist.
 </div>
 </div>
 <div id="outline-container-resources" class="outline-2">
-<h2 id="resources">Resources</h2>
+<h2 id="resources">Resources<a class="heading-anchor" href="#resources" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-resources">
 <p>
 This publishing setup is quite rudimentary. I wrote this note mostly for self

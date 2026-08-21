@@ -1,4 +1,5 @@
 #+TITLE: 404 - No such file or directory
+#+DESCRIPTION: Nothing lives at this address. A few places that do exist are listed instead.
 
 # This page is served for *any* missing path, at any depth, so its links must be
 # root-relative. Org would turn [[/posts/]] into file:///posts/, hence the raw

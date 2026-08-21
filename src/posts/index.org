@@ -1,4 +1,5 @@
 #+TITLE: Posts
+#+DESCRIPTION: Sporadic posts about Emacs, security and other rabbit holes.
 
 - {{{timestamp(2025-12-03)}}}: [[file:gtd-with-org.org][Getting Things Done with Org]]
   

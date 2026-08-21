@@ -1,4 +1,5 @@
 #+TITLE: Windows Pentesting Tools
+#+DESCRIPTION: A personal checklist of the tools I want on hand whenever I have to do offensive security work from a Windows machine.
 
 Below are some tools that I like to have on a Windows machine for offensive
 security purposes. I try to do most of the tasks from a GNU/Linux host, but

@@ -1,4 +1,5 @@
 #+TITLE: Welcome to my little patch of internet!
+#+DESCRIPTION: Personal website of Skywhi: sporadic posts and longer notes on Emacs, Org mode, offensive security and assorted rabbit holes.
 
 This is where I spend my days collecting pesky insects, sweet-talking ciphers,
 pondering questionable life decisions and arguing with Emacs as if we were in a

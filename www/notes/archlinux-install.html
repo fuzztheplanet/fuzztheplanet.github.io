@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-08-20 Thu 22:32 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ArchLinux installation</title>
+<meta name="description" content="Personal notes for installing ArchLinux on a workstation, booting a single LUKS-encrypted system partition holding LVM volumes through GRUB." />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
 <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 <link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
+<link rel="canonical" href="https://www.skywhi.net/notes/archlinux-install.html">
+<meta property="og:url" content="https://www.skywhi.net/notes/archlinux-install.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Skywhi's Blog">
+<meta property="og:title" content="ArchLinux installation">
+<meta property="og:description" content="Personal notes for installing ArchLinux on a workstation, booting a single LUKS-encrypted system partition holding LVM volumes through GRUB.">
+<meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
+<meta name="twitter:card" content="summary">
 </head>
 <body>
 <header id="preamble" class="status">
@@ -56,7 +64,7 @@ recommendations</a> pages. Everything here is taken from the amazing wiki anyway
 </ul>
 </div>
 <div id="outline-container-media" class="outline-2">
-<h2 id="media">Installation media</h2>
+<h2 id="media">Installation media<a class="heading-anchor" href="#media" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-media">
 <p>
 I tend to simply write the latest installation image on a USB drive (here
@@ -71,7 +79,7 @@ I tend to simply write the latest installation image on a USB drive (here
 </div>
 </div>
 <div id="outline-container-comfy" class="outline-2">
-<h2 id="comfy">Getting comfortable</h2>
+<h2 id="comfy">Getting comfortable<a class="heading-anchor" href="#comfy" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-comfy">
 <p>
 After booting onto the installation media, I ensure that the right keymap is
@@ -98,7 +106,7 @@ ping -c3 archlinux.org
 </div>
 </div>
 <div id="outline-container-partition" class="outline-2">
-<h2 id="partition">Disk partition</h2>
+<h2 id="partition">Disk partition<a class="heading-anchor" href="#partition" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-partition">
 <p>
 Now we are ready for disk partitioning. The scheme I use for a desktop or
@@ -170,7 +178,7 @@ swapon /dev/MyVolGroup/swap
 </div>
 </div>
 <div id="outline-container-diving" class="outline-2">
-<h2 id="diving">Diving in!</h2>
+<h2 id="diving">Diving in!<a class="heading-anchor" href="#diving" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-diving">
 <p>
 Let's install the packages that will be needed for a minimal functional base
@@ -233,7 +241,7 @@ reboot
 </div>
 </div>
 <div id="outline-container-final" class="outline-2">
-<h2 id="final">Final words</h2>
+<h2 id="final">Final words<a class="heading-anchor" href="#final" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-final">
 <p>
 The first thing I do after rebooting is setting up an un-priviledge user

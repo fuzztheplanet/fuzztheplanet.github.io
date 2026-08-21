@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-08-20 Thu 22:32 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Using git while on-the-run</title>
+<meta name="description" content="How to keep a git configuration, an SSH key and a GPG signing key on a USB stick, so none of it has to persist on the machine you are working from." />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
 <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 <link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
+<link rel="canonical" href="https://www.skywhi.net/posts/git-while-on-the-run.html">
+<meta property="og:url" content="https://www.skywhi.net/posts/git-while-on-the-run.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Skywhi's Blog">
+<meta property="og:title" content="Using git while on-the-run">
+<meta property="og:description" content="How to keep a git configuration, an SSH key and a GPG signing key on a USB stick, so none of it has to persist on the machine you are working from.">
+<meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
+<meta name="twitter:card" content="summary">
 </head>
 <body>
 <header id="preamble" class="status">
@@ -36,7 +44,7 @@
 </span>
 </p>
 
-<div class="preview" id="org7267032">
+<div class="preview" id="org19b67e4">
 <p>
 This post describes how to use a custom <i>git</i> configuration, including SSH and
 GPG keys, stored on an external drive such as a USB stick. This is nothing
@@ -62,7 +70,7 @@ material onto. By no means I recommend plugin such a USB stick into non-trusted
 devices.
 </p>
 <div id="outline-container-gen-keys" class="outline-2">
-<h2 id="gen-keys">Generating and storing the secret keys</h2>
+<h2 id="gen-keys">Generating and storing the secret keys<a class="heading-anchor" href="#gen-keys" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-gen-keys">
 <p>
 For those who haven't got working pairs of SSH and GPG keys already, I recommend
@@ -104,7 +112,7 @@ passphrase. Here is how I structure the files on them:
 </div>
 </div>
 <div id="outline-container-new-device" class="outline-2">
-<h2 id="new-device">Working on a new device</h2>
+<h2 id="new-device">Working on a new device<a class="heading-anchor" href="#new-device" aria-label="Permalink to this section">#</a></h2>
 <div class="outline-text-2" id="text-new-device">
 <p>
 The usage of environment variables, as opposed to aliases, will not only apply
