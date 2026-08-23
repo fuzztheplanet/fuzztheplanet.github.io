@@ -163,6 +163,10 @@
  org-html-html5-fancy nil
  org-html-htmlize-output-type 'css
 
+ ;; Use CUSTOM_ID / #+NAME values as HTML ids instead of random org<hex>
+ ;; references, so re-exports produce stable, diff-friendly output.
+ org-html-prefer-user-labels t
+
  ;; Keep the tabs of the source code blocks intact
  org-export-use-babel nil
  htmlize-untabify nil

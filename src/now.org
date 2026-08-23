@@ -4,6 +4,24 @@ This is my [[https://nownownow.com/about][now]] page (inspired by [[https://sive
 of Consciousness]]). Here you will find a brief overview of my current activities
 and points of focus as well as some random, unsorted and unfiltered ramblings.
 
+* [2026-08-23 Sun]
+:PROPERTIES:
+:CUSTOM_ID: 2026-08-23
+:END:
+
+I am the proud owner of a 4-month-old Mini Aussie called /Yoga/. Which means my
+days are now divided between Emacs, questionable amounts of coffee and being
+outsmarted by a creature weighing 6.7 kg. He is extremely playful, energetic,
+and convinced that my slippers should be hearded with special care. Yoga
+definitely is the best looking puppy in town and he owns it.
+
+As usual I'm late to the party but I've started dabbling with AI for some
+trivial tasks such as performing security source code analysis or writing naive
+Bash or Python tooling. The next step is to unleash it on my regular projects:
+this blog, my tools and my knowledge base for example, to see how it can enhance
+my existing workflow. Much like the puppy, I suspect it will require some
+training, supervision and occasional damage control but the process will be
+enjoyable and the results most likely more than satisfaying.
 
 * [2025-12-04 Thu]
 :PROPERTIES:

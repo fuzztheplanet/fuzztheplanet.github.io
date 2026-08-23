@@ -2,6 +2,7 @@
 #+DATE: [2025-07-07 Mon]
 #+INCLUDE: ../../templates/post.org
 
+#+attr_html: :id post-preview
 #+begin_preview
 This post describes how to use a custom /git/ configuration, including SSH and
 GPG keys, stored on an external drive such as a USB stick. This is nothing

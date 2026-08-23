@@ -2,7 +2,7 @@
 #+DATE: [2025-05-25 Sun]
 #+INCLUDE: ../../templates/post.org
 
-
+#+attr_html: :id post-preview
 #+begin_preview
 I describe /yet-another-simple-publishing-setup/ for a static website using
 Emacs's [[https://orgmode.org/][Org mode]]. While there are plenty of resources on the topic available
@@ -68,6 +68,8 @@ I ended up with something like the following directory structure for this
 project. The github repository containing all the up-to-date source files can be
 found [[https://github.com/fuzztheplanet/fuzztheplanet.github.io][here]].
 
+
+#+attr_html: :id layout
 #+begin_example
 - ~/org/blog/
   - .github/
