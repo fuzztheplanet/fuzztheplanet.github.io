@@ -189,11 +189,11 @@ $ . /mnt/usb/alias.sh
 $ gitshell
 
 # Do some git things in the subshell...
-(git-usb) $ git commit -m 'My commit'   # Will be signed with my GPG key
-(git-usb) $ git push                    # And pushed with my SSH key
+(gitshell) $ git commit -m 'My commit'   # Will be signed with my GPG key
+(gitshell) $ git push                    # And pushed with my SSH key
 
 # Leave the subshell
-(git-usb) $ exit
+(gitshell) $ exit
 
 # Unmount the external drive
 $ sudo umount /mnt/usb
