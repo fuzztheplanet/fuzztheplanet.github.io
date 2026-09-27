@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ArchLinux installation</title>
+<title>ArchLinux workstation</title>
 <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
 <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 <link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
-<link rel="canonical" href="https://www.skywhi.net/notes/archlinux-install.html">
-<meta property="og:url" content="https://www.skywhi.net/notes/archlinux-install.html">
+<link rel="canonical" href="https://www.skywhi.net/notes/archlinux-workstation.html">
+<meta property="og:url" content="https://www.skywhi.net/notes/archlinux-workstation.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Skywhi's Blog">
-<meta property="og:title" content="ArchLinux installation">
+<meta property="og:title" content="ArchLinux workstation">
 <meta property="og:description" content="Sporadic posts about Emacs, security and other rabbit holes.">
 <meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
 <meta name="twitter:card" content="summary">
@@ -35,7 +35,7 @@
 </nav>
 </header>
 <main id="content" class="content">
-<h1 class="title">ArchLinux installation</h1>
+<h1 class="title">ArchLinux workstation</h1>
 <p>
 Below are some quickly-written notes on installing ArchLinux for a standard
 workstation (desktop, laptop or VM). The setup is quite simple: GRUB will boot a
@@ -70,9 +70,9 @@ I tend to simply write the latest installation image on a USB drive (here
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">curl -s -o - http://mir.archlinux.fr/iso/$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)/archlinux-$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)-x86_64.iso <span class="org-sh-escaped-newline">\</span>
+<pre class="src src-sh"><code>curl -s -o - http://mir.archlinux.fr/iso/$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)/archlinux-$(<span class="org-sh-quoted-exec">date +%Y.%m.01</span>)-x86_64.iso <span class="org-sh-escaped-newline">\</span>
     | sudo dd <span class="org-variable-name">of</span>=/dev/sdb <span class="org-variable-name">bs</span>=4M <span class="org-variable-name">status</span>=progress
-</pre>
+</code></pre>
 </div>
 </div>
 </div>
@@ -86,7 +86,7 @@ out-of-the-box and I use <a href="https://wiki.archlinux.org/title/Iwd">iwd</a> 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Set keymap
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">Set keymap
 </span>loadkeys fr-latin9
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Configure network, here wireless with iwd
@@ -99,7 +99,7 @@ ping -c3 archlinux.org
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Time over the network with ntp
 </span>timedatectl set-ntp true
-</pre>
+</code></pre>
 </div>
 </div>
 </div>
@@ -140,7 +140,7 @@ you might regret it!
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Partition the disk
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">Partition the disk
 </span>fdisk -l
 fdisk /dev/sda <span class="org-comment-delimiter"># </span><span class="org-comment">fdisk /dev/nvme0n1
 </span><span class="org-function-name">Command</span> (m for help): n <span class="org-comment-delimiter"># </span><span class="org-comment">Make EFI partition sda1: +256M - type "EFI System"
@@ -171,7 +171,7 @@ mkdir /mnt/{home,boot}
 mount /dev/MyVolGroup/home /mnt/home
 mount /dev/sda1 /mnt/boot
 swapon /dev/MyVolGroup/swap
-</pre>
+</code></pre>
 </div>
 </div>
 </div>
@@ -188,7 +188,7 @@ packages, do not forget!).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">Install all our required packages
 </span>pacstrap /mnt base linux linux-firmware <span class="org-sh-escaped-newline">\</span>
          sudo nano tmux lvm2 <span class="org-sh-escaped-newline">\</span>
          networkmanager wpa_supplicant dhcpcd <span class="org-sh-escaped-newline">\</span>
@@ -196,7 +196,7 @@ packages, do not forget!).
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Update the new fstab
 </span>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
-</pre>
+</code></pre>
 </div>
 
 <p>
@@ -204,7 +204,7 @@ We can finally <code>chroot</code> into the new installation and start configuri
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Switch to the new installation
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">Switch to the new installation
 </span>arch-chroot /mnt
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Set time info
@@ -234,7 +234,7 @@ lsblk -f <span class="org-comment-delimiter"># </span><span class="org-comment">
 </span><span class="org-keyword">exit</span>
 umount -R /mnt
 reboot
-</pre>
+</code></pre>
 </div>
 </div>
 </div>
@@ -248,10 +248,10 @@ account that will be used for administrative tasks. It will be added to the
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">useradd -m -G wheel skywhi
+<pre class="src src-sh"><code>useradd -m -G wheel skywhi
 passwd skywhi
 visudo
-</pre>
+</code></pre>
 </div>
 
 <p>
@@ -259,11 +259,11 @@ Installing <a href="https://github.com/Jguer/yay">yay</a> is never a bad idea if
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">sudo pacman -Syu base-devel
+<pre class="src src-sh"><code>sudo pacman -Syu base-devel
 <span class="org-builtin">cd</span> ~ &amp;&amp; git clone https://aur.archlinux.org/yay.git &amp;&amp; <span class="org-builtin">cd</span> yay
 makepkg -sirc
 <span class="org-builtin">cd</span> ~ &amp;&amp; rm -rf yay
-</pre>
+</code></pre>
 </div>
 
 <p>

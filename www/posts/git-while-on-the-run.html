@@ -88,7 +88,7 @@ passphrase. Here is how I structure the files on them:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-terminal">/mnt/usb/
+<pre class="src src-terminal"><code>/mnt/usb/
 ├── alias.sh
 ├── git/
 │   └── config
@@ -106,7 +106,7 @@ passphrase. Here is how I structure the files on them:
 └── signing_keyring/
     ├── gpg.conf
     └── pubring.kbx
-</pre>
+</code></pre>
 </div>
 </div>
 </div>
@@ -130,7 +130,7 @@ remote repositories.</li>
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-shell">$ man git | grep -A1 <span class="org-string">'GIT_CONFIG_GLOBAL'</span>
+<pre class="src src-shell"><code>$ man git | grep -A1 <span class="org-string">'GIT_CONFIG_GLOBAL'</span>
        GIT_CONFIG_GLOBAL, GIT_CONFIG_SYSTEM
            Take the configuration from the given files instead from global or
            system-level configuration files. If GIT_CONFIG_SYSTEM is set, the system
@@ -160,7 +160,7 @@ $ man git | grep <span class="org-string">'GIT_SSH_COMMAND'</span>
 $ man gpg | grep -A1 <span class="org-string">'GNUPGHOME$'</span>
        GNUPGHOME
               If set directory used instead of <span class="org-string">"~/.gnupg"</span>.
-</pre>
+</code></pre>
 </div>
 
 <p>
@@ -186,7 +186,7 @@ this.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-function-name">gitshell</span>() {
+<pre class="src src-shell"><code><span class="org-function-name">gitshell</span>() {
 
     <span class="org-comment-delimiter"># </span><span class="org-comment">Exit on nested instances
 </span>    <span class="org-keyword">if</span> [ -n <span class="org-string">"${GIT_USB_SHELL:-}"</span> ]; <span class="org-keyword">then</span>
@@ -223,7 +223,7 @@ this.
     <span class="org-variable-name">GIT_USB_SHELL</span>=1 <span class="org-sh-escaped-newline">\</span>
     <span class="org-string">"${SHELL:-bash}"</span>
 }
-</pre>
+</code></pre>
 </div>
 
 <p>
@@ -232,11 +232,11 @@ This can be used to customize <code>$PS1</code> for example.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">In ~/.bashrc or ~/.zshrc
+<pre class="src src-shell"><code><span class="org-comment-delimiter"># </span><span class="org-comment">In ~/.bashrc or ~/.zshrc
 </span><span class="org-keyword">if</span> [ -n <span class="org-string">"${GIT_USB_SHELL:-}"</span> ]; <span class="org-keyword">then</span>
     <span class="org-variable-name">PS1</span>=<span class="org-string">"(gitshell) ${PS1}"</span>
 <span class="org-keyword">fi</span>
-</pre>
+</code></pre>
 </div>
 
 <p>
@@ -245,7 +245,7 @@ the drive <code>/dev/sdb</code>, I use the following commands:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Open and mount the LUKS-encrypted device /dev/sdb
+<pre class="src src-shell"><code><span class="org-comment-delimiter"># </span><span class="org-comment">Open and mount the LUKS-encrypted device /dev/sdb
 </span>$ sudo cryptsetup open /dev/sdb cool-pendrive
 $ sudo mount /dev/mapper/cool-pendrive /mnt/usb
 
@@ -263,7 +263,7 @@ $ gitshell
 <span class="org-comment-delimiter"># </span><span class="org-comment">Unmount the external drive
 </span>$ sudo umount /mnt/usb
 $ sudo cryptsetup close cool-pendrive
-</pre>
+</code></pre>
 </div>
 
 <p>

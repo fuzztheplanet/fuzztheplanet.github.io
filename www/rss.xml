@@ -16,7 +16,7 @@
   <language>en</language>
   <pubDate>Wed, 03 Dec 2025 00:00:00 +0100</pubDate>
   <lastBuildDate>Wed, 03 Dec 2025 00:00:00 +0100</lastBuildDate>
-  <generator>Emacs 30.2 Org-mode 9.7.11</generator>
+  <generator>Emacs 31.1 Org-mode 9.8.7</generator>
   <webMaster>skywhi@skywhi.net (Skywhi)</webMaster>
   <image>
     <url>https://www.skywhi.net/static/img/profile.jpg</url>
@@ -32,9 +32,9 @@
     <pubDate>Wed, 03 Dec 2025 00:00:00 +0100</pubDate>
 
     <description><![CDATA[<p>
-    <i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows.
-    </p>
-    ]]></description>
+<i>Yet-another-GTD-post</i> featuring Emacs's Org-mode where I describe my personal setup. It is rather minimalist and can be easily extended to fit different workflows.
+</p>
+]]></description>
   </item>
   <item>
     <title>Using git while on-the-run</title>
@@ -44,9 +44,9 @@
     <pubDate>Mon, 07 Jul 2025 00:00:00 +0200</pubDate>
 
     <description><![CDATA[<p>
-    This post describes how to use a custom <i>git</i> configuration, including SSH and GPG keys, stored on an external drive such as a USB stick. This is nothing fancy but comes in handy when the user does not want to store their keys persistently on the machine.
-    </p>
-    ]]></description>
+This post describes how to use a custom <i>git</i> configuration, including SSH and GPG keys, stored on an external drive such as a USB stick. This is nothing fancy but comes in handy when the user does not want to store their keys persistently on the machine.
+</p>
+]]></description>
   </item>
   <item>
     <title>Hello World from Org</title>
@@ -56,8 +56,8 @@
     <pubDate>Sun, 25 May 2025 00:00:00 +0200</pubDate>
 
     <description><![CDATA[<p>
-    I describe <i>yet-another-simple-publishing-setup</i> for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two.</p>
-    ]]></description>
+I describe <i>yet-another-simple-publishing-setup</i> for a static website using Emacs's <a href="https://orgmode.org/">Org mode</a>. While there are plenty of resources on the topic available already, I wanted to document my setup here for self-reference. Maybe someone will take away an idea or two.</p>
+]]></description>
   </item>
 </channel>
 </rss>

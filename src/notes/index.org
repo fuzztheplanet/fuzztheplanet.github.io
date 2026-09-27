@@ -1,5 +1,3 @@
 #+TITLE: Various notes
 
-[[./archlinux-install.org][Installation notes]] for [[https://archlinux.org/][ArchLinux]]-based workstations.
-
-A list of [[./windows-tools.org][pentesting tools for Windows]].
+Installation notes for /ArchLinux/-based [[./archlinux-workstation.org][workstations]] and [[./archlinux-vps.org][VPS]].

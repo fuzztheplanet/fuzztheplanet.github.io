@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>dacloud — netcup ArchLinux VPS Setup Guide</title>
+<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/htmlize.css"/>
+<link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+<link rel="alternate" type="application/rss+xml" title="Skywhi's Blog" href="/rss.xml">
+<link rel="canonical" href="https://www.skywhi.net/notes/archlinux-vps.html">
+<meta property="og:url" content="https://www.skywhi.net/notes/archlinux-vps.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Skywhi's Blog">
+<meta property="og:title" content="dacloud — netcup ArchLinux VPS Setup Guide">
+<meta property="og:description" content="Sporadic posts about Emacs, security and other rabbit holes.">
+<meta property="og:image" content="https://www.skywhi.net/static/img/og-image.jpg">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+<header id="preamble" class="status">
+<a class="skip-link" href="#content">Skip to content</a>
+<div class="banner">
+    <a href="/">
+        <img class="logo" src="/static/img/profile.jpg" alt="" width="138" height="138">
+        <p class="prompt">skywhi@www:/var/log$ <span class="blink">_</span></p>
+    </a>
+</div>
+<nav aria-label="Site">
+    <a href="/posts/">./posts</a>
+    <a href="/notes/" aria-current="page">./notes</a>
+    <a href="/links.html">./links</a>
+    <a href="/now.html">./now</a>
+    <a href="/about.html">./about</a>
+</nav>
+</header>
+<main id="content" class="content">
+<h1 class="title">dacloud — netcup ArchLinux VPS Setup Guide</h1>
+<p>
+These are my notes for getting my <a href="https://www.netcup.com">netcup</a> ArchLinux VPS up and running. I use it
+mostly for security research, CTF challenges and other intents and purposes.
+Running a new instance is a two-step process:
+</p>
+
+<ol class="org-ol">
+<li>Install Arch from the <a href="https://www.servercontrolpanel.de/">netcup SCP panel</a>.</li>
+<li>Run <code>dacloud-setup.sh</code> over SSH. The script handles the base configuration: a
+sudo user, SSH hardening, sshguard, an nftables firewall, Docker, and <code>yay</code>
+as AUR helper.</li>
+</ol>
+
+<p>
+<b>Contents:</b>
+</p>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgdeda24f">Install a basic ArchLinux</a>
+<ul>
+<li><a href="#org2e1248d">Prepare the SSH key</a></li>
+<li><a href="#org0865df0">Install ArchLinux from the netcup SCP</a></li>
+<li><a href="#orgceffb15">Add DNS record (Gandi)</a></li>
+</ul>
+</li>
+<li><a href="#org0b8b1a3">Run the setup script</a>
+<ul>
+<li><a href="#orge7a1cb6">Copy it up and log in</a></li>
+<li><a href="#org0ed39d7">Run it on the server</a></li>
+<li><a href="#org546bdd5">Host alias</a></li>
+</ul>
+</li>
+<li><a href="#org9484ce0">Setup script</a></li>
+</ul>
+</div>
+<div id="outline-container-orgdeda24f" class="outline-2">
+<h2 id="orgdeda24f">Install a basic ArchLinux</h2>
+<div class="outline-text-2" id="text-orgdeda24f">
+</div>
+<div id="outline-container-org2e1248d" class="outline-3">
+<h3 id="org2e1248d">Prepare the SSH key</h3>
+<div class="outline-text-3" id="text-org2e1248d">
+<p>
+SSH login is key-based all the way through. If needed, generate a new key:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>ssh-keygen -t ed25519 -a 100 -C <span class="org-string">"skw@skywhi.net"</span> -f ~/.ssh/id_dacloud
+cat ~/.ssh/id_dacloud.pub
+</code></pre>
+</div>
+
+<ul class="org-ul">
+<li>The <code>.pub</code> file is what gets pasted into <i>netcup</i>.</li>
+<li>The private key <code>~/.ssh/id_dacloud</code> should remain private (/duh!).</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0865df0" class="outline-3">
+<h3 id="org0865df0">Install ArchLinux from the netcup SCP</h3>
+<div class="outline-text-3" id="text-org0865df0">
+<ol class="org-ol">
+<li>Open the server's <b>SCP</b> page.</li>
+<li>Go to <b>Media =&gt; Images</b> and pick <i>Arch</i>.</li>
+<li>In the install dialog:
+<ul class="org-ul">
+<li><b>Hostname:</b> <code>dacloud</code>.</li>
+<li><b>Timezone / language:</b> Europe/Berlin, English. The setup script sets these
+anyway, so defaults are fine here.</li>
+<li><b>SSH key:</b> paste your <b>public</b> key. <i>netcup</i> installs it for <code>root</code>, so you
+get key-based root login and no password. The setup script picks this same
+key up later for your normal user, so you only paste it once.</li>
+</ul></li>
+<li>Start the install and wait for it to finish. It only takes a few seconds.</li>
+<li>Write down the server's <b>IPv4</b> address from the <i>SCP</i> console.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgceffb15" class="outline-3">
+<h3 id="orgceffb15">Add DNS record (Gandi)</h3>
+<div class="outline-text-3" id="text-orgceffb15">
+<ol class="org-ol">
+<li>Log in at <a href="https://admin.gandi.net">admin.gandi.net</a> and open <b>Domain names =&gt; &lt;domain&gt; =&gt; DNS records</b>.</li>
+<li><p>
+Click <b>Add a record</b> and fill in:
+</p>
+
+<div class="table-scroll" tabindex="0">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Field</th>
+<th scope="col" class="org-left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Type</td>
+<td class="org-left"><code>A</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Name</td>
+<td class="org-left"><code>dacloud</code></td>
+</tr>
+
+<tr>
+<td class="org-left">TTL</td>
+<td class="org-left"><code>300</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Value</td>
+<td class="org-left">the VPS IPv4 address</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<p>
+Do the same for IPv6 if needed with <code>AAAA</code> instead of <code>A</code> and with the IPv6
+address in the <i>SCP</i> console.
+</p></li>
+<li>Run <code>dig +short dacloud.skywhi.net</code> to see if the changes have propagated.</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org0b8b1a3" class="outline-2">
+<h2 id="org0b8b1a3">Run the setup script</h2>
+<div class="outline-text-2" id="text-org0b8b1a3">
+</div>
+<div id="outline-container-orge7a1cb6" class="outline-3">
+<h3 id="orge7a1cb6">Copy it up and log in</h3>
+<div class="outline-text-3" id="text-orge7a1cb6">
+<div class="org-src-container">
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">copy the script up
+</span>scp dacloud-setup.sh root@dacloud.skywhi.et:/root/
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">log in as root (works because you imported your key in step 3)
+</span>ssh root@dacloud.skywhi.net
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0ed39d7" class="outline-3">
+<h3 id="org0ed39d7">Run it on the server</h3>
+<div class="outline-text-3" id="text-org0ed39d7">
+<p>
+Either edit the <code>CONFIG</code> block at the top of the script or pass values as
+environment variables. These are the variables and their defaults:
+</p>
+
+<div class="table-scroll" tabindex="0">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Variable</th>
+<th scope="col" class="org-left">Default</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>USERNAME</code></td>
+<td class="org-left"><code>skw</code></td>
+<td class="org-left">Your unprivileged login user</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>TIMEZONE</code></td>
+<td class="org-left"><code>Europe/Berlin</code></td>
+<td class="org-left">System timezone</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>LOCALE</code></td>
+<td class="org-left"><code>en_US.UTF-8</code></td>
+<td class="org-left">System locale</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>HOSTNAME_</code></td>
+<td class="org-left"><code>dacloud</code></td>
+<td class="org-left">Hostname (note the trailing underscore)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>PUBKEY</code></td>
+<td class="org-left">(empty)</td>
+<td class="org-left">SSH public key; empty reuses the root key from SCP</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>CONSOLE_PASSWORD</code></td>
+<td class="org-left">(empty)</td>
+<td class="org-left">Console password for VNC recovery; empty = locked</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>EXTRA_PACKAGES</code></td>
+<td class="org-left">(empty)</td>
+<td class="org-left">Extra pacman packages, space-separated</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>MIRROR_COUNTRY</code></td>
+<td class="org-left"><code>Germany</code></td>
+<td class="org-left">Country reflector ranks pacman mirrors from</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<p>
+Some examples:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">minimal install:
+</span><span class="org-variable-name">USERNAME</span>=skw bash /root/dacloud-setup.sh
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">with some extra tools:
+</span><span class="org-variable-name">USERNAME</span>=skw <span class="org-variable-name">EXTRA_PACKAGES</span>=<span class="org-string">"tmux ripgrep fd jq"</span> bash /root/dacloud-setup.sh
+</code></pre>
+</div>
+
+<p>
+The script turns off <i>root</i> SSH login and password authentication. If you also
+skip the console password, the user's password gets locked and then <b>nobody</b>
+can log in at the netcup VNC console. At that point a broken SSH config means a
+full reinstall. Setting a console password doesn't weaken remote login at all,
+since it can only be used in the local console through the <i>SCP</i> console.
+<code>CONSOLE_PASSWORD</code> is also the password assigned to the user <code>USERNAME</code> during
+setup and will be required by <code>sudo</code>.
+</p>
+
+<p>
+<i>root</i> login is off once the script finishes, so confirm the new user works
+while the <i>root</i> session is still open. From another device or a <b>new terminal</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>ssh [-i path/to/key] skw@dacloud.skywhi.net
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org546bdd5" class="outline-3">
+<h3 id="org546bdd5">Host alias</h3>
+<div class="outline-text-3" id="text-org546bdd5">
+<p>
+Add this to <code>~/.ssh/config</code> on your local host so that it's possible to login
+withe <code>ssh dacloud</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-conf"><code>Host dacloud
+    HostName dacloud.skywhi.net
+    User skw
+    IdentityFile ~/codaz/VPS/dacloud/ssh/vps-ssh-1
+    IdentitiesOnly yes
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org9484ce0" class="outline-2">
+<h2 id="org9484ce0">Setup script</h2>
+<div class="outline-text-2" id="text-org9484ce0">
+<div class="org-src-container">
+<pre class="src src-bash"><code><span class="org-comment-delimiter">#</span><span class="org-comment">!/usr/bin/</span><span class="org-keyword">env</span><span class="org-comment"> bash
+</span><span class="org-comment-delimiter">#</span><span class="org-comment">
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">dacloud-setup.sh: base setup for dacloud, a netcup ArchLinux VPS.
+</span><span class="org-comment-delimiter">#</span><span class="org-comment">
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Usage:
+</span><span class="org-comment-delimiter">#   </span><span class="org-comment">scp dacloud-setup.sh root@YOUR_IP:/root/
+</span><span class="org-comment-delimiter">#   </span><span class="org-comment">ssh root@YOUR_IP
+</span><span class="org-comment-delimiter">#   </span><span class="org-comment"># edit the CONFIG block below, or pass the values as env vars, then:
+</span><span class="org-comment-delimiter">#   </span><span class="org-comment">USERNAME=skw EXTRA_PACKAGES="tmux nano" bash /root/dacloud-setup.sh
+</span><span class="org-comment-delimiter">#</span><span class="org-comment">
+</span><span class="org-builtin">set</span> -euo pipefail
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">CONFIG (override via env or edit here)
+</span><span class="org-variable-name">USERNAME</span>=<span class="org-string">"${USERNAME:-skw}"</span>
+<span class="org-variable-name">TIMEZONE</span>=<span class="org-string">"${TIMEZONE:-Europe/Berlin}"</span>
+<span class="org-variable-name">LOCALE</span>=<span class="org-string">"${LOCALE:-en_US.UTF-8}"</span>
+<span class="org-variable-name">HOSTNAME_</span>=<span class="org-string">"${HOSTNAME_:-dacloud}"</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Public SSH key for ${USERNAME}. Leave empty to reuse whatever key you gave
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">the netcup SCP at install time (it lands in /root/.ssh/authorized_keys).
+</span><span class="org-variable-name">PUBKEY</span>=<span class="org-string">"${PUBKEY:-}"</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Optional console password for ${USERNAME}. SSH stays key-only either way.
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">This only matters if SSH breaks and you need the netcup VNC console to get
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">back in. Leave it empty and the account is locked, which means the only way
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">back is a reinstall from the SCP. The password will also be used for the newly
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">created user.
+</span><span class="org-variable-name">CONSOLE_PASSWORD</span>=<span class="org-string">"${CONSOLE_PASSWORD:-}"</span>
+<span class="org-variable-name">EXTRA_PACKAGES</span>=<span class="org-string">"${EXTRA_PACKAGES:-tmux}"</span>
+<span class="org-variable-name">MIRROR_COUNTRY</span>=<span class="org-string">"${MIRROR_COUNTRY:-Germany}"</span>
+
+<span class="org-function-name">log</span>() { <span class="org-builtin">printf</span> <span class="org-string">'[*] %s\n'</span> <span class="org-string">"$*"</span>; }
+
+[ <span class="org-string">"$(</span><span class="org-sh-quoted-exec">id -u</span><span class="org-string">)"</span> -eq 0 ] || { log <span class="org-string">"run this as root on the VPS"</span>; <span class="org-keyword">exit</span> 1; }
+<span class="org-builtin">command</span> -v pacman &gt;/dev/null || { log <span class="org-string">"this is not an Arch system"</span>; <span class="org-keyword">exit</span> 1; }
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Enable a unit at boot and tell the caller whether it can also be started right
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">now. Relies on KERNEL_STALE, which is set after the update.
+</span><span class="org-function-name">enable_svc</span>() {
+  systemctl enable <span class="org-string">"$1"</span> &gt;/dev/null 2&gt;&amp;1
+  <span class="org-keyword">if</span> [ <span class="org-string">"${KERNEL_STALE}"</span> = 1 ]; <span class="org-keyword">then</span>
+    log <span class="org-string">"$1 enabled at boot but not started now (kernel upgraded, reboot to activate)"</span>
+    <span class="org-keyword">return</span> 1
+  <span class="org-keyword">fi</span>
+  <span class="org-keyword">return</span> 0
+}
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Resolve the SSH public key.
+</span><span class="org-keyword">if</span> [ -z <span class="org-string">"${PUBKEY}"</span> ] &amp;&amp; [ -s /root/.ssh/authorized_keys ]; <span class="org-keyword">then</span>
+  <span class="org-comment-delimiter"># </span><span class="org-comment">Take the first key, starting at the key type token. That way a line with
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">an options prefix (restrict,command="..." ssh-ed25519 AAAA...) still
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">matches and the root-only options don't get copied to the new user.
+</span>  <span class="org-variable-name">PUBKEY</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">grep -m1 -oE '(sk-(ssh-ed25519|ecdsa-sha2-nistp256</span><span class="org-string">)@openssh\.com|ssh-(ed25519|rsa|dss)|ecdsa-sha2-[a-z0-9-]+)[[:space:]]+AAAA[A-Za-z0-9+/]+=*([[:space:]]+\S.*)?' /root/.ssh/authorized_keys 2&gt;/dev/null | head -1 || true)"</span>
+  [ -n <span class="org-string">"${PUBKEY}"</span> ] &amp;&amp; log <span class="org-string">"reusing the SSH key imported via the netcup SCP"</span>
+<span class="org-keyword">fi</span>
+[ -n <span class="org-string">"${PUBKEY}"</span> ] || { log <span class="org-string">"no SSH key found: set PUBKEY='ssh-ed25519 ...' or import one in the SCP first"</span>; <span class="org-keyword">exit</span> 1; }
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Resolve the console password.
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">If nothing was passed in and we're on a terminal, ask for it with hidden
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">input. Passing it inline as an env var would leave it in shell history and
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">briefly in the process list. Enter on an empty prompt means "locked".
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Non-interactive runs still pick it up from the environment.
+</span><span class="org-keyword">if</span> [ -z <span class="org-string">"${CONSOLE_PASSWORD}"</span> ] &amp;&amp; [ -t 0 ]; <span class="org-keyword">then</span>
+  <span class="org-builtin">read</span> -rsp <span class="org-string">"Console password for ${USERNAME} (VNC recovery; empty = locked): "</span> CONSOLE_PASSWORD
+  <span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Full system update. Rank the mirrors first with reflector, update the pacman
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">keyring correctly and perform an upgrade.
+</span>log <span class="org-string">"ranking pacman mirrors with reflector (country=${MIRROR_COUNTRY})"</span>
+<span class="org-keyword">if</span> pacman -Sy --needed --noconfirm reflector; <span class="org-keyword">then</span>
+  cp -a /etc/pacman.d/mirrorlist <span class="org-string">"/etc/pacman.d/mirrorlist.bak.$(</span><span class="org-sh-quoted-exec">date +%s</span><span class="org-string">)"</span> 2&gt;/dev/null || true
+  reflector --country <span class="org-string">"${MIRROR_COUNTRY}"</span> --latest 20 --protocol https --sort rate <span class="org-sh-escaped-newline">\</span>
+    --save /etc/pacman.d/mirrorlist <span class="org-sh-escaped-newline">\</span>
+    || log <span class="org-string">"reflector failed, keeping the existing mirrorlist"</span>
+<span class="org-keyword">else</span>
+  log <span class="org-string">"could not install reflector, keeping the existing mirrorlist"</span>
+<span class="org-keyword">fi</span>
+
+log <span class="org-string">"initializing the pacman keyring and updating the system"</span>
+<span class="org-variable-name">RUNNING_KERNEL</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">uname -r</span><span class="org-string">)"</span>
+pacman-key --init &gt;/dev/null 2&gt;&amp;1 || true
+pacman-key --populate archlinux &gt;/dev/null 2&gt;&amp;1 || true
+pacman -Sy --noconfirm archlinux-keyring
+
+
+pacman -Syu --noconfirm
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">The upgrade may have replaced the kernel. If it did, /usr/lib/modules no
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">longer has the modules for the kernel we're actually running, so loading
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">anything (nftables, Docker's overlay and bridge) fails until a reboot. Note
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">that here so the steps below enable their services instead of starting them,
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">rather than dying under set -e.
+</span><span class="org-variable-name">KERNEL_STALE</span>=0
+<span class="org-keyword">if</span> [ <span class="org-negation-char">!</span> -d <span class="org-string">"/usr/lib/modules/${RUNNING_KERNEL}"</span> ]; <span class="org-keyword">then</span>
+  <span class="org-variable-name">KERNEL_STALE</span>=1
+  log <span class="org-string">"The kernel was upgraded and the modules for ${RUNNING_KERNEL} are gone."</span>
+  log <span class="org-string">"Services that need kernel modules will be enabled but not started. Reboot and re-run to activate them."</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Everything goes in one transaction: admin tools, base-devel and go (to build
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">yay below), sshguard, nftables, docker plus anything from EXTRA_PACKAGES.
+</span>log <span class="org-string">"installing base admin tools, base-devel, go, sshguard, nftables and Docker"</span>
+pacman -S --needed --noconfirm sudo openssh vim git curl wget htop base-devel go sshguard nftables <span class="org-sh-escaped-newline">\</span>
+  docker docker-compose docker-buildx ${<span class="org-variable-name">EXTRA_PACKAGES</span>}
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Perform locale, timezone and hostname config.
+</span>log <span class="org-string">"setting timezone=${TIMEZONE} locale=${LOCALE} hostname=${HOSTNAME_}"</span>
+ln -sf <span class="org-string">"/usr/share/zoneinfo/${TIMEZONE}"</span> /etc/localtime
+sed -i <span class="org-string">"s/^#\s*\(${LOCALE//./\\.} \)/\1/"</span> /etc/locale.gen
+grep -q <span class="org-string">"^${LOCALE}"</span> /etc/locale.gen || <span class="org-builtin">echo</span> <span class="org-string">"${LOCALE} UTF-8"</span> &gt;&gt; /etc/locale.gen
+locale-gen
+<span class="org-builtin">echo</span> <span class="org-string">"LANG=${LOCALE}"</span> &gt; /etc/locale.conf
+hostnamectl set-hostname <span class="org-string">"${HOSTNAME_}"</span> 2&gt;/dev/null || <span class="org-builtin">echo</span> <span class="org-string">"${HOSTNAME_}"</span> &gt; /etc/hostname
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Time sync.
+</span>log <span class="org-string">"enabling network time sync (systemd-timesyncd)"</span>
+systemctl enable --now systemd-timesyncd &gt;/dev/null 2&gt;&amp;1 || log <span class="org-string">"could not enable systemd-timesyncd"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Cap the journal so it can't slowly eat the disk on a box that stays up for
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">months.
+</span>log <span class="org-string">"capping systemd journal size (SystemMaxUse=500M)"</span>
+install -d -m755 /etc/systemd/journald.conf.d
+cat &gt; /etc/systemd/journald.conf.d/00-size.conf &lt;&lt;<span class="org-string">'JCONF'</span><span class="org-sh-heredoc">
+[Journal]
+SystemMaxUse=500M
+SystemKeepFree=1G
+JCONF
+</span>systemctl restart systemd-journald &gt;/dev/null 2&gt;&amp;1 || true
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Kernel and network sysctl hardening.
+</span>log <span class="org-string">"applying kernel/network sysctl hardening"</span>
+cat &gt; /etc/sysctl.d/99-hardening.conf &lt;&lt;<span class="org-string">'SYSCTL'</span><span class="org-sh-heredoc">
+kernel.kptr_restrict=2
+kernel.dmesg_restrict=1
+kernel.yama.ptrace_scope=1
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
+SYSCTL
+</span>sysctl --system &gt;/dev/null 2&gt;&amp;1 || log <span class="org-string">"could not apply sysctl settings now (they still apply on next boot)"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Creating user ${USERNAME}
+</span>log <span class="org-string">"creating sudo user '${USERNAME}'"</span>
+<span class="org-keyword">if</span> <span class="org-negation-char">!</span> id <span class="org-string">"${USERNAME}"</span> &gt;/dev/null 2&gt;&amp;1; <span class="org-keyword">then</span>
+  useradd -m -G wheel -s /bin/bash <span class="org-string">"${USERNAME}"</span>
+<span class="org-keyword">fi</span>
+<span class="org-builtin">echo</span> <span class="org-string">'%wheel ALL=(ALL:ALL) ALL'</span> &gt; /etc/sudoers.d/10-wheel
+chmod 440 /etc/sudoers.d/10-wheel
+visudo -cf /etc/sudoers.d/10-wheel &gt;/dev/null || { log <span class="org-string">"sudoers syntax check failed"</span>; <span class="org-keyword">exit</span> 1; }
+<span class="org-keyword">if</span> [ -n <span class="org-string">"${CONSOLE_PASSWORD}"</span> ]; <span class="org-keyword">then</span>
+  <span class="org-builtin">printf</span> <span class="org-string">'%s:%s\n'</span> <span class="org-string">"${USERNAME}"</span> <span class="org-string">"${CONSOLE_PASSWORD}"</span> | chpasswd
+  log <span class="org-string">"set a console password for '${USERNAME}' (VNC console recovery works; SSH stays key-only)"</span>
+<span class="org-keyword">else</span>
+  passwd -l <span class="org-string">"${USERNAME}"</span> &gt;/dev/null 2&gt;&amp;1 || true
+  log <span class="org-string">"no CONSOLE_PASSWORD given, so '${USERNAME}' is locked: the netcup VNC console won't let you in, only a reinstall will"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Append the key rather than overwrite, so keys added by hand survive a re-run.
+</span>install -d -m700 -o <span class="org-string">"${USERNAME}"</span> -g <span class="org-string">"${USERNAME}"</span> <span class="org-string">"/home/${USERNAME}/.ssh"</span>
+<span class="org-variable-name">AKEYS</span>=<span class="org-string">"/home/${USERNAME}/.ssh/authorized_keys"</span>
+<span class="org-builtin">echo</span> <span class="org-string">"${PUBKEY}"</span> &gt;&gt; <span class="org-string">"${AKEYS}"</span>
+chown <span class="org-string">"${USERNAME}:${USERNAME}"</span> <span class="org-string">"${AKEYS}"</span>
+chmod 600 <span class="org-string">"${AKEYS}"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Install yay with the privileges of user ${USERNAME}, as it does not want to be
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">installed by root. Built from source (needs base-devel and go, installed above)
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">and installed as root with pacman -U, since makepkg -i would wait for a sudo
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">password. The glob skips the yay-debug package makepkg also produces.
+</span><span class="org-keyword">if </span><span class="org-builtin">command</span> -v yay &gt;/dev/null 2&gt;&amp;1; <span class="org-keyword">then</span>
+  log <span class="org-string">"yay already installed, skipping"</span>
+<span class="org-keyword">else</span>
+  log <span class="org-string">"building and installing yay (AUR helper)"</span>
+  <span class="org-variable-name">YAY_BUILD</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">mktemp -d</span><span class="org-string">)"</span>
+  chown <span class="org-string">"${USERNAME}:${USERNAME}"</span> <span class="org-string">"${YAY_BUILD}"</span>
+  <span class="org-keyword">if</span> sudo -Hu <span class="org-string">"${USERNAME}"</span> git clone --depth 1 https://aur.archlinux.org/yay.git <span class="org-string">"${YAY_BUILD}/yay"</span> &gt;/dev/null 2&gt;&amp;1 <span class="org-sh-escaped-newline">\</span>
+     &amp;&amp; sudo -Hu <span class="org-string">"${USERNAME}"</span> bash -c <span class="org-string">"cd '${YAY_BUILD}/yay' &amp;&amp; makepkg --noconfirm"</span> &gt;/dev/null 2&gt;&amp;1; <span class="org-keyword">then</span>
+    pacman -U --needed --noconfirm <span class="org-string">"${YAY_BUILD}"</span>/yay/yay-[0-9]*.pkg.tar.zst
+  <span class="org-keyword">else</span>
+    log <span class="org-string">"could not build yay, skipping it. Later, as ${USERNAME}: git clone https://aur.archlinux.org/yay.git &amp;&amp; cd yay &amp;&amp; makepkg -si"</span>
+  <span class="org-keyword">fi</span>
+  rm -rf <span class="org-string">"${YAY_BUILD}"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">SSHd config.
+</span>log <span class="org-string">"hardening sshd (keys only, no root, AllowUsers ${USERNAME})"</span>
+install -d -m755 /etc/ssh/sshd_config.d
+cat &gt; /etc/ssh/sshd_config.d/99-hardening.conf &lt;&lt;CONF<span class="org-sh-heredoc">
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+AuthenticationMethods publickey
+MaxAuthTries 3
+LoginGraceTime 20
+X11Forwarding no
+AllowAgentForwarding no
+ClientAliveInterval 60
+ClientAliveCountMax 5
+UseDNS no
+AllowUsers ${USERNAME}
+CONF
+</span>sshd -t || { log <span class="org-string">"sshd config test failed, not restarting sshd (your current session is still fine)"</span>; <span class="org-keyword">exit</span> 1; }
+systemctl enable sshd &gt;/dev/null 2&gt;&amp;1 || true
+systemctl restart sshd
+log <span class="org-string">"sshd restarted and validated"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Nftables config.
+</span>log <span class="org-string">"enabling the nftables firewall (inbound: SSH, ICMP, CTF ports 8850-8899)"</span>
+cat &gt; /etc/nftables.conf &lt;&lt;<span class="org-string">'NFT'</span><span class="org-sh-heredoc">
+#!/usr/bin/nft -f
+# Replace just our own table instead of `flush ruleset`. A flush would also
+# throw away the table sshguard keeps for its blocklist. Declaring the table
+# before deleting it makes the delete safe even on the very first load.
+table inet filter
+delete table inet filter
+table inet filter {
+  chain input {
+    type filter hook input priority 0; policy drop;
+    ct state invalid drop
+    ct state established,related accept
+    iif lo accept
+    ip protocol icmp accept
+    ip6 nexthdr icmpv6 accept
+    tcp dport 22 ct state new limit rate 10/minute burst 20 packets accept
+    # CTF work: payload hosting and reverse-shell catchers. Open to the
+    # internet, no rate limit, TCP and UDP. Narrow this range if you stop
+    # needing it.
+    tcp dport 8850-8899 accept
+    udp dport 8850-8899 accept
+  }
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+    ct state established,related accept
+    # Docker: traffic leaving a container (DNS lookups, package downloads,
+    # anything a build does) crosses this chain on its way out. Without
+    # these two rules the drop policy eats it. docker0 is the default
+    # bridge, br-* are the networks docker-compose creates.
+    iifname "docker0" accept
+    iifname "br-*" accept
+    # Let forwarded traffic (e.g. a Docker container publishing into this
+    # range) reach the same CTF ports.
+    tcp dport 8850-8899 accept
+    udp dport 8850-8899 accept
+  }
+  chain output  { type filter hook output  priority 0; policy accept; }
+}
+NFT
+</span><span class="org-keyword">if</span> enable_svc nftables; <span class="org-keyword">then</span>
+  systemctl start nftables &gt;/dev/null 2&gt;&amp;1 || true
+  nft -f /etc/nftables.conf
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">SSHGuard config.
+</span>log <span class="org-string">"configuring sshguard (auto-blocks repeated SSH auth failures)"</span>
+<span class="org-variable-name">SG_BACKEND</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">ls /usr/lib/sshguard/sshguard-nft /usr/libexec/sshguard/sshguard-nft 2&gt;/dev/null | head -1 || true</span><span class="org-string">)"</span>
+<span class="org-keyword">if</span> [ -n <span class="org-string">"${SG_BACKEND}"</span> ]; <span class="org-keyword">then</span>
+  cat &gt; /etc/sshguard.conf &lt;&lt;CONF<span class="org-sh-heredoc">
+BACKEND="${SG_BACKEND}"
+LOGREADER="LANG=C /usr/bin/journalctl -afb -p info -n1 -t sshd -o cat"
+THRESHOLD=30
+BLOCK_TIME=900
+DETECTION_TIME=3600
+CONF
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">Make sure sshguard comes up after nftables at boot, otherwise loading our
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">table can race sshguard rebuilding its own. After= doesn't pull nftables
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">in by itself; the nftables enable above already handles that.
+</span>  install -d -m755 /etc/systemd/system/sshguard.service.d
+  cat &gt; /etc/systemd/system/sshguard.service.d/10-after-nftables.conf &lt;&lt;<span class="org-string">'DROP'</span><span class="org-sh-heredoc">
+[Unit]
+After=nftables.service
+DROP
+</span>  systemctl daemon-reload &gt;/dev/null 2&gt;&amp;1 || true
+  <span class="org-keyword">if</span> enable_svc sshguard; <span class="org-keyword">then</span>
+    systemctl start sshguard &gt;/dev/null 2&gt;&amp;1 || log <span class="org-string">"sshguard did not start, check: journalctl -u sshguard"</span>
+  <span class="org-keyword">fi</span>
+<span class="org-keyword">else</span>
+  log <span class="org-string">"sshguard nftables backend not found, skipping it (SSH is still key-only)"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Docker config.
+</span>log <span class="org-string">"configuring Docker (published ports bind to 127.0.0.1 by default)"</span>
+usermod -aG docker <span class="org-string">"${USERNAME}"</span>
+install -d -m755 /etc/docker
+cat &gt; /etc/docker/daemon.json &lt;&lt;<span class="org-string">'JSON'</span><span class="org-sh-heredoc">
+{
+  "ip": "127.0.0.1",
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "50m", "max-file": "3" },
+  "live-restore": true
+}
+JSON
+</span><span class="org-keyword">if</span> enable_svc docker; <span class="org-keyword">then</span>
+  systemctl start docker
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Done.
+</span><span class="org-variable-name">IP</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">ip -4 route get 1.1.1.1 2&gt;/dev/null | awk '{print $7; exit}'</span><span class="org-string">)"</span>
+<span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
+log <span class="org-string">"base configuration complete"</span>
+cat &lt;&lt;DONE<span class="org-sh-heredoc">
+  user:      ${USERNAME}  (sudo via wheel, SSH key-only login)
+  console:   $(</span><span class="org-sh-quoted-exec">[ -n "${CONSOLE_PASSWORD}" ] &amp;&amp; echo 'password set (VNC recovery ok</span><span class="org-sh-heredoc">)' || echo 'locked (reinstall-only recovery)')
+  hostname:  ${HOSTNAME_}
+  timezone:  ${TIMEZONE}  (systemd-timesyncd)
+  firewall:  nftables (inbound: SSH + CTF ports 8850-8899 tcp/udp)
+  sshguard:  $(</span><span class="org-sh-quoted-exec">systemctl is-active sshguard 2&gt;/dev/null || echo inactive</span><span class="org-sh-heredoc">)
+  docker:    $(</span><span class="org-sh-quoted-exec">systemctl is-active docker 2&gt;/dev/null || echo inactive</span><span class="org-sh-heredoc">)  (ports bind to 127.0.0.1)
+  yay:       $(</span><span class="org-sh-quoted-exec">command -v yay &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo installed || echo missing</span><span class="org-sh-heredoc">)
+DONE
+</span><span class="org-keyword">if</span> [ <span class="org-string">"${KERNEL_STALE}"</span> = 1 ]; <span class="org-keyword">then</span>
+  log <span class="org-string">"the kernel was upgraded during this run. The firewall, sshguard and Docker"</span>
+  log <span class="org-string">"services are enabled at boot but not running yet. Reboot, then run this"</span>
+  log <span class="org-string">"script again (it is safe to re-run) to bring them up."</span>
+<span class="org-keyword">fi</span>
+log <span class="org-string">"before you close this root session, check the new user works:"</span>
+cat &lt;&lt;DONE<span class="org-sh-heredoc">
+  From another device:
+      ssh [-i path/to/key] ${USERNAME}@${IP:-YOUR_IP}
+      sudo whoami    # should print: root
+  Root login is disabled now, so if that fails, come back to this session and
+  fix /etc/ssh/sshd_config.d/99-hardening.conf.
+DONE</span>
+</code></pre>
+</div>
+</div>
+</div>
+</main>
+<footer id="postamble" class="status">
+<p>
+    <a href="#preamble">Top of the page</a> - <a href="/sitemap.html">Sitemap</a> - <a href="/rss.xml"><img src="/static/img/rss.png" height="16" width="16" alt="RSS feed"></a>
+</p>
+</footer>
+</body>
+</html>

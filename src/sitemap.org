@@ -5,9 +5,9 @@
 - [[file:now.org][Now]]
 - [[file:index.org][Welcome to my little patch of internet!]]
 - notes
-  - [[file:notes/archlinux-install.org][ArchLinux installation]]
+  - [[file:notes/archlinux-workstation.org][ArchLinux workstation]]
+  - [[file:notes/archlinux-vps.org][dacloud — netcup ArchLinux VPS Setup Guide]]
   - [[file:notes/index.org][Various notes]]
-  - [[file:notes/windows-tools.org][Windows Pentesting Tools]]
 - posts
   - [[file:posts/gtd-with-org.org][Getting Things Done with Org]]
   - [[file:posts/hello-world-from-org.org][Hello World from Org]]

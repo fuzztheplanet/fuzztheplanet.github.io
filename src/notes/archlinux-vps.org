@@ -1,0 +1,449 @@
+#+TITLE: dacloud — netcup ArchLinux VPS Setup Guide
+#+STARTUP: content
+
+These are my notes for getting my [[https://www.netcup.com][netcup]] ArchLinux VPS up and running. I use it
+mostly for security research, CTF challenges and other intents and purposes.
+Running a new instance is a two-step process:
+
+1. Install Arch from the [[https://www.servercontrolpanel.de/][netcup SCP panel]].
+2. Run =dacloud-setup.sh= over SSH. The script handles the base configuration: a
+   sudo user, SSH hardening, sshguard, an nftables firewall, Docker, and =yay=
+   as AUR helper.
+
+{{{toc(Contents:,6)}}}
+
+* Install a basic ArchLinux
+*** Prepare the SSH key
+
+SSH login is key-based all the way through. If needed, generate a new key:
+
+#+begin_src sh
+ssh-keygen -t ed25519 -a 100 -C "skw@skywhi.net" -f ~/.ssh/id_dacloud
+cat ~/.ssh/id_dacloud.pub
+#+end_src
+
+- The =.pub= file is what gets pasted into /netcup/.
+- The private key =~/.ssh/id_dacloud= should remain private (/duh!).
+
+*** Install ArchLinux from the netcup SCP
+
+1. Open the server's *SCP* page.
+2. Go to *Media => Images* and pick /Arch/.
+3. In the install dialog:
+   - *Hostname:* =dacloud=.
+   - *Timezone / language:* Europe/Berlin, English. The setup script sets these
+     anyway, so defaults are fine here.
+   - *SSH key:* paste your *public* key. /netcup/ installs it for =root=, so you
+     get key-based root login and no password. The setup script picks this same
+     key up later for your normal user, so you only paste it once.
+4. Start the install and wait for it to finish. It only takes a few seconds.
+5. Write down the server's *IPv4* address from the /SCP/ console.
+
+*** Add DNS record (Gandi)
+
+1. Log in at [[https://admin.gandi.net][admin.gandi.net]] and open *Domain names => <domain> => DNS records*.
+2. Click *Add a record* and fill in:
+
+   | Field | Value                    |
+   |-------+--------------------------|
+   | Type  | =A=                      |
+   | Name  | =dacloud=                |
+   | TTL   | =300=                    |
+   | Value | the VPS IPv4 address     |
+
+   Do the same for IPv6 if needed with =AAAA= instead of =A= and with the IPv6
+   address in the /SCP/ console.
+3. Run =dig +short dacloud.skywhi.net= to see if the changes have propagated.
+
+* Run the setup script
+*** Copy it up and log in
+
+#+begin_src sh
+# copy the script up
+scp dacloud-setup.sh root@dacloud.skywhi.et:/root/
+
+# log in as root (works because you imported your key in step 3)
+ssh root@dacloud.skywhi.net
+#+end_src
+
+*** Run it on the server
+
+Either edit the =CONFIG= block at the top of the script or pass values as
+environment variables. These are the variables and their defaults:
+
+| Variable           | Default         | Meaning                                            |
+|--------------------+-----------------+----------------------------------------------------|
+| =USERNAME=         | =skw=           | Your unprivileged login user                       |
+| =TIMEZONE=         | =Europe/Berlin= | System timezone                                    |
+| =LOCALE=           | =en_US.UTF-8=   | System locale                                      |
+| =HOSTNAME_=        | =dacloud=       | Hostname (note the trailing underscore)            |
+| =PUBKEY=           | (empty)         | SSH public key; empty reuses the root key from SCP |
+| =CONSOLE_PASSWORD= | (empty)         | Console password for VNC recovery; empty = locked  |
+| =EXTRA_PACKAGES=   | (empty)         | Extra pacman packages, space-separated             |
+| =MIRROR_COUNTRY=   | =Germany=       | Country reflector ranks pacman mirrors from        |
+
+Some examples:
+
+#+begin_src sh
+# minimal install:
+USERNAME=skw bash /root/dacloud-setup.sh
+
+# with some extra tools:
+USERNAME=skw EXTRA_PACKAGES="tmux ripgrep fd jq" bash /root/dacloud-setup.sh
+#+end_src
+
+The script turns off /root/ SSH login and password authentication. If you also
+skip the console password, the user's password gets locked and then *nobody*
+can log in at the netcup VNC console. At that point a broken SSH config means a
+full reinstall. Setting a console password doesn't weaken remote login at all,
+since it can only be used in the local console through the /SCP/ console.
+=CONSOLE_PASSWORD= is also the password assigned to the user =USERNAME= during
+setup and will be required by =sudo=.
+
+/root/ login is off once the script finishes, so confirm the new user works
+while the /root/ session is still open. From another device or a *new terminal*:
+
+#+begin_src sh
+ssh [-i path/to/key] skw@dacloud.skywhi.net
+#+end_src
+
+*** Host alias
+
+Add this to =~/.ssh/config= on your local host so that it's possible to login
+withe =ssh dacloud=:
+
+#+begin_src conf
+Host dacloud
+    HostName dacloud.skywhi.net
+    User skw
+    IdentityFile ~/codaz/VPS/dacloud/ssh/vps-ssh-1
+    IdentitiesOnly yes
+#+end_src
+
+* Setup script
+
+#+begin_src bash
+#!/usr/bin/env bash
+#
+# dacloud-setup.sh: base setup for dacloud, a netcup ArchLinux VPS.
+#
+# Usage:
+#   scp dacloud-setup.sh root@YOUR_IP:/root/
+#   ssh root@YOUR_IP
+#   # edit the CONFIG block below, or pass the values as env vars, then:
+#   USERNAME=skw EXTRA_PACKAGES="tmux nano" bash /root/dacloud-setup.sh
+#
+set -euo pipefail
+
+# CONFIG (override via env or edit here)
+USERNAME="${USERNAME:-skw}"
+TIMEZONE="${TIMEZONE:-Europe/Berlin}"
+LOCALE="${LOCALE:-en_US.UTF-8}"
+HOSTNAME_="${HOSTNAME_:-dacloud}"
+# Public SSH key for ${USERNAME}. Leave empty to reuse whatever key you gave
+# the netcup SCP at install time (it lands in /root/.ssh/authorized_keys).
+PUBKEY="${PUBKEY:-}"
+# Optional console password for ${USERNAME}. SSH stays key-only either way.
+# This only matters if SSH breaks and you need the netcup VNC console to get
+# back in. Leave it empty and the account is locked, which means the only way
+# back is a reinstall from the SCP. The password will also be used for the newly
+# created user.
+CONSOLE_PASSWORD="${CONSOLE_PASSWORD:-}"
+EXTRA_PACKAGES="${EXTRA_PACKAGES:-tmux}"
+MIRROR_COUNTRY="${MIRROR_COUNTRY:-Germany}"
+
+log() { printf '[*] %s\n' "$*"; }
+
+[ "$(id -u)" -eq 0 ] || { log "run this as root on the VPS"; exit 1; }
+command -v pacman >/dev/null || { log "this is not an Arch system"; exit 1; }
+
+# Enable a unit at boot and tell the caller whether it can also be started right
+# now. Relies on KERNEL_STALE, which is set after the update.
+enable_svc() {
+  systemctl enable "$1" >/dev/null 2>&1
+  if [ "${KERNEL_STALE}" = 1 ]; then
+    log "$1 enabled at boot but not started now (kernel upgraded, reboot to activate)"
+    return 1
+  fi
+  return 0
+}
+
+# Resolve the SSH public key.
+if [ -z "${PUBKEY}" ] && [ -s /root/.ssh/authorized_keys ]; then
+  # Take the first key, starting at the key type token. That way a line with
+  # an options prefix (restrict,command="..." ssh-ed25519 AAAA...) still
+  # matches and the root-only options don't get copied to the new user.
+  PUBKEY="$(grep -m1 -oE '(sk-(ssh-ed25519|ecdsa-sha2-nistp256)@openssh\.com|ssh-(ed25519|rsa|dss)|ecdsa-sha2-[a-z0-9-]+)[[:space:]]+AAAA[A-Za-z0-9+/]+=*([[:space:]]+\S.*)?' /root/.ssh/authorized_keys 2>/dev/null | head -1 || true)"
+  [ -n "${PUBKEY}" ] && log "reusing the SSH key imported via the netcup SCP"
+fi
+[ -n "${PUBKEY}" ] || { log "no SSH key found: set PUBKEY='ssh-ed25519 ...' or import one in the SCP first"; exit 1; }
+
+# Resolve the console password.
+# If nothing was passed in and we're on a terminal, ask for it with hidden
+# input. Passing it inline as an env var would leave it in shell history and
+# briefly in the process list. Enter on an empty prompt means "locked".
+# Non-interactive runs still pick it up from the environment.
+if [ -z "${CONSOLE_PASSWORD}" ] && [ -t 0 ]; then
+  read -rsp "Console password for ${USERNAME} (VNC recovery; empty = locked): " CONSOLE_PASSWORD
+  printf '\n'
+fi
+
+# Full system update. Rank the mirrors first with reflector, update the pacman
+# keyring correctly and perform an upgrade.
+log "ranking pacman mirrors with reflector (country=${MIRROR_COUNTRY})"
+if pacman -Sy --needed --noconfirm reflector; then
+  cp -a /etc/pacman.d/mirrorlist "/etc/pacman.d/mirrorlist.bak.$(date +%s)" 2>/dev/null || true
+  reflector --country "${MIRROR_COUNTRY}" --latest 20 --protocol https --sort rate \
+    --save /etc/pacman.d/mirrorlist \
+    || log "reflector failed, keeping the existing mirrorlist"
+else
+  log "could not install reflector, keeping the existing mirrorlist"
+fi
+
+log "initializing the pacman keyring and updating the system"
+RUNNING_KERNEL="$(uname -r)"
+pacman-key --init >/dev/null 2>&1 || true
+pacman-key --populate archlinux >/dev/null 2>&1 || true
+pacman -Sy --noconfirm archlinux-keyring
+
+
+pacman -Syu --noconfirm
+
+# The upgrade may have replaced the kernel. If it did, /usr/lib/modules no
+# longer has the modules for the kernel we're actually running, so loading
+# anything (nftables, Docker's overlay and bridge) fails until a reboot. Note
+# that here so the steps below enable their services instead of starting them,
+# rather than dying under set -e.
+KERNEL_STALE=0
+if [ ! -d "/usr/lib/modules/${RUNNING_KERNEL}" ]; then
+  KERNEL_STALE=1
+  log "The kernel was upgraded and the modules for ${RUNNING_KERNEL} are gone."
+  log "Services that need kernel modules will be enabled but not started. Reboot and re-run to activate them."
+fi
+
+# Everything goes in one transaction: admin tools, base-devel and go (to build
+# yay below), sshguard, nftables, docker plus anything from EXTRA_PACKAGES.
+log "installing base admin tools, base-devel, go, sshguard, nftables and Docker"
+pacman -S --needed --noconfirm sudo openssh vim git curl wget htop base-devel go sshguard nftables \
+  docker docker-compose docker-buildx ${EXTRA_PACKAGES}
+
+# Perform locale, timezone and hostname config.
+log "setting timezone=${TIMEZONE} locale=${LOCALE} hostname=${HOSTNAME_}"
+ln -sf "/usr/share/zoneinfo/${TIMEZONE}" /etc/localtime
+sed -i "s/^#\s*\(${LOCALE//./\\.} \)/\1/" /etc/locale.gen
+grep -q "^${LOCALE}" /etc/locale.gen || echo "${LOCALE} UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=${LOCALE}" > /etc/locale.conf
+hostnamectl set-hostname "${HOSTNAME_}" 2>/dev/null || echo "${HOSTNAME_}" > /etc/hostname
+
+# Time sync.
+log "enabling network time sync (systemd-timesyncd)"
+systemctl enable --now systemd-timesyncd >/dev/null 2>&1 || log "could not enable systemd-timesyncd"
+
+# Cap the journal so it can't slowly eat the disk on a box that stays up for
+# months.
+log "capping systemd journal size (SystemMaxUse=500M)"
+install -d -m755 /etc/systemd/journald.conf.d
+cat > /etc/systemd/journald.conf.d/00-size.conf <<'JCONF'
+[Journal]
+SystemMaxUse=500M
+SystemKeepFree=1G
+JCONF
+systemctl restart systemd-journald >/dev/null 2>&1 || true
+
+# Kernel and network sysctl hardening.
+log "applying kernel/network sysctl hardening"
+cat > /etc/sysctl.d/99-hardening.conf <<'SYSCTL'
+kernel.kptr_restrict=2
+kernel.dmesg_restrict=1
+kernel.yama.ptrace_scope=1
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
+SYSCTL
+sysctl --system >/dev/null 2>&1 || log "could not apply sysctl settings now (they still apply on next boot)"
+
+# Creating user ${USERNAME}
+log "creating sudo user '${USERNAME}'"
+if ! id "${USERNAME}" >/dev/null 2>&1; then
+  useradd -m -G wheel -s /bin/bash "${USERNAME}"
+fi
+echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/10-wheel
+chmod 440 /etc/sudoers.d/10-wheel
+visudo -cf /etc/sudoers.d/10-wheel >/dev/null || { log "sudoers syntax check failed"; exit 1; }
+if [ -n "${CONSOLE_PASSWORD}" ]; then
+  printf '%s:%s\n' "${USERNAME}" "${CONSOLE_PASSWORD}" | chpasswd
+  log "set a console password for '${USERNAME}' (VNC console recovery works; SSH stays key-only)"
+else
+  passwd -l "${USERNAME}" >/dev/null 2>&1 || true
+  log "no CONSOLE_PASSWORD given, so '${USERNAME}' is locked: the netcup VNC console won't let you in, only a reinstall will"
+fi
+
+# Append the key rather than overwrite, so keys added by hand survive a re-run.
+install -d -m700 -o "${USERNAME}" -g "${USERNAME}" "/home/${USERNAME}/.ssh"
+AKEYS="/home/${USERNAME}/.ssh/authorized_keys"
+echo "${PUBKEY}" >> "${AKEYS}"
+chown "${USERNAME}:${USERNAME}" "${AKEYS}"
+chmod 600 "${AKEYS}"
+
+# Install yay with the privileges of user ${USERNAME}, as it does not want to be
+# installed by root. Built from source (needs base-devel and go, installed above)
+# and installed as root with pacman -U, since makepkg -i would wait for a sudo
+# password. The glob skips the yay-debug package makepkg also produces.
+if command -v yay >/dev/null 2>&1; then
+  log "yay already installed, skipping"
+else
+  log "building and installing yay (AUR helper)"
+  YAY_BUILD="$(mktemp -d)"
+  chown "${USERNAME}:${USERNAME}" "${YAY_BUILD}"
+  if sudo -Hu "${USERNAME}" git clone --depth 1 https://aur.archlinux.org/yay.git "${YAY_BUILD}/yay" >/dev/null 2>&1 \
+     && sudo -Hu "${USERNAME}" bash -c "cd '${YAY_BUILD}/yay' && makepkg --noconfirm" >/dev/null 2>&1; then
+    pacman -U --needed --noconfirm "${YAY_BUILD}"/yay/yay-[0-9]*.pkg.tar.zst
+  else
+    log "could not build yay, skipping it. Later, as ${USERNAME}: git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si"
+  fi
+  rm -rf "${YAY_BUILD}"
+fi
+
+# SSHd config.
+log "hardening sshd (keys only, no root, AllowUsers ${USERNAME})"
+install -d -m755 /etc/ssh/sshd_config.d
+cat > /etc/ssh/sshd_config.d/99-hardening.conf <<CONF
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+AuthenticationMethods publickey
+MaxAuthTries 3
+LoginGraceTime 20
+X11Forwarding no
+AllowAgentForwarding no
+ClientAliveInterval 60
+ClientAliveCountMax 5
+UseDNS no
+AllowUsers ${USERNAME}
+CONF
+sshd -t || { log "sshd config test failed, not restarting sshd (your current session is still fine)"; exit 1; }
+systemctl enable sshd >/dev/null 2>&1 || true
+systemctl restart sshd
+log "sshd restarted and validated"
+
+# Nftables config.
+log "enabling the nftables firewall (inbound: SSH, ICMP, CTF ports 8850-8899)"
+cat > /etc/nftables.conf <<'NFT'
+#!/usr/bin/nft -f
+# Replace just our own table instead of `flush ruleset`. A flush would also
+# throw away the table sshguard keeps for its blocklist. Declaring the table
+# before deleting it makes the delete safe even on the very first load.
+table inet filter
+delete table inet filter
+table inet filter {
+  chain input {
+    type filter hook input priority 0; policy drop;
+    ct state invalid drop
+    ct state established,related accept
+    iif lo accept
+    ip protocol icmp accept
+    ip6 nexthdr icmpv6 accept
+    tcp dport 22 ct state new limit rate 10/minute burst 20 packets accept
+    # CTF work: payload hosting and reverse-shell catchers. Open to the
+    # internet, no rate limit, TCP and UDP. Narrow this range if you stop
+    # needing it.
+    tcp dport 8850-8899 accept
+    udp dport 8850-8899 accept
+  }
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+    ct state established,related accept
+    # Docker: traffic leaving a container (DNS lookups, package downloads,
+    # anything a build does) crosses this chain on its way out. Without
+    # these two rules the drop policy eats it. docker0 is the default
+    # bridge, br-* are the networks docker-compose creates.
+    iifname "docker0" accept
+    iifname "br-*" accept
+    # Let forwarded traffic (e.g. a Docker container publishing into this
+    # range) reach the same CTF ports.
+    tcp dport 8850-8899 accept
+    udp dport 8850-8899 accept
+  }
+  chain output  { type filter hook output  priority 0; policy accept; }
+}
+NFT
+if enable_svc nftables; then
+  systemctl start nftables >/dev/null 2>&1 || true
+  nft -f /etc/nftables.conf
+fi
+
+# SSHGuard config.
+log "configuring sshguard (auto-blocks repeated SSH auth failures)"
+SG_BACKEND="$(ls /usr/lib/sshguard/sshguard-nft /usr/libexec/sshguard/sshguard-nft 2>/dev/null | head -1 || true)"
+if [ -n "${SG_BACKEND}" ]; then
+  cat > /etc/sshguard.conf <<CONF
+BACKEND="${SG_BACKEND}"
+LOGREADER="LANG=C /usr/bin/journalctl -afb -p info -n1 -t sshd -o cat"
+THRESHOLD=30
+BLOCK_TIME=900
+DETECTION_TIME=3600
+CONF
+  # Make sure sshguard comes up after nftables at boot, otherwise loading our
+  # table can race sshguard rebuilding its own. After= doesn't pull nftables
+  # in by itself; the nftables enable above already handles that.
+  install -d -m755 /etc/systemd/system/sshguard.service.d
+  cat > /etc/systemd/system/sshguard.service.d/10-after-nftables.conf <<'DROP'
+[Unit]
+After=nftables.service
+DROP
+  systemctl daemon-reload >/dev/null 2>&1 || true
+  if enable_svc sshguard; then
+    systemctl start sshguard >/dev/null 2>&1 || log "sshguard did not start, check: journalctl -u sshguard"
+  fi
+else
+  log "sshguard nftables backend not found, skipping it (SSH is still key-only)"
+fi
+
+# Docker config.
+log "configuring Docker (published ports bind to 127.0.0.1 by default)"
+usermod -aG docker "${USERNAME}"
+install -d -m755 /etc/docker
+cat > /etc/docker/daemon.json <<'JSON'
+{
+  "ip": "127.0.0.1",
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "50m", "max-file": "3" },
+  "live-restore": true
+}
+JSON
+if enable_svc docker; then
+  systemctl start docker
+fi
+
+# Done.
+IP="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')"
+printf '\n'
+log "base configuration complete"
+cat <<DONE
+  user:      ${USERNAME}  (sudo via wheel, SSH key-only login)
+  console:   $([ -n "${CONSOLE_PASSWORD}" ] && echo 'password set (VNC recovery ok)' || echo 'locked (reinstall-only recovery)')
+  hostname:  ${HOSTNAME_}
+  timezone:  ${TIMEZONE}  (systemd-timesyncd)
+  firewall:  nftables (inbound: SSH + CTF ports 8850-8899 tcp/udp)
+  sshguard:  $(systemctl is-active sshguard 2>/dev/null || echo inactive)
+  docker:    $(systemctl is-active docker 2>/dev/null || echo inactive)  (ports bind to 127.0.0.1)
+  yay:       $(command -v yay >/dev/null 2>&1 && echo installed || echo missing)
+DONE
+if [ "${KERNEL_STALE}" = 1 ]; then
+  log "the kernel was upgraded during this run. The firewall, sshguard and Docker"
+  log "services are enabled at boot but not running yet. Reboot, then run this"
+  log "script again (it is safe to re-run) to bring them up."
+fi
+log "before you close this root session, check the new user works:"
+cat <<DONE
+  From another device:
+      ssh [-i path/to/key] ${USERNAME}@${IP:-YOUR_IP}
+      sudo whoami    # should print: root
+  Root login is disabled now, so if that fails, come back to this session and
+  fix /etc/ssh/sshd_config.d/99-hardening.conf.
+DONE
+#+end_src

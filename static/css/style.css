@@ -601,13 +601,18 @@ body {
     overflow-wrap: break-word;
 }
 
-/* Code inside a highlighted block keeps the block's own styling */
+/* Code inside a highlighted block keeps the block's own styling. Org 9.8+
+   wraps source-block content in an inner <code>, so restore the block's
+   whitespace handling here or the inline `#content code` rule collapses
+   newlines. */
 #content pre code {
     color: inherit;
     background: none;
     border: 0;
     padding: 0;
     font-size: inherit;
+    white-space: inherit;
+    overflow-wrap: normal;
 }
 
 #content blockquote {
