@@ -231,16 +231,16 @@ The setup is made out of these files:
 ├── perso.org                              -- For my day-to-day doings and notes
 ├── archives/                              -- Where old logbooks and projects go to sleep
 │   ├── logbooks/
-│   │   ├── logbook.org_archive
-│   │   └── logbook_2015-2020.org_archive
+│   │   └── logbook.org_archive
 │   └── projects/
 │       ├── blog.org_archive
 │       └── setup.org_archive
 └── projects/                              -- Collection of TODOs and notes that
     ├── blog.org                           -- should be tracked over time
+    ├── codaz.org
     ├── concerts.org
     ├── cookbook.org
-    └── setup.org
+    └── plants.org
 </code></pre>
 </div>
 
@@ -254,8 +254,9 @@ day-to-day activities like appointments, chores and other todos are stored in
 
 <p>
 Completed tasks from my main file, <b>perso.org</b>, are archived in
-<b>archives/logbooks/logbook.org</b> in <a href="https://orgmode.org/manual/Template-elements.html#FOOT84">datetree format</a>. Tasks from projects are
-archived in their own file under <b>archives/projects/project_A.org</b>.
+<b>archives/logbooks/logbook.org_archive</b>, preserving the original heading
+hierarchy. Tasks from projects are archived in their own file under
+<b>archives/projects/&lt;project&gt;.org_archive</b>.
 </p>
 
 <p>
@@ -946,15 +947,16 @@ yourself what work best for you.
 <p>
 When a task has been completed or canceled for a while, I don't want to have it
 on the radar anymore so I <a href="https://orgmode.org/guide/Archiving.html">archive</a> it away. Items from <b>perso.org</b> go into
-<b>archives/logbooks/logbook.org_archive</b> in <a href="https://orgmode.org/manual/Template-elements.html#FOOT84">datetree</a> format and those from
-projects go to <b>archives/projects/&lt;project.org&gt;</b>. Hitting <code>C-c $</code> on a heading
-or <code>$</code> on the agenda view will archive the item to the correct location.
+<b>archives/logbooks/logbook.org_archive</b> and those from projects go to
+<b>archives/projects/&lt;project&gt;.org_archive</b>. The heading hierarchy from the
+source file is preserved in the archive. Hitting <code>C-c $</code> on a heading or <code>$</code>
+on the agenda view will archive the item to the correct location.
 </p>
 
 <p>
 From the agenda view, when I want to inspect archived items, I can press <code>v A l</code>
 (or <code>v A v L</code> for a more exhaustive view, with state changes) to add them to the
-agenda and then reduce I often reduce the view to a single category with <code>&lt;</code>.
+agenda and then reduce the view to a single category with <code>&lt;</code>.
 </p>
 
 <p>
@@ -962,12 +964,12 @@ Locations are defined using the following in-buffer directives:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 25: </span>conf.org</label><pre class="src src-org"><code><span class="org-org-meta-line">#+ARCHIVE: ./archives/logbooks/logbook.org_archive::datetree/</span>
+<label class="org-src-name"><span class="listing-number">Listing 25: </span>perso.org</label><pre class="src src-org"><code><span class="org-org-meta-line">#+ARCHIVE: ./archives/logbooks/logbook.org_archive::</span>
 </code></pre>
 </div>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 26: </span>projects/projectA.org</label><pre class="src src-org"><code><span class="org-org-meta-line">#+ARCHIVE: ../archives/projects/%s_archive::</span>
+<label class="org-src-name"><span class="listing-number">Listing 26: </span>projects/&lt;project&gt;.org</label><pre class="src src-org"><code><span class="org-org-meta-line">#+ARCHIVE: ../archives/projects/%s_archive::</span>
 </code></pre>
 </div>
 
