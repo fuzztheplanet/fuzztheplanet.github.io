@@ -286,7 +286,8 @@ In my <b>~/.emacs.d/init.el</b> I just need to load the Org file with <i>org-bab
 
 <p>
 Back to this file, <b>conf.org</b>, where I create some variables to reference my
-files easily in the rest of the configuration.
+files easily in the rest of the configuration. The logbook lives under
+<code>archives/logbooks/</code>.
 </p>
 
 <div class="org-src-container">
@@ -300,7 +301,7 @@ files easily in the rest of the configuration.
  skw/f-org-perso-conf     (concat skw/d-org-perso <span class="org-string">"conf.org"</span>)
  skw/f-org-perso-inbox    (concat skw/d-org-perso <span class="org-string">"inbox.org"</span>)
  skw/f-org-perso-journal  (concat skw/d-org-perso <span class="org-string">"journal.org"</span>)
- skw/f-org-perso-logbook  (concat skw/d-org-perso-archives <span class="org-string">"logbook.org_archive"</span>))
+ skw/f-org-perso-logbook  (concat skw/d-org-perso-archives <span class="org-string">"logbooks/logbook.org_archive"</span>))
 </code></pre>
 </div>
 </div>
@@ -372,8 +373,8 @@ is not the case for <code>MEET</code> items.
 
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">Listing 5: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(<span class="org-keyword">setq</span> org-todo-keywords
-      '((sequence <span class="org-string">"TODO(t@/!)"</span> <span class="org-string">"CURR(c@/!)"</span> <span class="org-string">"STOP(s@/!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d@/@)"</span> <span class="org-string">"ABRT(a@/@)"</span>)
-        (sequence <span class="org-string">"MEET(m@/!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d@/@)"</span> <span class="org-string">"ABRT(a@/@)"</span>)))
+      '((sequence <span class="org-string">"TODO(t!)"</span> <span class="org-string">"CURR(c!)"</span> <span class="org-string">"STOP(s@/!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d!)"</span> <span class="org-string">"ABRT(a@)"</span>)
+        (sequence <span class="org-string">"MEET(m!)"</span> <span class="org-string">"|"</span> <span class="org-string">"DONE(d!)"</span> <span class="org-string">"ABRT(a@)"</span>)))
 
 (<span class="org-keyword">setq</span> org-todo-keyword-faces
       (<span class="org-keyword">quote</span>
@@ -388,26 +389,36 @@ is not the case for <code>MEET</code> items.
 
 <p>
 I don't use the <a href="https://orgmode.org/manual/Clocking-Work-Time.html">clocking</a> functionality as I haven't identified a proper need for
-it in my workflow (yet) but I tend to make heavy use of modifiers (<code>@</code> and <code>!</code>)
-to track when a state change occurred and sometimes add a note to it. I often
-document the current status on important todos for when I will resuming the
-tasks. Additionally, I like to log every state change as the timeline can be
-valuable information while reviewing the task. They can always be deleted before
-archiving the task anyway.
+it in my workflow (yet) but I use modifiers (<code>!</code> and <code>@</code>) to track when a state
+change occurred. I like to log every state change as the timeline can be
+valuable information while reviewing the task, so every state records a
+timestamp (<code>!</code>). A note (<code>@</code>) is only required when a task is put on hold or
+aborted, as the reason is what I want to remember when resuming or reviewing
+it. Any other time, I can still add a note with <code>C-c C-z</code> (<code>z</code> in the agenda) to
+document the current status of an important todo. Log entries can always be
+deleted before archiving the task anyway.
 </p>
 
 <p>
 Tasks are items that are quite straightforward and can be completed in one go.
 For more complex tasks with dependencies, I use nested todos. This hook switches
-a <code>TODO</code> heading to <code>DONE</code> when all its subheadings (i.e. subtasks) are marked
-as <code>DONE</code>.
+a <code>TODO</code> or <code>CURR</code> heading to <code>DONE</code> when all its subheadings (i.e. subtasks)
+are marked as <code>DONE</code> (or <code>ABRT</code>), and back to <code>TODO</code> when one of them is
+reopened. Other states, like <code>MEET</code>, are left alone. The parent's state change
+is not logged, so closing a subtask doesn't trigger a second log entry or note
+prompt for the parent.
 </p>
 
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">Listing 6: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(<span class="org-keyword">defun</span> <span class="org-function-name">skw/org-summary-todo</span> (n-done n-not-done)
-  <span class="org-doc">"Switch entry to DONE when all subentries are DONE"</span>
-  (<span class="org-keyword">let</span> (org-log-done org-log-states)
-    (org-todo (<span class="org-keyword">if</span> (= n-not-done 0) <span class="org-string">"DONE"</span> <span class="org-string">"TODO"</span>))))
+  <span class="org-doc">"Switch entry to DONE when all subentries are done.
+Switch it back to TODO when a subentry is reopened."</span>
+  (<span class="org-keyword">let</span> ((state (org-get-todo-state))
+        (org-todo-log-states nil))
+    (<span class="org-keyword">cond</span> ((<span class="org-keyword">and</span> (= n-not-done 0) (member state '(<span class="org-string">"TODO"</span> <span class="org-string">"CURR"</span>)))
+           (org-todo <span class="org-string">"DONE"</span>))
+          ((<span class="org-keyword">and</span> (&gt; n-not-done 0) (equal state <span class="org-string">"DONE"</span>))
+           (org-todo <span class="org-string">"TODO"</span>)))))
 
 (add-hook 'org-after-todo-statistics-hook 'skw/org-summary-todo)
 </code></pre>
@@ -609,9 +620,13 @@ The following files are automatically tracked by the agenda:
 <label class="org-src-name"><span class="listing-number">Listing 16: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(add-to-list 'org-agenda-files skw/f-org-perso)
 (add-to-list 'org-agenda-files skw/f-org-perso-inbox)
 (add-to-list 'org-agenda-files skw/d-org-perso-projects)
-(add-to-list 'org-agenda-files skw/d-org-perso-archives)
 </code></pre>
 </div>
+
+<p>
+Archive files are not listed here: <code>v A</code> in the agenda pulls them in through
+the <code>#+ARCHIVE:</code> directive of each file (see <a href="#archiving">Archiving</a>).
+</p>
 </div>
 </div>
 <div id="outline-container-skipping-tags-and-habits" class="outline-3">
@@ -619,21 +634,19 @@ The following files are automatically tracked by the agenda:
 <div class="outline-text-3" id="text-skipping-tags-and-habits">
 <p>
 These functions can be passed as argument to <code>org-agenda-skip-function</code> in order
-to ignore specific tags or properties in the agenda views.
+to ignore specific tags or properties in the agenda views. Tags are matched
+exactly, including inherited tags: skipping <code>@WORK</code> does not skip <code>@WORKSHOP</code>.
 </p>
 
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">Listing 17: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(<span class="org-keyword">defun</span> <span class="org-function-name">skw/agenda-skip-tags</span> (<span class="org-type">&amp;rest</span> args)
-  <span class="org-doc">"Skip tags passed as '</span><span class="org-doc"><span class="org-constant">args</span></span><span class="org-doc">' in the agenda view"</span>
-  (<span class="org-keyword">let</span> (beg end)
+  <span class="org-doc">"Skip an agenda entry with any of the exact tags in ARGS."</span>
+  (<span class="org-keyword">save-excursion</span>
     (org-back-to-heading t)
-    (<span class="org-keyword">setq</span> beg (point)
-          end (<span class="org-keyword">progn</span> (outline-next-heading) (1- (point))))
-    (goto-char beg)
-    (<span class="org-keyword">setq</span> alltags (prin1-to-string (org-get-tags)))
-    (goto-char beg)
-    (<span class="org-keyword">if</span> (seq-some (<span class="org-keyword">lambda</span> (x) (string-match x alltags)) args)
-        end)))
+    (<span class="org-keyword">let</span> ((tags (org-get-tags)))
+      (<span class="org-keyword">when</span> (seq-some (<span class="org-keyword">lambda</span> (tag) (member tag tags)) args)
+        (outline-next-heading)
+        (point)))))
 
 (<span class="org-keyword">defun</span> <span class="org-function-name">skw/agenda-skip-property</span> (proprety value)
   <span class="org-doc">"Skip an agenda entry if it has a '</span><span class="org-doc"><span class="org-constant">property</span></span><span class="org-doc">' equal to '</span><span class="org-doc"><span class="org-constant">value</span></span><span class="org-doc">'."</span>
@@ -662,8 +675,9 @@ see these items before anything else to be able to prioritize correctly.</li>
 these tasks first.</li>
 <li>I like to set some small goals for myself over a period of 2 months. This
 section displays the current status.</li>
-<li>All the remaining open todos sorted by priority and effort. I go through it
-every day to make sure that I am not missing anything important.</li>
+<li>All the remaining open todos sorted by priority, then shortest estimated
+effort. I go through it every day to make sure that I am not missing
+anything important.</li>
 <li>Finally, I have the list of all completed or canceled items. I go through it
 every month and archive items that are not needed anymore.</li>
 </ol>
@@ -702,6 +716,7 @@ every month and archive items that are not needed anymore.</li>
           <span class="org-comment-delimiter">;; </span><span class="org-comment">5) Next
 </span>          (tags-todo <span class="org-string">"@PERSO+TODO={TODO}-@REFILE"</span>
                      ((org-agenda-overriding-header <span class="org-string">"Next:"</span>)
+                      (org-agenda-sorting-strategy '(priority-down effort-up))
                       (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'scheduled)
                                                      (org-agenda-skip-entry-if 'deadline)
                                                      (skw/agenda-skip-property <span class="org-string">"STYLE"</span> <span class="org-string">"habit"</span>)
@@ -825,9 +840,11 @@ birthdays.
         (holiday-easter-etc 50  <span class="org-string">"Pfingstmontag (free)"</span>)
         (holiday-easter-etc 60  <span class="org-string">"Corpus Christi / Fronleichnam (free)"</span>)
         (holiday-fixed 05 01    <span class="org-string">"Labor Day (free)"</span>)
-        (holiday-float 05 4 7   <span class="org-string">"Mother's Day"</span>) <span class="org-comment-delimiter">;; </span><span class="org-comment">needs checking
-</span>        (holiday-float 06 4 7   <span class="org-string">"Father's Day"</span>) <span class="org-comment-delimiter">;; </span><span class="org-comment">needs checking
-</span>        (holiday-fixed 10 03    <span class="org-string">"Tag der Deutschen Einheit (free)"</span>)
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">French dates: last Sunday of May and 3rd Sunday of June. Mother's Day
+</span>        <span class="org-comment-delimiter">;; </span><span class="org-comment">moves to June's first Sunday when it falls on Pentecost (next: 2034)
+</span>        (holiday-float 05 0 -1  <span class="org-string">"Mother's Day"</span>)
+        (holiday-float 06 0 3   <span class="org-string">"Father's Day"</span>)
+        (holiday-fixed 10 03    <span class="org-string">"Tag der Deutschen Einheit (free)"</span>)
         (holiday-fixed 10 31    <span class="org-string">"Halloween"</span>)
         (holiday-fixed 11 01    <span class="org-string">"All Saints (free)"</span>)
         (holiday-float 11 4 4   <span class="org-string">"Thanksgiving"</span>)
@@ -891,7 +908,7 @@ available <a href="https://orgmode.org/manual/Capture-templates.html">here</a>.
 <label class="org-src-name"><span class="listing-number">Listing 22: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(<span class="org-keyword">setq</span> skw/org-perso-capture-templates
       '((<span class="org-string">"p"</span> <span class="org-string">"Perso capture"</span>)
         (<span class="org-string">"pj"</span> <span class="org-string">"Journal Entry"</span> entry (file+datetree skw/f-org-perso-journal)
-         <span class="org-string">"* %^{date}u %^{title}\n\n  %?\n\n"</span> <span class="org-builtin">:tree-type</span> month)
+         <span class="org-string">"* %u %^{title}\n\n  %?\n\n"</span> <span class="org-builtin">:tree-type</span> month <span class="org-builtin">:time-prompt</span> t)
 
         (<span class="org-string">"pm"</span> <span class="org-string">"Meeting"</span> entry (file skw/f-org-perso-inbox)
          <span class="org-string">"* MEET [#A] %^{meeting} %^g\n  SCHEDULED: %^T\n  :LOGBOOK:\n  - CREATED: %U\n  :END:\n%?\n"</span>)
@@ -970,21 +987,6 @@ Locations are defined using the following in-buffer directives:
 
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">Listing 26: </span>projects/&lt;project&gt;.org</label><pre class="src src-org"><code><span class="org-org-meta-line">#+ARCHIVE: ../archives/projects/%s_archive::</span>
-</code></pre>
-</div>
-
-<p>
-When archiving, I want to preserve the TODO state, keep existing tags and add
-some context. Lastly, I want to save the file after adding an archived item and
-still be able to cycle through tree tagged with <code>:ARCHIVE:</code>.
-</p>
-
-<div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 27: </span>conf.org</label><pre class="src src-emacs-lisp"><code>(<span class="org-keyword">setq</span> org-archive-mark-done nil
-      org-archive-subtree-add-inherited-tags t
-      org-archive-save-context-info '(time file category todo priority itags olpath ltags)
-      org-archive-subtree-save-file-p t
-      org-cycle-open-archived-trees t)
 </code></pre>
 </div>
 </div>

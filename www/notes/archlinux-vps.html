@@ -54,30 +54,30 @@ as AUR helper.</li>
 </p>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4a6216f">Install a basic ArchLinux</a>
+<li><a href="#install">Install a basic ArchLinux</a>
 <ul>
-<li><a href="#orgfb29027">Prepare the SSH key</a></li>
-<li><a href="#org23458e7">Install ArchLinux from the netcup SCP</a></li>
-<li><a href="#orgf694ae8">Add DNS record (Gandi)</a></li>
+<li><a href="#install-ssh-key">Prepare the SSH key</a></li>
+<li><a href="#install-scp">Install ArchLinux from the netcup SCP</a></li>
+<li><a href="#install-dns">Add DNS record (Gandi)</a></li>
 </ul>
 </li>
-<li><a href="#org8eb6fe8">Run the setup script</a>
+<li><a href="#run">Run the setup script</a>
 <ul>
-<li><a href="#orgf466afa">Copy it up and log in</a></li>
-<li><a href="#orgc9e2d59">Run it on the server</a></li>
-<li><a href="#org59f5940">Host alias</a></li>
+<li><a href="#run-copy">Copy it up and log in</a></li>
+<li><a href="#run-server">Run it on the server</a></li>
+<li><a href="#run-host-alias">Host alias</a></li>
 </ul>
 </li>
-<li><a href="#org2a6e463">Setup script</a></li>
+<li><a href="#script">Setup script</a></li>
 </ul>
 </div>
-<div id="outline-container-org4a6216f" class="outline-2">
-<h2 id="org4a6216f">Install a basic ArchLinux</h2>
-<div class="outline-text-2" id="text-org4a6216f">
+<div id="outline-container-install" class="outline-2">
+<h2 id="install">Install a basic ArchLinux<a class="heading-anchor" href="#install" aria-label="Permalink to this section">#</a></h2>
+<div class="outline-text-2" id="text-install">
 </div>
-<div id="outline-container-orgfb29027" class="outline-3">
-<h3 id="orgfb29027">Prepare the SSH key</h3>
-<div class="outline-text-3" id="text-orgfb29027">
+<div id="outline-container-install-ssh-key" class="outline-3">
+<h3 id="install-ssh-key">Prepare the SSH key<a class="heading-anchor" href="#install-ssh-key" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-install-ssh-key">
 <p>
 SSH login is key-based all the way through. If needed, generate a new key:
 </p>
@@ -94,9 +94,9 @@ cat ~/.ssh/id_dacloud.pub
 </ul>
 </div>
 </div>
-<div id="outline-container-org23458e7" class="outline-3">
-<h3 id="org23458e7">Install ArchLinux from the netcup SCP</h3>
-<div class="outline-text-3" id="text-org23458e7">
+<div id="outline-container-install-scp" class="outline-3">
+<h3 id="install-scp">Install ArchLinux from the netcup SCP<a class="heading-anchor" href="#install-scp" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-install-scp">
 <ol class="org-ol">
 <li>Open the server's <b>SCP</b> page.</li>
 <li>Go to <b>Media =&gt; Images</b> and pick <i>Arch</i>.</li>
@@ -114,9 +114,9 @@ key up later for your normal user, so you only paste it once.</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgf694ae8" class="outline-3">
-<h3 id="orgf694ae8">Add DNS record (Gandi)</h3>
-<div class="outline-text-3" id="text-orgf694ae8">
+<div id="outline-container-install-dns" class="outline-3">
+<h3 id="install-dns">Add DNS record (Gandi)<a class="heading-anchor" href="#install-dns" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-install-dns">
 <ol class="org-ol">
 <li>Log in at <a href="https://admin.gandi.net">admin.gandi.net</a> and open <b>Domain names =&gt; &lt;domain&gt; =&gt; DNS records</b>.</li>
 <li><p>
@@ -171,16 +171,16 @@ address in the <i>SCP</i> console.
 </div>
 </div>
 </div>
-<div id="outline-container-org8eb6fe8" class="outline-2">
-<h2 id="org8eb6fe8">Run the setup script</h2>
-<div class="outline-text-2" id="text-org8eb6fe8">
+<div id="outline-container-run" class="outline-2">
+<h2 id="run">Run the setup script<a class="heading-anchor" href="#run" aria-label="Permalink to this section">#</a></h2>
+<div class="outline-text-2" id="text-run">
 </div>
-<div id="outline-container-orgf466afa" class="outline-3">
-<h3 id="orgf466afa">Copy it up and log in</h3>
-<div class="outline-text-3" id="text-orgf466afa">
+<div id="outline-container-run-copy" class="outline-3">
+<h3 id="run-copy">Copy it up and log in<a class="heading-anchor" href="#run-copy" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-run-copy">
 <div class="org-src-container">
 <pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">copy the script up
-</span>scp dacloud-setup.sh root@dacloud.skywhi.et:/root/
+</span>scp dacloud-setup.sh root@dacloud.skywhi.net:/root/
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">log in as root (works because you imported your key in step 3)
 </span>ssh root@dacloud.skywhi.net
@@ -188,9 +188,9 @@ address in the <i>SCP</i> console.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc9e2d59" class="outline-3">
-<h3 id="orgc9e2d59">Run it on the server</h3>
-<div class="outline-text-3" id="text-orgc9e2d59">
+<div id="outline-container-run-server" class="outline-3">
+<h3 id="run-server">Run it on the server<a class="heading-anchor" href="#run-server" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-run-server">
 <p>
 Either edit the <code>CONFIG</code> block at the top of the script or pass values as
 environment variables. These are the variables and their defaults:
@@ -300,28 +300,28 @@ while the <i>root</i> session is still open. From another device or a <b>new ter
 </div>
 </div>
 </div>
-<div id="outline-container-org59f5940" class="outline-3">
-<h3 id="org59f5940">Host alias</h3>
-<div class="outline-text-3" id="text-org59f5940">
+<div id="outline-container-run-host-alias" class="outline-3">
+<h3 id="run-host-alias">Host alias<a class="heading-anchor" href="#run-host-alias" aria-label="Permalink to this section">#</a></h3>
+<div class="outline-text-3" id="text-run-host-alias">
 <p>
 Add this to <code>~/.ssh/config</code> on your local host so that it's possible to login
-withe <code>ssh dacloud</code>:
+with <code>ssh dacloud</code>:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-conf"><code>Host dacloud
     HostName dacloud.skywhi.net
     User skw
-    IdentityFile ~/codaz/VPS/dacloud/ssh/vps-ssh-1
+    IdentityFile ~/.ssh/id_dacloud
     IdentitiesOnly yes
 </code></pre>
 </div>
 </div>
 </div>
 </div>
-<div id="outline-container-org2a6e463" class="outline-2">
-<h2 id="org2a6e463">Setup script</h2>
-<div class="outline-text-2" id="text-org2a6e463">
+<div id="outline-container-script" class="outline-2">
+<h2 id="script">Setup script<a class="heading-anchor" href="#script" aria-label="Permalink to this section">#</a></h2>
+<div class="outline-text-2" id="text-script">
 <div class="org-src-container">
 <pre class="src src-bash"><code><span class="org-comment-delimiter">#</span><span class="org-comment">!/usr/bin/</span><span class="org-keyword">env</span><span class="org-comment"> bash
 </span><span class="org-comment-delimiter">#</span><span class="org-comment">

@@ -13,7 +13,13 @@ Running a new instance is a two-step process:
 {{{toc(Contents:,6)}}}
 
 * Install a basic ArchLinux
+:PROPERTIES:
+:CUSTOM_ID: install
+:END:
 *** Prepare the SSH key
+:PROPERTIES:
+:CUSTOM_ID: install-ssh-key
+:END:
 
 SSH login is key-based all the way through. If needed, generate a new key:
 
@@ -26,6 +32,9 @@ cat ~/.ssh/id_dacloud.pub
 - The private key =~/.ssh/id_dacloud= should remain private (/duh!).
 
 *** Install ArchLinux from the netcup SCP
+:PROPERTIES:
+:CUSTOM_ID: install-scp
+:END:
 
 1. Open the server's *SCP* page.
 2. Go to *Media => Images* and pick /Arch/.
@@ -40,6 +49,9 @@ cat ~/.ssh/id_dacloud.pub
 5. Write down the server's *IPv4* address from the /SCP/ console.
 
 *** Add DNS record (Gandi)
+:PROPERTIES:
+:CUSTOM_ID: install-dns
+:END:
 
 1. Log in at [[https://admin.gandi.net][admin.gandi.net]] and open *Domain names => <domain> => DNS records*.
 2. Click *Add a record* and fill in:
@@ -56,17 +68,26 @@ cat ~/.ssh/id_dacloud.pub
 3. Run =dig +short dacloud.skywhi.net= to see if the changes have propagated.
 
 * Run the setup script
+:PROPERTIES:
+:CUSTOM_ID: run
+:END:
 *** Copy it up and log in
+:PROPERTIES:
+:CUSTOM_ID: run-copy
+:END:
 
 #+begin_src sh
 # copy the script up
-scp dacloud-setup.sh root@dacloud.skywhi.et:/root/
+scp dacloud-setup.sh root@dacloud.skywhi.net:/root/
 
 # log in as root (works because you imported your key in step 3)
 ssh root@dacloud.skywhi.net
 #+end_src
 
 *** Run it on the server
+:PROPERTIES:
+:CUSTOM_ID: run-server
+:END:
 
 Either edit the =CONFIG= block at the top of the script or pass values as
 environment variables. These are the variables and their defaults:
@@ -108,19 +129,25 @@ ssh [-i path/to/key] skw@dacloud.skywhi.net
 #+end_src
 
 *** Host alias
+:PROPERTIES:
+:CUSTOM_ID: run-host-alias
+:END:
 
 Add this to =~/.ssh/config= on your local host so that it's possible to login
-withe =ssh dacloud=:
+with =ssh dacloud=:
 
 #+begin_src conf
 Host dacloud
     HostName dacloud.skywhi.net
     User skw
-    IdentityFile ~/codaz/VPS/dacloud/ssh/vps-ssh-1
+    IdentityFile ~/.ssh/id_dacloud
     IdentitiesOnly yes
 #+end_src
 
 * Setup script
+:PROPERTIES:
+:CUSTOM_ID: script
+:END:
 
 #+begin_src bash
 #!/usr/bin/env bash

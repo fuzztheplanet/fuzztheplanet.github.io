@@ -1,3 +1,8 @@
 #+TITLE: Various notes
 
 Installation notes for /ArchLinux/-based [[./archlinux-workstation.org][workstations]] and [[./archlinux-vps.org][VPS]].
+
+/iota/ is a R7RS Scheme interpreter written in Haskell. I followed [[https://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours][Write
+Yourself a Scheme v1]] and [[https://www.wespiser.com/writings/wyas/home.html][v2]] back in the days and had it all revamped by AI. It's
+neat and works quite well though. The source is on [[https://github.com/fuzztheplanet/iota][github]] and the documentation
+is hosted [[https://fuzztheplanet.github.io/iota][here]].
