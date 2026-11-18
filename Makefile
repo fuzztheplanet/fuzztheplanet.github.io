@@ -23,7 +23,7 @@ TMP=$(MATHJAX_DIR).tmp
 
 
 all:
-	rm -rf .cache www
+	rm -rf .cache $(OUT_DIR)
 	emacs -Q --batch --load $(PUBLISH_FILE) --eval $(PUBLISH_FUNC)
 	rm -rf .cache
 
@@ -58,9 +58,13 @@ publish:
 	git push -u origin main
 
 
+# Stages every change to a tracked file, plus whatever is new in the directories
+# the site is made of. A stray untracked file anywhere else is left alone and
+# shows up in the status below instead of slipping into the commit.
 update:
 	make all
-	git add .
+	git add -u
+	git add src static templates $(OUT_DIR)
 	git status
 
 

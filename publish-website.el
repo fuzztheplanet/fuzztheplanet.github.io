@@ -1,3 +1,5 @@
+;;; publish-website.el --- Publish the website with org-publish  -*- lexical-binding: t; -*-
+
 (require 'package)
 (package-initialize)
 
@@ -57,6 +59,11 @@
  ;; Number of entries listed under "Latest posts" on the homepage
  skw-blog/latest-posts-count 5
 
+ ;; Time zone the site is built in. Every date in the RSS feed carries its UTC
+ ;; offset, so leaving it to the machine running the build would make rss.xml
+ ;; depend on where that machine happens to be.
+ skw-blog/time-zone "Europe/Paris"
+
  ;; Main sitemap
  skw-blog/main-sitemap-title "\"Not all those who wander are lost.\" - J. R. R. Tolkien"
 
@@ -83,13 +90,15 @@
 
 
 (defun skw-blog/nav-href-for (input-file)
-  "Return the header nav href matching 'input-file', or nil when none does."
-  (let ((f (or input-file "")))
-    (cond ((string-match-p "/posts/" f)        "/posts/")
-          ((string-match-p "/notes/" f)        "/notes/")
-          ((string-match-p "links\\.org\\'" f) "/links.html")
-          ((string-match-p "now\\.org\\'" f)   "/now.html")
-          ((string-match-p "about\\.org\\'" f) "/about.html"))))
+  "Return the header nav href matching 'input-file', or nil when none does.
+The match is made on the path the page is served at rather than on the file
+name: an absolute file name also carries whatever sits above the repository,
+so a checkout living under a directory called posts/ or notes/ would light up
+that entry on every single page."
+  (let ((path (if input-file (skw-blog/page-path input-file) "")))
+    (cond ((string-prefix-p "/posts/" path) "/posts/")
+          ((string-prefix-p "/notes/" path) "/notes/")
+          ((member path '("/links.html" "/now.html" "/about.html")) path))))
 
 
 (defun skw-blog/html-preamble (info)
@@ -121,6 +130,16 @@
      template t t)))
 
 
+;; Org sorts sitemap titles with `string-collate-lessp', which collates in the
+;; locale of the Emacs process: en_US puts "dacloud" before "Various notes", the
+;; C locale puts it after, so two machines would build two different sitemaps.
+;; Comparing code points, case folded, gives the same order everywhere -- the
+;; one en_US gives for the titles at hand.
+(defun skw-blog/string-lessp (a b &optional _locale _ignore-case)
+  "Return non-nil when A sorts before B, ignoring case and the locale."
+  (string-lessp (downcase a) (downcase b)))
+
+
 ;; Org advertises itself in every page with a <meta name="generator"> tag.
 ;; Keep the default tags (author, description, keywords) and drop that one.
 (defun skw-blog/html-meta-tags (info)
@@ -129,12 +148,20 @@
               (org-html-meta-tags-default info)))
 
 
+;; Also the zone `format-time-string' uses, when given none.
+(setenv "TZ" skw-blog/time-zone)
+
+
 ;; Emacs and org-mode general options
 ;; (might redefine them later in templates or on a per-file basis)
 (setq
+ org-sort-function #'skw-blog/string-lessp
+
  make-backup-files nil
  org-odd-levels-only t
- org-publish-timestamp-directory ".cache/"
+ ;; Anchored to this file like every other path here, so the build does not
+ ;; depend on the directory Emacs happens to be started from.
+ org-publish-timestamp-directory (concat skw-blog/rootdir ".cache/")
 
  org-export-with-author nil
  org-export-with-email nil
@@ -149,7 +176,11 @@
  org-export-headline-levels 3
  org-export-with-section-numbers nil
  org-export-with-sub-superscripts nil
- org-export-with-broken-links t
+
+ ;; A link that cannot be resolved aborts the build. The alternative, t, drops
+ ;; the link from the page without a word, and nobody notices until a reader
+ ;; does.
+ org-export-with-broken-links nil
 
  org-html-divs '((preamble  "header" "preamble")
                  (content   "main"   "content")
@@ -202,6 +233,12 @@
         ""))))
 
 
+;; Sitemap entries are relative to their project's :base-directory.
+(defun skw-blog/entry-file (entry project)
+  "Return the absolute file name of sitemap 'entry' in org-publish 'project'."
+  (expand-file-name entry (org-publish-property :base-directory project)))
+
+
 ;; Format list of blog post for the sitemap / index
 (defun skw-blog/org-format-blog-post (entry style project)
   "Format 'entry' in org-publish 'project' sitemap to include a timestamp."
@@ -236,7 +273,7 @@ sitemap titled 'title'."
   "Format 'entry' in org-publish 'project' sitemap to include a timestamp
    and preview ('begin/end_preview' tag)."
   (let ((entry-title (org-publish-find-title entry project))
-        (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry)))) ;; dirty
+        (preview (skw-blog/get-preview (skw-blog/entry-file entry project))))
     (if (= (length entry-title) 0)
         (format "*%s*" entry)
       (format "{{{timestamp(%s)}}}: [[file:%s][%s]]\n
@@ -422,7 +459,7 @@ title of the RSS feed and 'list' the files to be included."
          (link (concat (file-name-sans-extension entry) ".html"))
          (pubdate (format-time-string (car org-time-stamp-formats)
                                       (org-publish-find-date entry project)))
-         (preview (skw-blog/get-preview (concat (skw-blog/get-root-directory) "src/posts/" entry))))
+         (preview (skw-blog/get-preview (skw-blog/entry-file entry project))))
 
     (format "%s
 :properties:
@@ -514,7 +551,7 @@ own only invites visitors and crawlers to walk into it."
         ;; Attachment files
         ("website-files"
          :base-directory ,skw-blog/srcdir
-         :base-extension "css\\|txt\\|jpg\\|gif\\|png"
+         :base-extension "css\\|txt\\|jpg\\|jpeg\\|gif\\|png\\|svg\\|webp\\|pdf"
          :publishing-directory ,skw-blog/outdir
          :publishing-function org-publish-attachment
          :recursive t)
