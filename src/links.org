@@ -11,14 +11,20 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: blog
 :END:
 
-- [[https://breakpoint.purrfect.fr/][Breakpoint]]
-- [[https://thinkloveshare.com/][Laluka]]
-- [[https://loup-vaillant.fr/][Loup's]]
-- [[https://spaceraccoon.dev/][SpaceRaccoon]]
-- [[https://dataswamp.org/~solene/][Solene]]
-- [[https://www.timdbg.com/][TimDbg]]
-- [[https://plowsec.github.io/][Volodya]]
-- [[https://vozec.fr/][Vozec]]
+- [[https://breakpoint.purrfect.fr/][Breakpoint]]: cym13 on security, from vulnerability write-ups and crypto
+  library reviews to pentest advice.
+- [[https://thinkloveshare.com/][Laluka]]: Web security research, with a long run of pre-auth RCEs in
+  open-source applications.
+- [[https://loup-vaillant.fr/][Loup's]]: Programming and cryptography by the author of Monocypher, who
+  explains how he implemented his own crypto.
+- [[https://spaceraccoon.dev/][SpaceRaccoon]]: Eugene Lim's vulnerability research, from web applications to
+  IP cameras and macOS.
+- [[https://dataswamp.org/~solene/][Solene]]: Solène Rapenne on OpenBSD, FreeBSD, Linux, Qubes OS and self-hosting.
+- [[https://www.timdbg.com/][TimDbg]]: Tim Misiak on debuggers and Windows internals, including a series on
+  writing a debugger from scratch.
+- [[https://plowsec.github.io/][Volodya]]: A Swiss reverse engineer's notes, angr in particular (and some
+  chess).
+- [[https://vozec.fr/][Vozec]]: CTF write-ups (FCSC and others) and articles on attacking RSA and AES.
 
 * Online Tools
 :PROPERTIES:
@@ -63,8 +69,8 @@ administration and more. May you find something useful to you as well!
   format files. Includes tools to validate regular expressions, timestamps and
   much more!
 - [[https://defuse.ca/online-x86-assembler.htm][Online assembler and disassembler]]: x86 and x64.
-- [[https://yjdoc2.github.io/8086-emulator-web/compile][8086 Emulator]]: compiler with register views and memory inspection.
-- [[http://www.javadecompilers.com/][Online Java decompiler]]: decompile Java bytecode with modern decompilers such
+- [[https://yjdoc2.github.io/8086-emulator-web/][8086 Emulator]]: compiler with register views and memory inspection.
+- [[https://www.javadecompilers.com/][Online Java decompiler]]: decompile Java bytecode with modern decompilers such
   as Procyon, CFR, JDCore, Jadx and more.
 - [[https://grep.app/][Grep.app]]: grep through repositories on Github.
 - [[https://www.deepgraph.co][DeepGraph]]: transform a repository on Github into a graph view and analyze it
@@ -165,14 +171,14 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-general-multi-topic
 :END:
 
-- [[https://book.hacktricks.wiki/en/index.html][Hacktricks]].
+- [[https://hacktricks.wiki/en/index.html][Hacktricks]].
 - [[https://www.thehacker.recipes/][The Hacker Recipes]].
 - From the amazing [[https://swisskyrepo.github.io/][Swissky]]:
   - [[https://swisskyrepo.github.io/PayloadsAllTheThings/][PayloadsAllTheThings]] ([[https://github.com/swisskyrepo/PayloadsAllTheThings][Github]]): general, cross-domain info.
   - [[https://swisskyrepo.github.io/InternalAllTheThings/][InternalAllTheThings]] ([[https://github.com/swisskyrepo/InternalAllTheThings][Github]]): Active Directory and internal pentest.
   - [[https://swisskyrepo.github.io/HardwareAllTheThings][HardwareAllTheThings]] ([[https://github.com/swisskyrepo/HardwareAllTheThings][Github]]): hardware / IoT / embedded things.
 - [[https://www.ired.team/][Red Team Notes]].
-- [[https://pentestbook.six2dez.com][Pentest Book]] by [[https://twitter.com/Six2dez1][Six2dez]].
+- [[https://www.pentest-book.com/][Pentest Book]] by [[https://twitter.com/Six2dez1][Six2dez]].
 - [[https://offsec.tools/][Offsec Tools]]: large collection of, well, offsec tools.
 - [[https://talkback.sh/][Talkback.sh]]: AI-powered infosec resource aggregator.
 
@@ -201,9 +207,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-appsec-tools
 :END:
 
-- [[http://frama-c.com][Frama-C]]: Static analysis and formal proof for C programs.
-- [[http://krakatoa.lri.fr][Krakatoa and Jessie]]: Front-ends to the [[http://why.lri.fr][Why]] platform for deductive program
-  verification.
+- [[https://frama-c.com/][Frama-C]]: Static analysis and formal proof for C programs.
+- [[https://www.why3.org/][Why3]]: Platform for deductive program verification, successor of the Why
+  platform that the now discontinued Krakatoa and Jessie front-ends built on.
 
 *** Blue team
 :PROPERTIES:
@@ -229,8 +235,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-linux-postex
 :END:
 
-- [[https://www.contextis.com/us/blog/linux-privilege-escalation-via-dynamically-linked-shared-object-library][Linux Privilege Escalation via Dynamically Linked Shared Object Library]].
-- [[https://gtfobins.github.io][GTFOBins]]: Common exploitable UNIX binaries and ways to take advantage of
+- [[https://web.archive.org/web/20220118133417/https://www.contextis.com/us/blog/linux-privilege-escalation-via-dynamically-linked-shared-object-library][Linux Privilege Escalation via Dynamically Linked Shared Object Library]]
+  (archived copy).
+- [[https://gtfobins.org/][GTFOBins]]: Common exploitable UNIX binaries and ways to take advantage of
   them.
 - [[https://github.com/rebootuser/LinEnum][LinEnum]]: Shell script for Linux enumeration.
 
@@ -243,8 +250,9 @@ administration and more. May you find something useful to you as well!
 :CUSTOM_ID: sec-mobile-general
 :END:
 
-- [[https://www2.owasp.org/www-project-mobile-security-testing-guide][OWASP Mobile Security Testing Guide]]: Comprehensive guide for both Android
-  and iOS with testing guide, verification standard and checklist.
+- [[https://mas.owasp.org/][OWASP Mobile Application Security]]: Comprehensive guide for both Android
+  and iOS with testing guide (MASTG, formerly MSTG), verification standard
+  (MASVS) and checklist.
 
 ***** Multi-platform tools
 :PROPERTIES:
@@ -284,15 +292,15 @@ administration and more. May you find something useful to you as well!
 :END:
 
 - [[https://www.shodan.io][Shodan]]: In-depth search for any internet connected machine.
-- [[https://community.turgensec.com/shodan-pentesting-guide/][Shodan Pentesting Guide]] by [[https://www.turgensec.com/][Turgensec]].
-- [[https://www.onyphe.io][Onyphe]]: Cyber Defense Search Engine.
+- [[https://web.archive.org/web/20221207192003/https://community.turgensec.com/shodan-pentesting-guide/][Shodan Pentesting Guide]] by [[https://www.turgensec.com/][Turgensec]] (archived copy).
+- [[https://www.onyphe.com/][Onyphe]]: Cyber Defense Search Engine.
 
 ***** Google dorks
 :PROPERTIES:
 :CUSTOM_ID: sec-recon-dorks
 :END:
 
-- [[https://resources.bishopfox.com/resources/tools/google-hacking-diggity][Google Hacking Diggity Project]]: Search engine hacking.
+- [[https://bishopfox.com/tools/google-hacking-diggity-project-2/][Google Hacking Diggity Project]]: Search engine hacking.
 - [[https://www.exploit-db.com/google-hacking-database][Google Hacking Database]]: Collection useful Google dorks from exploit-db.
 - [[https://www.sans.org/security-resources/GoogleCheatSheet.pdf][SANS Google Dork Cheatsheet]] (PDF).
 
@@ -314,13 +322,13 @@ administration and more. May you find something useful to you as well!
 :END:
 
 Guides:
-- [[https://appsecco.com/books/subdomain-enumeration/][The Art of Subdomain Enumeration]] gitbook by [[https://appsecco.com/][Appsecco]]
+- [[https://web.archive.org/web/20211127183642/https://appsecco.com/books/subdomain-enumeration/][The Art of Subdomain Enumeration]] gitbook by [[https://appsecco.com/][Appsecco]] (archived copy,
+  supplement material on [[https://github.com/appsecco/the-art-of-subdomain-enumeration][GitHub]])
 - [[https://0xpatrik.com/][Patrik Hudak's blog]]: subdomain enumeration and targeted OSINT techniques
 
 Tools:
 - [[https://github.com/OWASP/Amass][OWASP Amass]]: large attack surface mapping and asset discovery framework
 - [[https://github.com/tomnomnom/assetfinder][assetfinder]]: find subdomains from various open sources
-- Sonardb by [[https://omnisint.io][Omnisint]]: simply request [[https://sonar.omnisint.io/subdomains/example.com][https://sonar.omnisint.io/subdomains/<tld.com>]]
 - [[https://github.com/blechschmidt/massdns][massdns]]: high performance DNS stub resolver
 - [[https://github.com/jhaddix][Jason Haddix]]'s [[https://gist.github.com/jhaddix/86a06c5dc309d08580a018c66354a056][all.txt]] DNS wordlist
 
@@ -341,7 +349,7 @@ Tools:
 :END:
 
 - [[https://portswigger.net/web-security/cross-site-scripting/cheat-sheet][XSS Cheatsheet]] by [[https://portswigger.net][portswigger.net]].
-- [[https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting][XSS tips and tricks]] by [[https://book.hacktricks.xyz/][Hacktricks]].
+- [[https://hacktricks.wiki/en/pentesting-web/xss-cross-site-scripting/index.html][XSS tips and tricks]] by [[https://hacktricks.wiki/][Hacktricks]].
 
 *** Windows & Active Directory
 :PROPERTIES:
@@ -352,10 +360,11 @@ Tools:
 :CUSTOM_ID: sec-windows-pentest
 :END:
 
-- [[https://riccardoancarani.github.io/2019-10-04-lateral-movement-megaprimer/][Lateral Movement Megaprimer]].
-- [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md][Attacking Active Directory (PayloadAllTheThings)]] by [[https://github.com/swisskyrepo][Swisskey]].
+- [[https://web.archive.org/web/20221021015334/https://riccardoancarani.github.io/2019-10-04-lateral-movement-megaprimer/][Lateral Movement Megaprimer]] (archived copy).
+- [[https://github.com/swisskyrepo/InternalAllTheThings/tree/main/docs/active-directory][Attacking Active Directory (InternalAllTheThings)]] by [[https://github.com/swisskyrepo][Swissky]], who moved it
+  there from PayloadsAllTheThings.
 - [[https://hunter2.gitbook.io/darthsidious][Darth Sidious' Gitbook]]: Lab setup and classic exploitation techniques.
-- [[https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html][How to Attack Kerberos 101]]: blog post by [[https://m0chan.github.io][m0chan]].
+- [[https://blog.m0chan.co.uk/2019/07/31/How-To-Attack-Kerberos-101.html][How to Attack Kerberos 101]]: blog post by [[https://blog.m0chan.co.uk/][m0chan]].
 - [[https://github.com/Ignitetechnologies/Credential-Dumping][Credentials Dumping Cheatsheets]]: Links to various detailed posts about
   credentials dumping on Windows.
 - [[https://lolbas-project.github.io][LOLBAS]]: Common exploitable Windows binaries.
