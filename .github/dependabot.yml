@@ -1,0 +1,13 @@
+# Keeps the commit-pinned actions under .github/workflows/ up to date: one pull
+# request a week bumping every pin (and its version comment) that has a newer
+# release.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns:
+          - "*"
