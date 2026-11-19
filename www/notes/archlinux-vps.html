@@ -246,9 +246,9 @@ environment variables. These are the variables and their defaults:
 </tr>
 
 <tr>
-<td class="org-left"><code>CONSOLE_PASSWORD</code></td>
-<td class="org-left">(empty)</td>
-<td class="org-left">Console password for VNC recovery; empty = locked</td>
+<td class="org-left"><code>USER_PASSWORD</code></td>
+<td class="org-left">(prompted)</td>
+<td class="org-left">Password for sudo and the VNC console (required)</td>
 </tr>
 
 <tr>
@@ -271,7 +271,7 @@ Some examples:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">minimal install:
+<pre class="src src-sh"><code><span class="org-comment-delimiter"># </span><span class="org-comment">minimal install (asks for the user's password):
 </span><span class="org-variable-name">USERNAME</span>=skw bash /root/dacloud-setup.sh
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">with some extra tools:
@@ -280,13 +280,14 @@ Some examples:
 </div>
 
 <p>
-The script turns off <i>root</i> SSH login and password authentication. If you also
-skip the console password, the user's password gets locked and then <b>nobody</b>
-can log in at the netcup VNC console. At that point a broken SSH config means a
-full reinstall. Setting a console password doesn't weaken remote login at all,
-since it can only be used in the local console through the <i>SCP</i> console.
-<code>CONSOLE_PASSWORD</code> is also the password assigned to the user <code>USERNAME</code> during
-setup and will be required by <code>sudo</code>.
+The script turns off <i>root</i> SSH login and password authentication, so the
+password of <code>USERNAME</code> is the only way to become <i>root</i> afterwards: <code>sudo</code> asks
+for it, and it also gets you in at the netcup VNC console if SSH ever breaks.
+That's why it's required. If <code>USER_PASSWORD</code> isn't set, the script asks for it
+twice with hidden input and won't continue without one. Prefer the prompt over
+passing <code>USER_PASSWORD</code> on the command line, which leaves the password in your
+shell history. The password doesn't weaken remote login, since SSH stays
+key-only.
 </p>
 
 <p>
@@ -343,12 +344,11 @@ with <code>ssh dacloud</code>:
 <span class="org-comment-delimiter"># </span><span class="org-comment">Public SSH key for ${USERNAME}. Leave empty to reuse whatever key you gave
 </span><span class="org-comment-delimiter"># </span><span class="org-comment">the netcup SCP at install time (it lands in /root/.ssh/authorized_keys).
 </span><span class="org-variable-name">PUBKEY</span>=<span class="org-string">"${PUBKEY:-}"</span>
-<span class="org-comment-delimiter"># </span><span class="org-comment">Optional console password for ${USERNAME}. SSH stays key-only either way.
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">This only matters if SSH breaks and you need the netcup VNC console to get
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">back in. Leave it empty and the account is locked, which means the only way
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">back is a reinstall from the SCP. The password will also be used for the newly
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">created user.
-</span><span class="org-variable-name">CONSOLE_PASSWORD</span>=<span class="org-string">"${CONSOLE_PASSWORD:-}"</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Password for ${USERNAME} (required). Root SSH login gets disabled, so this is
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">what sudo asks for, and it's also the way in at the netcup VNC console if SSH
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">ever breaks. SSH itself stays key-only. Leave it empty here to be asked for it
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">with hidden input.
+</span><span class="org-variable-name">USER_PASSWORD</span>=<span class="org-string">"${USER_PASSWORD:-}"</span>
 <span class="org-variable-name">EXTRA_PACKAGES</span>=<span class="org-string">"${EXTRA_PACKAGES:-tmux}"</span>
 <span class="org-variable-name">MIRROR_COUNTRY</span>=<span class="org-string">"${MIRROR_COUNTRY:-Germany}"</span>
 
@@ -356,17 +356,6 @@ with <code>ssh dacloud</code>:
 
 [ <span class="org-string">"$(</span><span class="org-sh-quoted-exec">id -u</span><span class="org-string">)"</span> -eq 0 ] || { log <span class="org-string">"run this as root on the VPS"</span>; <span class="org-keyword">exit</span> 1; }
 <span class="org-builtin">command</span> -v pacman &gt;/dev/null || { log <span class="org-string">"this is not an Arch system"</span>; <span class="org-keyword">exit</span> 1; }
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Enable a unit at boot and tell the caller whether it can also be started right
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">now. Relies on KERNEL_STALE, which is set after the update.
-</span><span class="org-function-name">enable_svc</span>() {
-  systemctl enable <span class="org-string">"$1"</span> &gt;/dev/null 2&gt;&amp;1
-  <span class="org-keyword">if</span> [ <span class="org-string">"${KERNEL_STALE}"</span> = 1 ]; <span class="org-keyword">then</span>
-    log <span class="org-string">"$1 enabled at boot but not started now (kernel upgraded, reboot to activate)"</span>
-    <span class="org-keyword">return</span> 1
-  <span class="org-keyword">fi</span>
-  <span class="org-keyword">return</span> 0
-}
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Resolve the SSH public key.
 </span><span class="org-keyword">if</span> [ -z <span class="org-string">"${PUBKEY}"</span> ] &amp;&amp; [ -s /root/.ssh/authorized_keys ]; <span class="org-keyword">then</span>
@@ -378,47 +367,55 @@ with <code>ssh dacloud</code>:
 <span class="org-keyword">fi</span>
 [ -n <span class="org-string">"${PUBKEY}"</span> ] || { log <span class="org-string">"no SSH key found: set PUBKEY='ssh-ed25519 ...' or import one in the SCP first"</span>; <span class="org-keyword">exit</span> 1; }
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Resolve the console password.
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">If nothing was passed in and we're on a terminal, ask for it with hidden
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">input. Passing it inline as an env var would leave it in shell history and
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">briefly in the process list. Enter on an empty prompt means "locked".
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">Non-interactive runs still pick it up from the environment.
-</span><span class="org-keyword">if</span> [ -z <span class="org-string">"${CONSOLE_PASSWORD}"</span> ] &amp;&amp; [ -t 0 ]; <span class="org-keyword">then</span>
-  <span class="org-builtin">read</span> -rsp <span class="org-string">"Console password for ${USERNAME} (VNC recovery; empty = locked): "</span> CONSOLE_PASSWORD
-  <span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Resolve the user's password.
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">It can't be empty: with root SSH login disabled, an account without a password
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">can't use sudo, and nobody could administer the box any more. If it wasn't
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">passed in, ask for it twice with hidden input, so a typo can't lock you out.
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Passing it inline as an env var would leave it in shell history and briefly in
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">the process list, so prefer the prompt. Non-interactive runs still pick it up
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">from the environment.
+</span><span class="org-keyword">if</span> [ -z <span class="org-string">"${USER_PASSWORD}"</span> ]; <span class="org-keyword">then</span>
+  [ -t 0 ] || { log <span class="org-string">"USER_PASSWORD is required (it's the sudo password) and there is no terminal to ask for it"</span>; <span class="org-keyword">exit</span> 1; }
+  <span class="org-keyword">while</span> :; <span class="org-keyword">do</span>
+    <span class="org-builtin">read</span> -rsp <span class="org-string">"Password for ${USERNAME} (sudo and VNC console): "</span> USER_PASSWORD
+    <span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
+    <span class="org-builtin">read</span> -rsp <span class="org-string">"Repeat the password: "</span> PASSWORD_CONFIRM
+    <span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
+    <span class="org-keyword">if</span> [ -z <span class="org-string">"${USER_PASSWORD}"</span> ]; <span class="org-keyword">then</span>
+      log <span class="org-string">"the password can't be empty: without it, sudo won't work once root login is off"</span>
+    <span class="org-keyword">elif</span> [ <span class="org-string">"${USER_PASSWORD}"</span> != <span class="org-string">"${PASSWORD_CONFIRM}"</span> ]; <span class="org-keyword">then</span>
+      log <span class="org-string">"the passwords don't match, try again"</span>
+    <span class="org-keyword">else</span>
+      <span class="org-keyword">break</span>
+    <span class="org-keyword">fi</span>
+  <span class="org-keyword">done</span>
+  <span class="org-builtin">unset</span> PASSWORD_CONFIRM
 <span class="org-keyword">fi</span>
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Full system update. Rank the mirrors first with reflector, update the pacman
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">keyring correctly and perform an upgrade.
-</span>log <span class="org-string">"ranking pacman mirrors with reflector (country=${MIRROR_COUNTRY})"</span>
-<span class="org-keyword">if</span> pacman -Sy --needed --noconfirm reflector; <span class="org-keyword">then</span>
-  cp -a /etc/pacman.d/mirrorlist <span class="org-string">"/etc/pacman.d/mirrorlist.bak.$(</span><span class="org-sh-quoted-exec">date +%s</span><span class="org-string">)"</span> 2&gt;/dev/null || true
-  reflector --country <span class="org-string">"${MIRROR_COUNTRY}"</span> --latest 20 --protocol https --sort rate <span class="org-sh-escaped-newline">\</span>
-    --save /etc/pacman.d/mirrorlist <span class="org-sh-escaped-newline">\</span>
-    || log <span class="org-string">"reflector failed, keeping the existing mirrorlist"</span>
-<span class="org-keyword">else</span>
-  log <span class="org-string">"could not install reflector, keeping the existing mirrorlist"</span>
-<span class="org-keyword">fi</span>
-
-log <span class="org-string">"initializing the pacman keyring and updating the system"</span>
-<span class="org-variable-name">RUNNING_KERNEL</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">uname -r</span><span class="org-string">)"</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Full system update. Refresh the keyring first so an older image can verify
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">packages signed by newer packager keys. Updating the keyring on its own and
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">then running -Su is the upgrade Arch recommends. Installing anything else
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">after -Sy without -u would be a partial upgrade, which Arch doesn't support.
+</span>log <span class="org-string">"initializing the pacman keyring and updating the system"</span>
 pacman-key --init &gt;/dev/null 2&gt;&amp;1 || true
 pacman-key --populate archlinux &gt;/dev/null 2&gt;&amp;1 || true
-pacman -Sy --noconfirm archlinux-keyring
+pacman -Sy --needed --noconfirm archlinux-keyring
+pacman -Su --noconfirm
 
-
-pacman -Syu --noconfirm
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">The upgrade may have replaced the kernel. If it did, /usr/lib/modules no
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">longer has the modules for the kernel we're actually running, so loading
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">anything (nftables, Docker's overlay and bridge) fails until a reboot. Note
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">that here so the steps below enable their services instead of starting them,
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">rather than dying under set -e.
-</span><span class="org-variable-name">KERNEL_STALE</span>=0
-<span class="org-keyword">if</span> [ <span class="org-negation-char">!</span> -d <span class="org-string">"/usr/lib/modules/${RUNNING_KERNEL}"</span> ]; <span class="org-keyword">then</span>
-  <span class="org-variable-name">KERNEL_STALE</span>=1
-  log <span class="org-string">"The kernel was upgraded and the modules for ${RUNNING_KERNEL} are gone."</span>
-  log <span class="org-string">"Services that need kernel modules will be enabled but not started. Reboot and re-run to activate them."</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Rank the mirrors now that the system is up to date, so installing reflector
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">isn't a partial upgrade. Then refresh the databases from the new mirrors with
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">-Syyu (never a bare -Sy) before the big install below.
+</span>log <span class="org-string">"ranking pacman mirrors with reflector (country=${MIRROR_COUNTRY})"</span>
+<span class="org-keyword">if</span> pacman -S --needed --noconfirm reflector; <span class="org-keyword">then</span>
+  cp -a /etc/pacman.d/mirrorlist <span class="org-string">"/etc/pacman.d/mirrorlist.bak.$(</span><span class="org-sh-quoted-exec">date +%s</span><span class="org-string">)"</span> 2&gt;/dev/null || true
+  <span class="org-keyword">if</span> reflector --country <span class="org-string">"${MIRROR_COUNTRY}"</span> --latest 20 --protocol https --sort rate <span class="org-sh-escaped-newline">\</span>
+       --save /etc/pacman.d/mirrorlist; <span class="org-keyword">then</span>
+    pacman -Syyu --noconfirm
+  <span class="org-keyword">else</span>
+    log <span class="org-string">"reflector failed, keeping the existing mirrorlist"</span>
+  <span class="org-keyword">fi</span>
+<span class="org-keyword">else</span>
+  log <span class="org-string">"could not install reflector, keeping the existing mirrorlist"</span>
 <span class="org-keyword">fi</span>
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Everything goes in one transaction: admin tools, base-devel and go (to build
@@ -474,13 +471,8 @@ SYSCTL
 <span class="org-builtin">echo</span> <span class="org-string">'%wheel ALL=(ALL:ALL) ALL'</span> &gt; /etc/sudoers.d/10-wheel
 chmod 440 /etc/sudoers.d/10-wheel
 visudo -cf /etc/sudoers.d/10-wheel &gt;/dev/null || { log <span class="org-string">"sudoers syntax check failed"</span>; <span class="org-keyword">exit</span> 1; }
-<span class="org-keyword">if</span> [ -n <span class="org-string">"${CONSOLE_PASSWORD}"</span> ]; <span class="org-keyword">then</span>
-  <span class="org-builtin">printf</span> <span class="org-string">'%s:%s\n'</span> <span class="org-string">"${USERNAME}"</span> <span class="org-string">"${CONSOLE_PASSWORD}"</span> | chpasswd
-  log <span class="org-string">"set a console password for '${USERNAME}' (VNC console recovery works; SSH stays key-only)"</span>
-<span class="org-keyword">else</span>
-  passwd -l <span class="org-string">"${USERNAME}"</span> &gt;/dev/null 2&gt;&amp;1 || true
-  log <span class="org-string">"no CONSOLE_PASSWORD given, so '${USERNAME}' is locked: the netcup VNC console won't let you in, only a reinstall will"</span>
-<span class="org-keyword">fi</span>
+<span class="org-builtin">printf</span> <span class="org-string">'%s:%s\n'</span> <span class="org-string">"${USERNAME}"</span> <span class="org-string">"${USER_PASSWORD}"</span> | chpasswd
+log <span class="org-string">"set the password for '${USERNAME}' (sudo and VNC console; SSH stays key-only)"</span>
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Append the key rather than overwrite, so keys added by hand survive a re-run.
 </span>install -d -m700 -o <span class="org-string">"${USERNAME}"</span> -g <span class="org-string">"${USERNAME}"</span> <span class="org-string">"/home/${USERNAME}/.ssh"</span>
@@ -540,6 +532,11 @@ cat &gt; /etc/nftables.conf &lt;&lt;<span class="org-string">'NFT'</span><span c
 table inet filter
 delete table inet filter
 table inet filter {
+  # Per-source SSH rate limit. Every address gets its own 10/minute budget, so
+  # scanners hammering port 22 can't use up yours. An address is forgotten 10
+  # minutes after its last new connection, which keeps the sets small.
+  set ssh_rl4 { type ipv4_addr; size 65535; flags dynamic,timeout; timeout 10m; }
+  set ssh_rl6 { type ipv6_addr; size 65535; flags dynamic,timeout; timeout 10m; }
   chain input {
     type filter hook input priority 0; policy drop;
     ct state invalid drop
@@ -547,7 +544,8 @@ table inet filter {
     iif lo accept
     ip protocol icmp accept
     ip6 nexthdr icmpv6 accept
-    tcp dport 22 ct state new limit rate 10/minute burst 20 packets accept
+    tcp dport 22 ct state new update @ssh_rl4 { ip saddr limit rate 10/minute burst 20 packets } accept
+    tcp dport 22 ct state new update @ssh_rl6 { ip6 saddr limit rate 10/minute burst 20 packets } accept
     # CTF work: payload hosting and reverse-shell catchers. Open to the
     # internet, no rate limit, TCP and UDP. Narrow this range if you stop
     # needing it.
@@ -571,18 +569,21 @@ table inet filter {
   chain output  { type filter hook output  priority 0; policy accept; }
 }
 NFT
-</span><span class="org-keyword">if</span> enable_svc nftables; <span class="org-keyword">then</span>
-  systemctl start nftables &gt;/dev/null 2&gt;&amp;1 || true
-  nft -f /etc/nftables.conf
-<span class="org-keyword">fi</span>
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Check the file before loading it. Arch's nftables.service has no reload
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">action, so the file is loaded directly. That only replaces our own table.
+</span>nft -c -f /etc/nftables.conf || { log <span class="org-string">"nftables config check failed, not loading it"</span>; <span class="org-keyword">exit</span> 1; }
+systemctl enable nftables &gt;/dev/null 2&gt;&amp;1
+nft -f /etc/nftables.conf
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">SSHGuard config.
 </span>log <span class="org-string">"configuring sshguard (auto-blocks repeated SSH auth failures)"</span>
 <span class="org-variable-name">SG_BACKEND</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">ls /usr/lib/sshguard/sshguard-nft /usr/libexec/sshguard/sshguard-nft 2&gt;/dev/null | head -1 || true</span><span class="org-string">)"</span>
 <span class="org-keyword">if</span> [ -n <span class="org-string">"${SG_BACKEND}"</span> ]; <span class="org-keyword">then</span>
-  cat &gt; /etc/sshguard.conf &lt;&lt;CONF<span class="org-sh-heredoc">
+  <span class="org-comment-delimiter"># </span><span class="org-comment">Since OpenSSH 9.8, failed logins and [preauth] messages are logged by
+</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">sshd-session, not sshd. Reading only the sshd tag would leave sshguard blind.
+</span>  cat &gt; /etc/sshguard.conf &lt;&lt;CONF<span class="org-sh-heredoc">
 BACKEND="${SG_BACKEND}"
-LOGREADER="LANG=C /usr/bin/journalctl -afb -p info -n1 -t sshd -o cat"
+LOGREADER="LANG=C /usr/bin/journalctl -afb -p info -n1 -t sshd -t sshd-session -o cat"
 THRESHOLD=30
 BLOCK_TIME=900
 DETECTION_TIME=3600
@@ -596,9 +597,9 @@ CONF
 After=nftables.service
 DROP
 </span>  systemctl daemon-reload &gt;/dev/null 2&gt;&amp;1 || true
-  <span class="org-keyword">if</span> enable_svc sshguard; <span class="org-keyword">then</span>
-    systemctl start sshguard &gt;/dev/null 2&gt;&amp;1 || log <span class="org-string">"sshguard did not start, check: journalctl -u sshguard"</span>
-  <span class="org-keyword">fi</span>
+  systemctl enable sshguard &gt;/dev/null 2&gt;&amp;1
+  <span class="org-comment-delimiter"># </span><span class="org-comment">Restart rather than start, so a re-run picks up a changed sshguard.conf.
+</span>  systemctl restart sshguard &gt;/dev/null 2&gt;&amp;1 || log <span class="org-string">"sshguard did not start, check: journalctl -u sshguard"</span>
 <span class="org-keyword">else</span>
   log <span class="org-string">"sshguard nftables backend not found, skipping it (SSH is still key-only)"</span>
 <span class="org-keyword">fi</span>
@@ -615,30 +616,24 @@ cat &gt; /etc/docker/daemon.json &lt;&lt;<span class="org-string">'JSON'</span><
   "live-restore": true
 }
 JSON
-</span><span class="org-keyword">if</span> enable_svc docker; <span class="org-keyword">then</span>
-  systemctl start docker
-<span class="org-keyword">fi</span>
+</span>systemctl enable docker &gt;/dev/null 2&gt;&amp;1
+systemctl start docker
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Done.
 </span><span class="org-variable-name">IP</span>=<span class="org-string">"$(</span><span class="org-sh-quoted-exec">ip -4 route get 1.1.1.1 2&gt;/dev/null | awk '{print $7; exit}'</span><span class="org-string">)"</span>
 <span class="org-builtin">printf</span> <span class="org-string">'\n'</span>
 log <span class="org-string">"base configuration complete"</span>
 cat &lt;&lt;DONE<span class="org-sh-heredoc">
-  user:      ${USERNAME}  (sudo via wheel, SSH key-only login)
-  console:   $(</span><span class="org-sh-quoted-exec">[ -n "${CONSOLE_PASSWORD}" ] &amp;&amp; echo 'password set (VNC recovery ok</span><span class="org-sh-heredoc">)' || echo 'locked (reinstall-only recovery)')
+  user:      ${USERNAME}  (sudo via wheel with password, SSH key-only login)
+  password:  set (sudo and VNC console)
   hostname:  ${HOSTNAME_}
   timezone:  ${TIMEZONE}  (systemd-timesyncd)
-  firewall:  nftables (inbound: SSH + CTF ports 8850-8899 tcp/udp)
+  firewall:  nftables (inbound: SSH rate-limited per source + CTF ports 8850-8899 tcp/udp)
   sshguard:  $(</span><span class="org-sh-quoted-exec">systemctl is-active sshguard 2&gt;/dev/null || echo inactive</span><span class="org-sh-heredoc">)
   docker:    $(</span><span class="org-sh-quoted-exec">systemctl is-active docker 2&gt;/dev/null || echo inactive</span><span class="org-sh-heredoc">)  (ports bind to 127.0.0.1)
   yay:       $(</span><span class="org-sh-quoted-exec">command -v yay &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo installed || echo missing</span><span class="org-sh-heredoc">)
 DONE
-</span><span class="org-keyword">if</span> [ <span class="org-string">"${KERNEL_STALE}"</span> = 1 ]; <span class="org-keyword">then</span>
-  log <span class="org-string">"the kernel was upgraded during this run. The firewall, sshguard and Docker"</span>
-  log <span class="org-string">"services are enabled at boot but not running yet. Reboot, then run this"</span>
-  log <span class="org-string">"script again (it is safe to re-run) to bring them up."</span>
-<span class="org-keyword">fi</span>
-log <span class="org-string">"before you close this root session, check the new user works:"</span>
+</span>log <span class="org-string">"before you close this root session, check the new user works:"</span>
 cat &lt;&lt;DONE<span class="org-sh-heredoc">
   From another device:
       ssh [-i path/to/key] ${USERNAME}@${IP:-YOUR_IP}
